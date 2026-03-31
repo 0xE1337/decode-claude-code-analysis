@@ -276,8 +276,24 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
 .arr{stroke:var(--fg3);stroke-width:1.5;fill:none;marker-end:url(#ah)}
 .arr-a{stroke:var(--accent);stroke-width:2;fill:none;marker-end:url(#ah-a)}
 
+/* Search */
+.search-wrap{position:relative}
+.search-wrap input{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:4px 12px 4px 30px;font-size:13px;color:var(--fg);width:200px;font-family:inherit;outline:none;transition:border-color .15s}
+.search-wrap input:focus{border-color:var(--accent);width:260px}
+.search-wrap input::placeholder{color:var(--fg3)}
+.search-wrap svg{position:absolute;left:8px;top:50%;transform:translateY(-50%);pointer-events:none}
+.search-results{position:absolute;top:100%;right:0;margin-top:6px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;width:400px;max-height:420px;overflow-y:auto;box-shadow:0 8px 24px var(--hover);display:none;z-index:300}
+.search-results.show{display:block}
+.search-results .sr-item{display:block;padding:10px 14px;border-bottom:1px solid var(--border);color:var(--fg2);font-size:13px;cursor:pointer;transition:background .1s}
+.search-results .sr-item:hover{background:var(--hover);text-decoration:none}
+.search-results .sr-item:last-child{border-bottom:none}
+.sr-item .sr-ch{color:var(--accent);font-weight:600;font-size:11px}
+.sr-item .sr-text{display:block;margin-top:2px}
+.sr-item mark{background:rgba(88,166,255,.25);color:var(--fg);border-radius:2px;padding:0 1px}
+.search-results .sr-empty{padding:16px;color:var(--fg3);text-align:center;font-size:13px}
+
 .footer{padding:30px 45px;text-align:center;color:var(--fg3);font-size:12px}
-@media(max-width:800px){.sidebar{display:none}.main{margin-left:0}.hero,.chapter{padding:20px 16px}}
+@media(max-width:800px){.sidebar{display:none}.main{margin-left:0}.hero,.chapter{padding:20px 16px}.search-wrap input{width:140px}.search-results{width:300px}}
 </style>
 </head>
 <body>
@@ -291,6 +307,11 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
 <div class="topbar">
   <div class="logo">Decode <span>Claude Code</span> v2.1.88</div>
   <div class="ctrls">
+    <div class="search-wrap">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="var(--fg3)"><path d="M11.5 7a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Zm-.82 4.74a6 6 0 1 1 1.06-1.06l3.04 3.04a.75.75 0 1 1-1.06 1.06l-3.04-3.04Z"/></svg>
+      <input type="text" id="searchInput" placeholder="Search..." oninput="onSearch(this.value)"/>
+      <div class="search-results" id="searchResults"></div>
+    </div>
     <button class="tbtn" onclick="toggleLang()" id="langBtn">EN</button>
     <button class="tbtn" onclick="changeFont(-2)">A-</button>
     <span id="fsLabel" style="color:var(--fg2);font-size:13px;min-width:38px;text-align:center">16px</span>
@@ -373,6 +394,52 @@ function toggleTheme(){
   document.getElementById('hljs-dark').disabled = n==='light';
   document.getElementById('hljs-light').disabled = n==='dark';
 }
+
+// Search
+const searchIndex=[];
+document.querySelectorAll('.chapter').forEach(ch=>{
+  const id=ch.id;
+  ch.querySelectorAll('p,li,th,td,h3,h4,h5').forEach(el=>{
+    const text=el.textContent.trim();
+    if(text.length>5) searchIndex.push({id,text,el});
+  });
+});
+let searchTimer;
+function onSearch(q){
+  clearTimeout(searchTimer);
+  const box=document.getElementById('searchResults');
+  if(!q||q.length<2){box.classList.remove('show');box.innerHTML='';return}
+  searchTimer=setTimeout(()=>{
+    const lang=document.documentElement.dataset.lang;
+    const lower=q.toLowerCase();
+    const hits=searchIndex.filter(item=>{
+      const parent=item.el.closest('.cn,.en');
+      if(parent){
+        if(lang==='cn'&&parent.classList.contains('en'))return false;
+        if(lang==='en'&&parent.classList.contains('cn'))return false;
+      }
+      return item.text.toLowerCase().includes(lower);
+    }).slice(0,20);
+    if(hits.length===0){
+      box.innerHTML='<div class="sr-empty">No results</div>';
+    } else {
+      box.innerHTML=hits.map(h=>{
+        const i=h.text.toLowerCase().indexOf(lower);
+        const start=Math.max(0,i-40);
+        const end=Math.min(h.text.length,i+q.length+40);
+        let snippet=(start>0?'...':'')+h.text.slice(start,end)+(end<h.text.length?'...':'');
+        const esc=q.replace(/[-\/\\^$*+?.()|[\]{}]/g,'\\$&');
+        snippet=snippet.replace(new RegExp('('+esc+')','gi'),'<mark>$1</mark>');
+        const chNum=h.id.replace('ch','');
+        return '<a class="sr-item" href="#'+h.id+'" onclick="closeSearch()"><span class="sr-ch">Ch '+chNum+'</span><span class="sr-text">'+snippet+'</span></a>';
+      }).join('');
+    }
+    box.classList.add('show');
+  },150);
+}
+function closeSearch(){document.getElementById('searchResults').classList.remove('show');document.getElementById('searchInput').value=''}
+document.addEventListener('click',e=>{if(!e.target.closest('.search-wrap'))closeSearch()});
+document.addEventListener('keydown',e=>{if(e.key==='/'&&!e.target.closest('input')){e.preventDefault();document.getElementById('searchInput').focus()}if(e.key==='Escape')closeSearch()});
 
 // Sidebar active tracking
 const secs=document.querySelectorAll('.chapter,.hero'),links=document.querySelectorAll('.sidebar a');
