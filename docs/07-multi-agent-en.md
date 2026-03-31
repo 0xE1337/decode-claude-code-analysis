@@ -1,17 +1,5 @@
 # 07 - Multi-Agent Collaboration System: Maximum Depth Analysis
 
-## Table of Contents
-
-1. [Architecture Overview](#1-architecture-overview)
-2. [AgentTool's 6 Operating Modes](#2-agenttools-6-operating-modes)
-3. [Fork Agent's Cache Innovation](#3-fork-agents-cache-innovation)
-4. [Coordinator Mode In-Depth](#4-coordinator-mode-in-depth)
-5. [Team Communication Mechanism](#5-team-communication-mechanism)
-6. [Worktree Isolation](#6-worktree-isolation)
-7. [The True Purpose of the Bridge Module](#7-the-true-purpose-of-the-bridge-module)
-8. [shouldRunAsync Decision Tree](#8-shouldrunasync-decision-tree)
-
----
 
 ## 1. Architecture Overview
 

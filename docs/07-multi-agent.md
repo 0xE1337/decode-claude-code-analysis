@@ -1,17 +1,5 @@
 # 07 - 多 Agent 协作系统：最大深度分析
 
-## 目录
-
-1. [架构总览](#1-架构总览)
-2. [AgentTool 的 6 种运行模式](#2-agenttool-的-6-种运行模式)
-3. [Fork Agent 的缓存创新](#3-fork-agent-的缓存创新)
-4. [Coordinator 模式详解](#4-coordinator-模式详解)
-5. [Team 通信机制](#5-team-通信机制)
-6. [Worktree 隔离](#6-worktree-隔离)
-7. [Bridge 模块的真正用途](#7-bridge-模块的真正用途)
-8. [shouldRunAsync 决策树](#8-shouldrunasync-决策树)
-
----
 
 ## 1. 架构总览
 
