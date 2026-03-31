@@ -1,6 +1,6 @@
 <div align="center">
 
-# Decode Claude Code
+# Claude Code Source Revealed
 
 ### Architecture Deep Dive / 架构深度解析
 
@@ -25,11 +25,15 @@ On March 31, 2026, Anthropic shipped `@anthropic-ai/claude-code@2.1.88` with a 5
 
 This project is a structured, chapter-by-chapter architecture analysis of **how Claude Code works and why it was designed this way**. It covers the full stack: from startup optimization to the agent loop, system prompt design, tool system, security model, multi-agent coordination, and hidden features.
 
-### Read Online
+### Quick Guide
 
-**[View the full analysis on GitHub Pages (English)](https://0xE1337.github.io/decode-claude-code-analysis/?lang=en)**
+**[5-Minute Quick Guide (English)](https://0xE1337.github.io/decode-claude-code-analysis/quick-guide.html?lang=en)** — Visual, story-driven overview for newcomers. Understand the full architecture in 5 minutes.
 
-Features: syntax highlighting, light/dark theme toggle, adjustable font size.
+### Full Analysis
+
+**[Read the full 12-chapter analysis (English)](https://0xE1337.github.io/decode-claude-code-analysis/?lang=en)**
+
+Features: syntax highlighting, light/dark theme toggle, adjustable font size, full-text search.
 
 ### Chapters
 
@@ -87,11 +91,15 @@ This project is for **educational and research purposes only**. All intellectual
 
 本项目是一份结构化的、逐章节的架构分析，回答的核心问题是：**Claude Code 怎么工作、为什么这样设计**。覆盖完整技术栈：从启动优化到 Agent 循环、System Prompt 设计、工具系统、安全模型、多 Agent 协作到隐藏功能。
 
-### 在线阅读
+### 快速阅读指南
 
-**[在 GitHub Pages 上阅读完整分析（中文）](https://0xE1337.github.io/decode-claude-code-analysis/?lang=cn)**
+**[5 分钟快速阅读指南（中文）](https://0xE1337.github.io/decode-claude-code-analysis/quick-guide.html?lang=cn)** — 图文并茂的架构速览，适合新手快速理解全貌。
 
-支持：代码语法高亮、明暗主题切换、字体大小调节。
+### 完整分析
+
+**[阅读完整 12 章分析（中文）](https://0xE1337.github.io/decode-claude-code-analysis/?lang=cn)**
+
+支持：代码语法高亮、明暗主题切换、字体大小调节、全文搜索。
 
 ### 章节目录
 
