@@ -37,10 +37,19 @@ function md2html(md, prefix) {
   const out = [];
   let inList = false;
   let listType = '';
+  let inPre = false;
   for (let i = 0; i < lines.length; i++) {
     let line = lines[i];
-    // Skip if already processed (pre/table)
-    if (line.startsWith('<pre>') || line.startsWith('<table>')) {
+    // Track pre/code blocks — pass through everything inside
+    if (line.includes('<pre>')) inPre = true;
+    if (inPre) {
+      if (inList) { out.push(`</${listType}>`); inList = false; }
+      out.push(line);
+      if (line.includes('</pre>')) inPre = false;
+      continue;
+    }
+    // Skip if table (already processed)
+    if (line.startsWith('<table>')) {
       if (inList) { out.push(`</${listType}>`); inList = false; }
       out.push(line);
       continue;

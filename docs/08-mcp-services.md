@@ -551,7 +551,7 @@ hooks:
       command: echo "pre-hook"
 ---
 
-# 技能 Prompt 内容
+### 技能 Prompt 内容
 
 实际的 system prompt 文本...
 ```
