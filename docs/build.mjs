@@ -442,6 +442,7 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
     <span id="fsLabel" style="color:var(--fg2);font-size:13px;min-width:38px;text-align:center">16px</span>
     <button class="tbtn" onclick="changeFont(2)">A+</button>
     <button class="tbtn" onclick="toggleTheme()" id="themeBtn">Dark</button>
+    <a class="tbtn" href="quick-guide.html" style="text-decoration:none"><span class="cn">Quick Guide</span><span class="en">Quick Guide</span></a>
   </div>
 </div>
 
