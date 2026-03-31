@@ -99,18 +99,29 @@ function escHtml(s) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-// ── Load MD files ──
-const mdFiles = readdirSync(DIR)
-  .filter(f => f.endsWith('.md') && /^\d{2}-/.test(f))
+// ── Load MD files (CN + EN) ──
+const cnFiles = readdirSync(DIR)
+  .filter(f => f.endsWith('.md') && /^\d{2}-/.test(f) && !f.endsWith('-en.md'))
   .sort();
 
-const chapters = mdFiles.map(f => {
+const chapters = cnFiles.map(f => {
   const raw = readFileSync(join(DIR, f), 'utf-8');
   const num = f.slice(0, 2);
   const titleMatch = raw.match(/^#\s+(.+)/m);
-  const title = titleMatch ? titleMatch[1].replace(/^\d+\s*-\s*/, '') : f;
-  const body = raw.replace(/^#\s+.+\n+/, ''); // remove first H1
-  return { num, title, id: `ch${num}`, file: f, html: md2html(body) };
+  const titleCn = titleMatch ? titleMatch[1].replace(/^\d+\s*-\s*/, '') : f;
+  const bodyCn = raw.replace(/^#\s+.+\n+/, '');
+
+  // Load English version
+  const enFile = f.replace(/\.md$/, '-en.md');
+  let bodyEn = '', titleEn = titleCn;
+  try {
+    const rawEn = readFileSync(join(DIR, enFile), 'utf-8');
+    const enTitleMatch = rawEn.match(/^#\s+(.+)/m);
+    titleEn = enTitleMatch ? enTitleMatch[1].replace(/^\d+\s*-\s*/, '') : titleCn;
+    bodyEn = rawEn.replace(/^#\s+.+\n+/, '');
+  } catch { bodyEn = bodyCn; titleEn = titleCn; }
+
+  return { num, titleCn, titleEn, id: `ch${num}`, file: f, htmlCn: md2html(bodyCn), htmlEn: md2html(bodyEn) };
 });
 
 // ── SVG Diagrams per chapter ──
@@ -172,6 +183,7 @@ const diagrams = {
 // ── HTML Template ──
 const html = `<!DOCTYPE html>
 <html lang="zh-CN" data-theme="light" data-lang="cn">
+<!-- Language toggle CSS is inline below -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -199,6 +211,9 @@ const html = `<!DOCTYPE html>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.8;font-size:var(--fs);transition:background var(--t),color var(--t)}
 a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+/* Language toggle */
+[data-lang="cn"] .en{display:none!important}
+[data-lang="en"] .cn{display:none!important}
 ::selection{background:rgba(88,166,255,.3)}
 
 /* Top Bar */
@@ -276,6 +291,7 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
 <div class="topbar">
   <div class="logo">Decode <span>Claude Code</span> v2.1.88</div>
   <div class="ctrls">
+    <button class="tbtn" onclick="toggleLang()" id="langBtn">EN</button>
     <button class="tbtn" onclick="changeFont(-2)">A-</button>
     <span id="fsLabel" style="color:var(--fg2);font-size:13px;min-width:38px;text-align:center">16px</span>
     <button class="tbtn" onclick="changeFont(2)">A+</button>
@@ -285,13 +301,14 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
 
 <nav class="sidebar">
   <a href="#overview"><span class="n">--</span>Overview</a>
-${chapters.map(c => `  <a href="#${c.id}"><span class="n">${c.num}</span>${c.title.slice(0, 28)}</a>`).join('\n')}
+${chapters.map(c => `  <a href="#${c.id}"><span class="n">${c.num}</span><span class="cn">${c.titleCn.slice(0, 20)}</span><span class="en">${c.titleEn.slice(0, 24)}</span></a>`).join('\n')}
 </nav>
 
 <div class="main">
   <div class="hero" id="overview">
     <h1>Decode <span>Claude Code</span></h1>
-    <p class="sub">1,906 source files extracted from 59.8MB source map — module-by-module deep architecture analysis covering 515,029 lines of code.</p>
+    <p class="sub cn">1,906 个源文件从 59.8MB source map 完整提取 — 逐模块深度架构分析，覆盖 515,029 行代码的设计哲学、实现细节与工程权衡。</p>
+    <p class="sub en">1,906 source files extracted from 59.8MB source map — module-by-module deep architecture analysis covering design philosophy, implementation details and engineering trade-offs across 515,029 lines of code.</p>
     <div class="stats">
       <div class="stat"><div class="v">1,906</div><div class="l">Source Files</div></div>
       <div class="stat"><div class="v">515K</div><div class="l">Lines of Code</div></div>
@@ -306,9 +323,10 @@ ${chapters.map(c => {
   const diag = diagrams[c.id] || '';
   const diagHtml = diag ? `<div class="diagram">${diag}</div>` : '';
   return `  <div class="chapter" id="${c.id}">
-    <h2>${c.num} — ${c.title}</h2>
+    <h2><span class="cn">${c.num} — ${c.titleCn}</span><span class="en">${c.num} — ${c.titleEn}</span></h2>
     ${diagHtml}
-    ${c.html}
+    <div class="cn">${c.htmlCn}</div>
+    <div class="en">${c.htmlEn}</div>
   </div>`;
 }).join('\n\n')}
 
@@ -322,6 +340,14 @@ ${chapters.map(c => {
 <script>
 // Syntax highlighting
 hljs.highlightAll();
+
+// Language toggle
+function toggleLang(){
+  const h=document.documentElement;
+  const n=h.dataset.lang==='cn'?'en':'cn';
+  h.dataset.lang=n;
+  document.getElementById('langBtn').textContent=n==='cn'?'EN':'CN';
+}
 
 // Font size
 let fs=16;
