@@ -12,8 +12,11 @@ import { join, basename } from 'path';
 const DIR = import.meta.dirname || '.';
 
 // ── Tiny Markdown-to-HTML converter (no deps) ──
-function md2html(md) {
+// Returns { html, toc } where toc is a list of {level, id, text}
+let headingCounter = 0;
+function md2html(md, prefix) {
   let html = md;
+  const toc = [];
   // Code blocks (``` ... ```)
   html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) => {
     const escaped = escHtml(code.trimEnd());
@@ -42,13 +45,16 @@ function md2html(md) {
       out.push(line);
       continue;
     }
-    // Headers
+    // Headers — add id for TOC
     const hMatch = line.match(/^(#{1,4})\s+(.+)/);
     if (hMatch) {
       if (inList) { out.push(`</${listType}>`); inList = false; }
       const level = hMatch[1].length;
       const text = inlineMarkdown(hMatch[2]);
-      out.push(`<h${level + 1}>${text}</h${level + 1}>`);
+      const plain = hMatch[2].replace(/\*\*(.+?)\*\*/g, '$1').replace(/`([^`]+)`/g, '$1');
+      const id = `${prefix}-h${++headingCounter}`;
+      toc.push({ level, id, text: plain });
+      out.push(`<h${level + 1} id="${id}">${text}</h${level + 1}>`);
       continue;
     }
     // Unordered list
@@ -85,7 +91,16 @@ function md2html(md) {
     out.push(`<p>${inlineMarkdown(line)}</p>`);
   }
   if (inList) out.push(`</${listType}>`);
-  return out.join('\n');
+  return { html: out.join('\n'), toc };
+}
+
+function buildTocHtml(toc) {
+  if (toc.length < 3) return ''; // skip TOC for very short chapters
+  const items = toc
+    .filter(t => t.level <= 2) // only ## and ### (level 1=##, 2=###)
+    .map(t => `<a href="#${t.id}" class="toc-l${t.level}">${t.text}</a>`)
+    .join('\n');
+  return `<nav class="ch-toc">${items}</nav>`;
 }
 
 function inlineMarkdown(s) {
@@ -110,18 +125,21 @@ const chapters = cnFiles.map(f => {
   const titleMatch = raw.match(/^#\s+(.+)/m);
   const titleCn = titleMatch ? titleMatch[1].replace(/^\d+\s*-\s*/, '') : f;
   const bodyCn = raw.replace(/^#\s+.+\n+/, '');
+  const cn = md2html(bodyCn, `${num}-cn`);
 
   // Load English version
   const enFile = f.replace(/\.md$/, '-en.md');
-  let bodyEn = '', titleEn = titleCn;
+  let titleEn = titleCn, en = { html: cn.html, toc: cn.toc };
   try {
     const rawEn = readFileSync(join(DIR, enFile), 'utf-8');
     const enTitleMatch = rawEn.match(/^#\s+(.+)/m);
     titleEn = enTitleMatch ? enTitleMatch[1].replace(/^\d+\s*-\s*/, '') : titleCn;
-    bodyEn = rawEn.replace(/^#\s+.+\n+/, '');
-  } catch { bodyEn = bodyCn; titleEn = titleCn; }
+    const bodyEn = rawEn.replace(/^#\s+.+\n+/, '');
+    en = md2html(bodyEn, `${num}-en`);
+  } catch {}
 
-  return { num, titleCn, titleEn, id: `ch${num}`, file: f, htmlCn: md2html(bodyCn), htmlEn: md2html(bodyEn) };
+  return { num, titleCn, titleEn, id: `ch${num}`, file: f,
+    htmlCn: cn.html, htmlEn: en.html, tocCn: cn.toc, tocEn: en.toc };
 });
 
 // ── SVG Diagrams per chapter ──
@@ -177,6 +195,73 @@ const diagrams = {
     <text x="514" y="41" class="st st-s">Safe?</text>
     <line x1="585" y1="30" x2="630" y2="30" stroke="var(--green)" stroke-width="1.5" marker-end="url(#ah-g)"/><text x="635" y="34" fill="var(--green)" class="st" style="font-size:11px">Execute</text>
     <line x1="535" y1="60" x2="535" y2="78" stroke="var(--red)" stroke-width="1.5" marker-end="url(#ah-r)"/><text x="515" y="88" fill="var(--red)" class="st" style="font-size:11px">Ask User</text>
+  </svg>`,
+  'ch03': `<svg width="840" height="115" viewBox="0 0 840 115">
+    <text x="20" y="18" class="st st-l">Tool Lifecycle</text>
+    <rect x="20" y="28" width="110" height="40" class="svg-box-a"/><text x="35" y="52" class="st st-s">buildTool()</text>
+    <line x1="130" y1="48" x2="152" y2="48" class="arr"/>
+    <rect x="154" y="28" width="110" height="40" class="svg-box-g"/><text x="165" y="52" class="st st-s">Feature Filter</text>
+    <line x1="264" y1="48" x2="286" y2="48" class="arr"/>
+    <rect x="288" y="28" width="100" height="40" class="svg-box"/><text x="305" y="52" class="st st-s">Tool Pool</text>
+    <line x1="388" y1="48" x2="410" y2="48" class="arr"/>
+    <rect x="412" y="28" width="120" height="40" class="svg-box-p"/><text x="422" y="52" class="st st-s">Permission Check</text>
+    <line x1="532" y1="48" x2="554" y2="48" class="arr"/>
+    <rect x="556" y="28" width="100" height="40" class="svg-box-o"/><text x="576" y="52" class="st st-s">Execute</text>
+    <line x1="656" y1="48" x2="678" y2="48" class="arr"/>
+    <rect x="680" y="28" width="100" height="40" class="svg-box-r"/><text x="698" y="52" class="st st-s">Result</text>
+    <text x="20" y="98" class="st st-s">Fail-closed: isReadOnly defaults false | isConcurrencySafe defaults false | ToolSearch deferred loading (7-level chain)</text>
+  </svg>`,
+  'ch04': `<svg width="840" height="100" viewBox="0 0 840 100">
+    <text x="20" y="18" class="st st-l">3 Command Types</text>
+    <rect x="20" y="30" width="240" height="50" class="svg-box-a"/><text x="40" y="52" class="st st-t">local</text><text x="40" y="68" class="st st-s">Direct execution (/clear, /help)</text>
+    <rect x="280" y="30" width="240" height="50" class="svg-box-g"/><text x="300" y="52" class="st st-t">local-jsx</text><text x="300" y="68" class="st st-s">React/Ink UI render (/config)</text>
+    <rect x="540" y="30" width="260" height="50" class="svg-box-p"/><text x="560" y="52" class="st st-t">prompt</text><text x="560" y="68" class="st st-s">Inject into conversation (/commit)</text>
+    <text x="20" y="98" class="st st-s">6 sources: bundled | builtinPlugin | skillDir | workflow | plugin | builtin &mdash; 80+ commands, ~28 internal-only</text>
+  </svg>`,
+  'ch07': `<svg width="840" height="140" viewBox="0 0 840 140">
+    <text x="20" y="18" class="st st-l">3 Collaboration Modes + 3 Isolation Levels</text>
+    <rect x="20" y="30" width="250" height="45" class="svg-box-a"/><text x="40" y="50" class="st st-t">Sub-Agent</text><text x="40" y="65" class="st st-s">Default, 6 modes (fg/bg/fork/wt/remote/tm)</text>
+    <rect x="290" y="30" width="250" height="45" class="svg-box-g"/><text x="310" y="50" class="st st-t">Coordinator</text><text x="310" y="65" class="st st-s">"Never delegate understanding"</text>
+    <rect x="560" y="30" width="250" height="45" class="svg-box-p"/><text x="580" y="50" class="st st-t">Team / Swarm</text><text x="580" y="65" class="st st-s">tmux or in-process parallel</text>
+    <rect x="20" y="90" width="250" height="40" class="svg-box"/><text x="40" y="115" class="st st-s">No Isolation (shared fs)</text>
+    <line x1="270" y1="110" x2="288" y2="110" class="arr"/>
+    <rect x="290" y="90" width="250" height="40" class="svg-box-o"/><text x="310" y="115" class="st st-s">Git Worktree (file isolation)</text>
+    <line x1="540" y1="110" x2="558" y2="110" class="arr"/>
+    <rect x="560" y="90" width="250" height="40" class="svg-box-r"/><text x="580" y="115" class="st st-s">Remote CCR (full isolation)</text>
+  </svg>`,
+  'ch08': `<svg width="840" height="110" viewBox="0 0 840 110">
+    <text x="20" y="18" class="st st-l">MCP Connection Flow</text>
+    <rect x="20" y="28" width="140" height="40" class="svg-box-a"/><text x="35" y="52" class="st st-s">8 Transports</text>
+    <line x1="160" y1="48" x2="182" y2="48" class="arr"/>
+    <rect x="184" y="28" width="150" height="40" class="svg-box-g"/><text x="198" y="52" class="st st-s">Connection Mgr</text>
+    <line x1="334" y1="48" x2="356" y2="48" class="arr"/>
+    <rect x="358" y="28" width="140" height="40" class="svg-box-p"/><text x="372" y="52" class="st st-s">Tool Discovery</text>
+    <line x1="498" y1="48" x2="520" y2="48" class="arr"/>
+    <rect x="522" y="28" width="100" height="40" class="svg-box-o"/><text x="542" y="52" class="st st-s">Execute</text>
+    <text x="20" y="92" class="st st-s">4 API Backends: Anthropic Direct | AWS Bedrock | Google Vertex | Palantir Foundry &mdash; unified via getAnthropicClient</text>
+  </svg>`,
+  'ch09': `<svg width="840" height="120" viewBox="0 0 840 120">
+    <text x="20" y="18" class="st st-l">UI Architecture Stack</text>
+    <rect x="150" y="25" width="540" height="35" class="svg-box-r"/><text x="300" y="48" class="st st-t">REPL.tsx (~6,000 lines, 280+ imports)</text>
+    <rect x="150" y="65" width="260" height="30" class="svg-box-a"/><text x="195" y="85" class="st st-s">389+ React Components</text>
+    <rect x="420" y="65" width="270" height="30" class="svg-box-g"/><text x="460" y="85" class="st st-s">Custom Ink Fork (dual buffer)</text>
+    <rect x="150" y="100" width="540" height="20" rx="4" class="svg-box-p"/><text x="350" y="115" class="st st-s">Yoga Layout &rarr; Terminal (TTY)</text>
+  </svg>`,
+  'ch10': `<svg width="840" height="110" viewBox="0 0 840 110">
+    <text x="20" y="18" class="st st-l">Dual-Layer Feature Flag Architecture</text>
+    <rect x="20" y="28" width="380" height="50" class="svg-box-a"/><text x="40" y="50" class="st st-t">Build-Time (88 flags)</text><text x="40" y="66" class="st st-s">bun:bundle feature() macro + DCE</text>
+    <rect x="420" y="28" width="380" height="50" class="svg-box-g"/><text x="440" y="50" class="st st-t">Runtime (GrowthBook)</text><text x="440" y="66" class="st st-s">A/B testing + kill-switch + remote eval</text>
+    <text x="20" y="100" class="st st-s">Key: KAIROS (assistant) | BUDDY (pet) | UNDERCOVER (stealth) | VOICE_MODE | COORDINATOR | Codename: "Tengu"</text>
+  </svg>`,
+  'ch11': `<svg width="840" height="90" viewBox="0 0 840 90">
+    <text x="20" y="18" class="st st-l">Infrastructure Modules</text>
+    <rect x="20" y="30" width="110" height="40" class="svg-box-a"/><text x="33" y="55" class="st st-s">Task (7 types)</text>
+    <rect x="140" y="30" width="110" height="40" class="svg-box-g"/><text x="152" y="55" class="st st-s">State (35-line)</text>
+    <rect x="260" y="30" width="110" height="40" class="svg-box-p"/><text x="272" y="55" class="st st-s">Migrations</text>
+    <rect x="380" y="30" width="100" height="40" class="svg-box-o"/><text x="400" y="55" class="st st-s">Vim FSM</text>
+    <rect x="490" y="30" width="110" height="40" class="svg-box-r"/><text x="500" y="55" class="st st-s">Remote/CCR</text>
+    <rect x="610" y="30" width="100" height="40" class="svg-box"/><text x="622" y="55" class="st st-s">Keybindings</text>
+    <rect x="720" y="30" width="95" height="40" class="svg-box"/><text x="732" y="55" class="st st-s">memdir</text>
   </svg>`,
 };
 
@@ -276,6 +361,14 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
 .arr{stroke:var(--fg3);stroke-width:1.5;fill:none;marker-end:url(#ah)}
 .arr-a{stroke:var(--accent);stroke-width:2;fill:none;marker-end:url(#ah-a)}
 
+/* Chapter TOC */
+.ch-toc{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:24px;columns:2;column-gap:24px}
+.ch-toc a{display:block;color:var(--fg2);font-size:calc(var(--fs) * .82);padding:2px 0;break-inside:avoid;transition:color .1s}
+.ch-toc a:hover{color:var(--accent);text-decoration:none}
+.ch-toc .toc-l1{font-weight:600;color:var(--fg)}
+.ch-toc .toc-l2{padding-left:14px}
+@media(max-width:800px){.ch-toc{columns:1}}
+
 /* Search */
 .search-wrap{position:relative}
 .search-wrap input{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:4px 12px 4px 30px;font-size:13px;color:var(--fg);width:200px;font-family:inherit;outline:none;transition:border-color .15s}
@@ -346,8 +439,8 @@ ${chapters.map(c => {
   return `  <div class="chapter" id="${c.id}">
     <h2><span class="cn">${c.num} — ${c.titleCn}</span><span class="en">${c.num} — ${c.titleEn}</span></h2>
     ${diagHtml}
-    <div class="cn">${c.htmlCn}</div>
-    <div class="en">${c.htmlEn}</div>
+    <div class="cn">${buildTocHtml(c.tocCn)}${c.htmlCn}</div>
+    <div class="en">${buildTocHtml(c.tocEn)}${c.htmlEn}</div>
   </div>`;
 }).join('\n\n')}
 
