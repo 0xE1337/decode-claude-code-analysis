@@ -20,10 +20,9 @@ function md2html(md, prefix) {
   // Code blocks (``` ... ```)
   html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) => {
     const escaped = escHtml(code.trimEnd());
-    // Detect ASCII art: box-drawing chars, arrows, or tree-like structures
-    const isAscii = /[├└│─┌┐┘┤┬┴╭╰→←▼▲╋═║╔╗╚╝]/.test(code)
-      || (/\|/.test(code) && /[+\-]{3,}/.test(code)); // simple +---| tables
-    if (isAscii) {
+    // Detect ASCII art: must have Unicode box-drawing chars (not just | or -)
+    const boxChars = (escaped.match(/[├└│─┌┐┘┤┬┴╭╰╋═║╔╗╚╝┊┈]/g) || []).length;
+    if (boxChars >= 3) {
       return `<div class="ascii-diagram"><pre>${escaped}</pre></div>`;
     }
     const cls = lang ? ` class="language-${lang}"` : '';
