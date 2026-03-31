@@ -95,10 +95,13 @@ function md2html(md, prefix) {
 }
 
 function buildTocHtml(toc) {
-  if (toc.length < 3) return ''; // skip TOC for very short chapters
-  const items = toc
-    .filter(t => t.level <= 2) // only ## and ### (level 1=##, 2=###)
-    .map(t => `<a href="#${t.id}" class="toc-l${t.level}">${t.text}</a>`)
+  if (toc.length < 3) return '';
+  // Only show the top-level headings (## sections), not sub-details
+  const minLevel = Math.min(...toc.map(t => t.level));
+  const major = toc.filter(t => t.level === minLevel);
+  if (major.length < 2) return '';
+  const items = major
+    .map(t => `<a href="#${t.id}" class="toc-l1">${t.text}</a>`)
     .join('\n');
   return `<nav class="ch-toc">${items}</nav>`;
 }

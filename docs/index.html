@@ -187,12 +187,12 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
     <line x1="564" y1="47" x2="594" y2="47" class="arr-a"/>
     <rect x="596" y="20" width="160" height="55" class="svg-box-a"/><text x="628" y="48" class="st st-t">setup.ts</text><text x="618" y="64" class="st st-s">Auth + Prefetch</text>
   </svg></div>
-    <div class="cn"><nav class="ch-toc"><a href="#00-cn-h1" class="toc-l2">概述</a>
-<a href="#00-cn-h2" class="toc-l2">一、逐文件逐函数深度分析</a>
-<a href="#00-cn-h34" class="toc-l2">二、启动时序图（阻塞/非阻塞标注版）</a>
-<a href="#00-cn-h35" class="toc-l2">三、设计权衡分析</a>
-<a href="#00-cn-h42" class="toc-l2">四、值得学习的模式</a>
-<a href="#00-cn-h48" class="toc-l2">五、代码质量评价</a></nav><h3 id="00-cn-h1">概述</h3>
+    <div class="cn"><nav class="ch-toc"><a href="#00-cn-h1" class="toc-l1">概述</a>
+<a href="#00-cn-h2" class="toc-l1">一、逐文件逐函数深度分析</a>
+<a href="#00-cn-h34" class="toc-l1">二、启动时序图（阻塞/非阻塞标注版）</a>
+<a href="#00-cn-h35" class="toc-l1">三、设计权衡分析</a>
+<a href="#00-cn-h42" class="toc-l1">四、值得学习的模式</a>
+<a href="#00-cn-h48" class="toc-l1">五、代码质量评价</a></nav><h3 id="00-cn-h1">概述</h3>
 <p>Claude Code 的启动系统采用了精心设计的多层入口架构，从用户输入 <code>claude</code> 命令到进入主交互循环，经历了 cli.tsx -> main.tsx -> init.ts -> setup.ts 四个主要阶段。整个启动路径的核心设计哲学是：<strong>尽可能延迟加载，尽可能并行执行，尽可能减少阻塞</strong>。</p>
 <p>系统通过多种优化手段将启动时间压缩到极致：模块顶层的副作用式预取（MDM 配置、Keychain 读取）、Commander preAction hook 延迟初始化、setup() 与命令加载的并行执行、以及渲染后的延迟预取（startDeferredPrefetches）。<code>--bare</code> 模式作为极简启动路径，跳过几乎所有非核心的预热和后台任务。</p>
 <p>bootstrap/state.ts 作为全局状态容器，在模块加载时就完成初始化，是整个系统中最先就绪的模块之一，为后续所有子系统提供基础状态支撑。</p>
@@ -1169,12 +1169,12 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
 <p><tr><td>遥测采样决策</td><td>模块加载时一次性</td><td>常见</td></tr></p>
 <p><tr><td>双层信任模型</td><td>有（safe vs full env vars）</td><td>少见（通常全有或全无）</td></tr></tbody></table></p>
 <p>Claude Code 在启动优化上的投入程度远超大多数 CLI 工具。这反映了其使用场景的独特性——作为一个需要频繁重启、首次响应延迟敏感的交互式 AI 编程助手，每毫秒的启动优化都能被用户感知。Prompt cache 和 beta header 锁存等优化更是针对 LLM API 的独特挑战，在传统 CLI 工具中没有对应需求。</p></div>
-    <div class="en"><nav class="ch-toc"><a href="#00-en-h52" class="toc-l2">Overview</a>
-<a href="#00-en-h53" class="toc-l2">I. In-Depth File-by-File, Function-by-Function Analysis</a>
-<a href="#00-en-h85" class="toc-l2">II. Startup Timing Diagram (Blocking/Non-Blocking Annotated Version)</a>
-<a href="#00-en-h86" class="toc-l2">III. Design Trade-off Analysis</a>
-<a href="#00-en-h93" class="toc-l2">IV. Patterns Worth Learning</a>
-<a href="#00-en-h99" class="toc-l2">V. Code Quality Assessment</a></nav><h3 id="00-en-h52">Overview</h3>
+    <div class="en"><nav class="ch-toc"><a href="#00-en-h52" class="toc-l1">Overview</a>
+<a href="#00-en-h53" class="toc-l1">I. In-Depth File-by-File, Function-by-Function Analysis</a>
+<a href="#00-en-h85" class="toc-l1">II. Startup Timing Diagram (Blocking/Non-Blocking Annotated Version)</a>
+<a href="#00-en-h86" class="toc-l1">III. Design Trade-off Analysis</a>
+<a href="#00-en-h93" class="toc-l1">IV. Patterns Worth Learning</a>
+<a href="#00-en-h99" class="toc-l1">V. Code Quality Assessment</a></nav><h3 id="00-en-h52">Overview</h3>
 <p>Claude Code's startup system employs a carefully designed multi-layer entry architecture. From the moment a user types the <code>claude</code> command to entering the main interaction loop, it passes through four major stages: cli.tsx -> main.tsx -> init.ts -> setup.ts. The core design philosophy of the entire startup path is: <strong>defer loading as much as possible, execute in parallel as much as possible, minimize blocking as much as possible</strong>.</p>
 <p>The system compresses startup time to the extreme through various optimization techniques: module top-level side-effect prefetching (MDM configuration, Keychain reads), Commander preAction hook deferred initialization, parallel execution of setup() and command loading, and post-render deferred prefetching (startDeferredPrefetches). The <code>--bare</code> mode serves as a minimal startup path, skipping nearly all non-core warm-up and background tasks.</p>
 <p>bootstrap/state.ts acts as a global state container, completing initialization at module load time. It is one of the first modules to become ready in the entire system, providing foundational state support for all subsequent subsystems.</p>
@@ -2161,17 +2161,17 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
     <rect x="80" y="134" width="680" height="50" class="svg-box-p"/><text x="100" y="162" class="st st-t">deps.callModel() — Streaming</text><text x="400" y="162" class="st st-s">StreamingToolExecutor parallel</text>
     <text x="20" y="215" class="st st-s">Flow: Preprocess → 5-Layer Compress → Call API → Parse → Execute Tools → more? → loop / done</text>
   </svg></div>
-    <div class="cn"><nav class="ch-toc"><a href="#01-cn-h103" class="toc-l2">概述</a>
-<a href="#01-cn-h104" class="toc-l2">一、queryLoop 完整状态机还原</a>
-<a href="#01-cn-h109" class="toc-l2">二、错误处理逐层分析</a>
-<a href="#01-cn-h118" class="toc-l2">三、流式处理深度分析</a>
-<a href="#01-cn-h125" class="toc-l2">四、5 层压缩管线深度分析</a>
-<a href="#01-cn-h129" class="toc-l2">五、并发安全：abort 信号在三层 generator 间的传播</a>
-<a href="#01-cn-h133" class="toc-l2">六、代码中的历史故事</a>
-<a href="#01-cn-h137" class="toc-l2">七、设计哲学：为什么 while(tool_call) 比 DAG/ReAct/Plan-Execute 更好？</a>
-<a href="#01-cn-h141" class="toc-l2">八、值得学习的模式</a>
-<a href="#01-cn-h147" class="toc-l2">九、Stop Hooks 的完整架构</a>
-<a href="#01-cn-h151" class="toc-l2">十、相关文件索引</a></nav><h3 id="01-cn-h103">概述</h3>
+    <div class="cn"><nav class="ch-toc"><a href="#01-cn-h103" class="toc-l1">概述</a>
+<a href="#01-cn-h104" class="toc-l1">一、queryLoop 完整状态机还原</a>
+<a href="#01-cn-h109" class="toc-l1">二、错误处理逐层分析</a>
+<a href="#01-cn-h118" class="toc-l1">三、流式处理深度分析</a>
+<a href="#01-cn-h125" class="toc-l1">四、5 层压缩管线深度分析</a>
+<a href="#01-cn-h129" class="toc-l1">五、并发安全：abort 信号在三层 generator 间的传播</a>
+<a href="#01-cn-h133" class="toc-l1">六、代码中的历史故事</a>
+<a href="#01-cn-h137" class="toc-l1">七、设计哲学：为什么 while(tool_call) 比 DAG/ReAct/Plan-Execute 更好？</a>
+<a href="#01-cn-h141" class="toc-l1">八、值得学习的模式</a>
+<a href="#01-cn-h147" class="toc-l1">九、Stop Hooks 的完整架构</a>
+<a href="#01-cn-h151" class="toc-l1">十、相关文件索引</a></nav><h3 id="01-cn-h103">概述</h3>
 <p>Claude Code 的 Agent Loop 是一个基于 AsyncGenerator 的多层嵌套循环架构，负责管理"用户输入 -> 模型推理 -> 工具执行 -> 结果回送"的完整生命周期。核心由三层组成：</p>
 <ol>
 <li><strong>QueryEngine</strong>（<code>QueryEngine.ts</code>, ~1295 行）：会话级别的管理器，拥有消息历史、使用量统计、权限追踪等状态。每次 <code>submitMessage()</code> 开启一个新回合（turn）。</li>
@@ -2799,17 +2799,17 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
 <p><tr><td><code>src/query/stopHooks.ts</code></td><td>~474</td><td>Stop/TaskCompleted/TeammateIdle 钩子 + 背景任务触发</td></tr></p>
 <p><tr><td><code>src/query/tokenBudget.ts</code></td><td>~94</td><td>Token 预算追踪与 diminishing returns 检测</td></tr></p>
 <p><tr><td><code>src/services/tools/StreamingToolExecutor.ts</code></td><td>~531</td><td>流式工具执行器，并发控制，三层 abort</td></tr></tbody></table></p></div>
-    <div class="en"><nav class="ch-toc"><a href="#01-en-h152" class="toc-l2">Overview</a>
-<a href="#01-en-h153" class="toc-l2">I. queryLoop Complete State Machine Reconstruction</a>
-<a href="#01-en-h158" class="toc-l2">II. Error Handling Layer-by-Layer Analysis</a>
-<a href="#01-en-h167" class="toc-l2">III. In-Depth Analysis of Streaming Processing</a>
-<a href="#01-en-h174" class="toc-l2">IV. In-Depth Analysis of the 5-Layer Compaction Pipeline</a>
-<a href="#01-en-h178" class="toc-l2">V. Concurrency Safety: Abort Signal Propagation Across Three Generator Layers</a>
-<a href="#01-en-h182" class="toc-l2">VI. Historical Stories in the Code</a>
-<a href="#01-en-h186" class="toc-l2">VII. Design Philosophy: Why while(tool_call) Is Better Than DAG/ReAct/Plan-Execute</a>
-<a href="#01-en-h190" class="toc-l2">VIII. Patterns Worth Learning</a>
-<a href="#01-en-h196" class="toc-l2">IX. Complete Architecture of Stop Hooks</a>
-<a href="#01-en-h200" class="toc-l2">X. Related File Index</a></nav><h3 id="01-en-h152">Overview</h3>
+    <div class="en"><nav class="ch-toc"><a href="#01-en-h152" class="toc-l1">Overview</a>
+<a href="#01-en-h153" class="toc-l1">I. queryLoop Complete State Machine Reconstruction</a>
+<a href="#01-en-h158" class="toc-l1">II. Error Handling Layer-by-Layer Analysis</a>
+<a href="#01-en-h167" class="toc-l1">III. In-Depth Analysis of Streaming Processing</a>
+<a href="#01-en-h174" class="toc-l1">IV. In-Depth Analysis of the 5-Layer Compaction Pipeline</a>
+<a href="#01-en-h178" class="toc-l1">V. Concurrency Safety: Abort Signal Propagation Across Three Generator Layers</a>
+<a href="#01-en-h182" class="toc-l1">VI. Historical Stories in the Code</a>
+<a href="#01-en-h186" class="toc-l1">VII. Design Philosophy: Why while(tool_call) Is Better Than DAG/ReAct/Plan-Execute</a>
+<a href="#01-en-h190" class="toc-l1">VIII. Patterns Worth Learning</a>
+<a href="#01-en-h196" class="toc-l1">IX. Complete Architecture of Stop Hooks</a>
+<a href="#01-en-h200" class="toc-l1">X. Related File Index</a></nav><h3 id="01-en-h152">Overview</h3>
 <p>Claude Code's Agent Loop is a multi-layered nested loop architecture based on AsyncGenerator, responsible for managing the complete lifecycle of "user input -> model inference -> tool execution -> result feedback". The core consists of three layers:</p>
 <ol>
 <li><strong>QueryEngine</strong> (<code>QueryEngine.ts</code>, ~1295 lines): A session-level manager that owns state such as message history, usage statistics, and permission tracking. Each <code>submitMessage()</code> initiates a new turn.</li>
@@ -3457,17 +3457,17 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
     <text x="460" y="145" class="st st-s">External: concise. Internal: verbose, challenging</text>
     <text x="460" y="165" class="st st-s">Build-time DCE: ant code physically absent</text>
   </svg></div>
-    <div class="cn"><nav class="ch-toc"><a href="#02-cn-h201" class="toc-l2">概述</a>
-<a href="#02-cn-h202" class="toc-l2">1. 完整 Prompt 文本提取</a>
-<a href="#02-cn-h215" class="toc-l2">2. 缓存命中率的数学</a>
-<a href="#02-cn-h219" class="toc-l2">3. Ant vs External 的完整差异清单</a>
-<a href="#02-cn-h223" class="toc-l2">4. Cache Break 检测系统</a>
-<a href="#02-cn-h227" class="toc-l2">5. agent_listing_delta 和 mcp_instructions_delta：从工具 Schema 到消息附件的迁移</a>
-<a href="#02-cn-h231" class="toc-l2">6. Section 缓存机制（systemPromptSections.ts）</a>
-<a href="#02-cn-h235" class="toc-l2">7. Prompt 优先级路由（buildEffectiveSystemPrompt）</a>
-<a href="#02-cn-h236" class="toc-l2">8. 与其他 LLM Prompt 工程的对比</a>
-<a href="#02-cn-h239" class="toc-l2">9. 数据流全景</a>
-<a href="#02-cn-h240" class="toc-l2">关键发现总结</a></nav><h3 id="02-cn-h201">概述</h3>
+    <div class="cn"><nav class="ch-toc"><a href="#02-cn-h201" class="toc-l1">概述</a>
+<a href="#02-cn-h202" class="toc-l1">1. 完整 Prompt 文本提取</a>
+<a href="#02-cn-h215" class="toc-l1">2. 缓存命中率的数学</a>
+<a href="#02-cn-h219" class="toc-l1">3. Ant vs External 的完整差异清单</a>
+<a href="#02-cn-h223" class="toc-l1">4. Cache Break 检测系统</a>
+<a href="#02-cn-h227" class="toc-l1">5. agent_listing_delta 和 mcp_instructions_delta：从工具 Schema 到消息附件的迁移</a>
+<a href="#02-cn-h231" class="toc-l1">6. Section 缓存机制（systemPromptSections.ts）</a>
+<a href="#02-cn-h235" class="toc-l1">7. Prompt 优先级路由（buildEffectiveSystemPrompt）</a>
+<a href="#02-cn-h236" class="toc-l1">8. 与其他 LLM Prompt 工程的对比</a>
+<a href="#02-cn-h239" class="toc-l1">9. 数据流全景</a>
+<a href="#02-cn-h240" class="toc-l1">关键发现总结</a></nav><h3 id="02-cn-h201">概述</h3>
 <p>Claude Code 的 System Prompt 是一个精心工程化的 <strong>多层缓存优化系统</strong>。它的核心矛盾是：prompt 必须包含丰富的行为指令、运行时环境、工具说明等信息（约 20K-50K tokens），但 API 调用中 prompt 的每一个字节变化都会导致 <strong>全量缓存失效</strong>（cache miss），造成巨大的成本浪费。</p>
 <p>整个架构围绕一个核心等式运转：</p>
 <pre><code>API 成本 ∝ cache_creation_tokens × 1.25 + cache_read_tokens × 0.1</code></pre>
@@ -4046,17 +4046,17 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
 <ol>
 <li><strong>Tool Schema 缓存是独立维度</strong>：<code>toolSchemaCache</code>（<code>utils/toolSchemaCache.ts</code>）在 session 级别缓存工具的 base schema（name/description/input_schema），防止 GrowthBook 翻转或 tool.prompt() drift 导致的 mid-session 工具 schema 变化。这与 system prompt section cache 是两个独立的缓存层。</li>
 </ol></div>
-    <div class="en"><nav class="ch-toc"><a href="#02-en-h241" class="toc-l2">Overview</a>
-<a href="#02-en-h242" class="toc-l2">1. Complete Prompt Text Extraction</a>
-<a href="#02-en-h255" class="toc-l2">2. The Mathematics of Cache Hit Rate</a>
-<a href="#02-en-h259" class="toc-l2">3. Complete Ant vs External Difference Checklist</a>
-<a href="#02-en-h263" class="toc-l2">4. Cache Break Detection System</a>
-<a href="#02-en-h267" class="toc-l2">5. agent_listing_delta and mcp_instructions_delta: Migration from Tool Schema to Message Attachments</a>
-<a href="#02-en-h271" class="toc-l2">6. Section Caching Mechanism (systemPromptSections.ts)</a>
-<a href="#02-en-h275" class="toc-l2">7. Prompt Priority Routing (buildEffectiveSystemPrompt)</a>
-<a href="#02-en-h276" class="toc-l2">8. Comparison with Other LLM Prompt Engineering</a>
-<a href="#02-en-h279" class="toc-l2">9. Complete Data Flow Overview</a>
-<a href="#02-en-h280" class="toc-l2">Key Findings Summary</a></nav><h3 id="02-en-h241">Overview</h3>
+    <div class="en"><nav class="ch-toc"><a href="#02-en-h241" class="toc-l1">Overview</a>
+<a href="#02-en-h242" class="toc-l1">1. Complete Prompt Text Extraction</a>
+<a href="#02-en-h255" class="toc-l1">2. The Mathematics of Cache Hit Rate</a>
+<a href="#02-en-h259" class="toc-l1">3. Complete Ant vs External Difference Checklist</a>
+<a href="#02-en-h263" class="toc-l1">4. Cache Break Detection System</a>
+<a href="#02-en-h267" class="toc-l1">5. agent_listing_delta and mcp_instructions_delta: Migration from Tool Schema to Message Attachments</a>
+<a href="#02-en-h271" class="toc-l1">6. Section Caching Mechanism (systemPromptSections.ts)</a>
+<a href="#02-en-h275" class="toc-l1">7. Prompt Priority Routing (buildEffectiveSystemPrompt)</a>
+<a href="#02-en-h276" class="toc-l1">8. Comparison with Other LLM Prompt Engineering</a>
+<a href="#02-en-h279" class="toc-l1">9. Complete Data Flow Overview</a>
+<a href="#02-en-h280" class="toc-l1">Key Findings Summary</a></nav><h3 id="02-en-h241">Overview</h3>
 <p>Claude Code's System Prompt is a meticulously engineered <strong>multi-layer cache optimization system</strong>. Its core tension is: the prompt must contain rich behavioral instructions, runtime environment details, tool descriptions, and other information (approximately 20K-50K tokens), but every byte change in the prompt during API calls causes <strong>full cache invalidation</strong> (cache miss), resulting in enormous cost waste.</p>
 <p>The entire architecture revolves around one core equation:</p>
 <pre><code>API cost ∝ cache_creation_tokens × 1.25 + cache_read_tokens × 0.1</code></pre>
@@ -4654,15 +4654,15 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
     <rect x="680" y="28" width="100" height="40" class="svg-box-r"/><text x="698" y="52" class="st st-s">Result</text>
     <text x="20" y="98" class="st st-s">Fail-closed: isReadOnly defaults false | isConcurrencySafe defaults false | ToolSearch deferred loading (7-level chain)</text>
   </svg></div>
-    <div class="cn"><nav class="ch-toc"><a href="#03-cn-h281" class="toc-l2">1. Tool 类型系统深度解剖</a>
-<a href="#03-cn-h285" class="toc-l2">2. BashTool 完整解剖（18 个文件）</a>
-<a href="#03-cn-h290" class="toc-l2">3. AgentTool 完整解剖</a>
-<a href="#03-cn-h295" class="toc-l2">4. ToolSearch 延迟加载机制</a>
-<a href="#03-cn-h299" class="toc-l2">5. MCP 工具统一适配</a>
-<a href="#03-cn-h302" class="toc-l2">6. 工具并发安全</a>
-<a href="#03-cn-h306" class="toc-l2">7. 工具结果持久化</a>
-<a href="#03-cn-h310" class="toc-l2">8. 完整工具清单</a>
-<a href="#03-cn-h313" class="toc-l2">9. 设计权衡与洞察</a></nav><h3 id="03-cn-h281">1. Tool 类型系统深度解剖</h3>
+    <div class="cn"><nav class="ch-toc"><a href="#03-cn-h281" class="toc-l1">1. Tool 类型系统深度解剖</a>
+<a href="#03-cn-h285" class="toc-l1">2. BashTool 完整解剖（18 个文件）</a>
+<a href="#03-cn-h290" class="toc-l1">3. AgentTool 完整解剖</a>
+<a href="#03-cn-h295" class="toc-l1">4. ToolSearch 延迟加载机制</a>
+<a href="#03-cn-h299" class="toc-l1">5. MCP 工具统一适配</a>
+<a href="#03-cn-h302" class="toc-l1">6. 工具并发安全</a>
+<a href="#03-cn-h306" class="toc-l1">7. 工具结果持久化</a>
+<a href="#03-cn-h310" class="toc-l1">8. 完整工具清单</a>
+<a href="#03-cn-h313" class="toc-l1">9. 设计权衡与洞察</a></nav><h3 id="03-cn-h281">1. Tool 类型系统深度解剖</h3>
 <h4 id="03-cn-h282">1.1 泛型参数 <code>Input</code>, <code>Output</code>, <code>P</code> 的精确含义</h4>
 <p><code>Tool.ts</code> (792行) 定义了核心泛型类型：</p>
 <pre><code class="language-typescript">export type Tool&lt;
@@ -5124,15 +5124,15 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
 <li><strong>GrowthBook 覆盖</strong> <code>tengu_satin_quoll</code>：远程动态调整特定工具的阈值</li>
 </ol>
 <p>这种分层确保了在各种场景下（单工具大输出、N个并行工具、特殊需求远程调优）上下文窗口不会被工具结果耗尽。</p></div>
-    <div class="en"><nav class="ch-toc"><a href="#03-en-h319" class="toc-l2">1. Deep Dive into the Tool Type System</a>
-<a href="#03-en-h323" class="toc-l2">2. Complete Anatomy of BashTool (18 Files)</a>
-<a href="#03-en-h328" class="toc-l2">3. Complete Anatomy of AgentTool</a>
-<a href="#03-en-h333" class="toc-l2">4. ToolSearch Deferred Loading Mechanism</a>
-<a href="#03-en-h337" class="toc-l2">5. MCP Tool Unified Adaptation</a>
-<a href="#03-en-h340" class="toc-l2">6. Tool Concurrency Safety</a>
-<a href="#03-en-h344" class="toc-l2">7. Tool Result Persistence</a>
-<a href="#03-en-h348" class="toc-l2">8. Complete Tool Inventory</a>
-<a href="#03-en-h351" class="toc-l2">9. Design Trade-offs and Insights</a></nav><h3 id="03-en-h319">1. Deep Dive into the Tool Type System</h3>
+    <div class="en"><nav class="ch-toc"><a href="#03-en-h319" class="toc-l1">1. Deep Dive into the Tool Type System</a>
+<a href="#03-en-h323" class="toc-l1">2. Complete Anatomy of BashTool (18 Files)</a>
+<a href="#03-en-h328" class="toc-l1">3. Complete Anatomy of AgentTool</a>
+<a href="#03-en-h333" class="toc-l1">4. ToolSearch Deferred Loading Mechanism</a>
+<a href="#03-en-h337" class="toc-l1">5. MCP Tool Unified Adaptation</a>
+<a href="#03-en-h340" class="toc-l1">6. Tool Concurrency Safety</a>
+<a href="#03-en-h344" class="toc-l1">7. Tool Result Persistence</a>
+<a href="#03-en-h348" class="toc-l1">8. Complete Tool Inventory</a>
+<a href="#03-en-h351" class="toc-l1">9. Design Trade-offs and Insights</a></nav><h3 id="03-en-h319">1. Deep Dive into the Tool Type System</h3>
 <h4 id="03-en-h320">1.1 Precise Meanings of Generic Parameters <code>Input</code>, <code>Output</code>, <code>P</code></h4>
 <p><code>Tool.ts</code> (792 lines) defines the core generic types:</p>
 <pre><code class="language-typescript">export type Tool&lt;
@@ -5605,20 +5605,20 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
     <rect x="540" y="30" width="260" height="50" class="svg-box-p"/><text x="560" y="52" class="st st-t">prompt</text><text x="560" y="68" class="st st-s">Inject into conversation (/commit)</text>
     <text x="20" y="98" class="st st-s">6 sources: bundled | builtinPlugin | skillDir | workflow | plugin | builtin &mdash; 80+ commands, ~28 internal-only</text>
   </svg></div>
-    <div class="cn"><nav class="ch-toc"><a href="#04-cn-h357" class="toc-l2">概述</a>
-<a href="#04-cn-h358" class="toc-l2">一、命令类型系统（Command Type System）</a>
-<a href="#04-cn-h362" class="toc-l2">二、命令注册机制 — 6 个来源的合并策略</a>
-<a href="#04-cn-h366" class="toc-l2">三、两层过滤机制</a>
-<a href="#04-cn-h369" class="toc-l2">四、内部命令完整分析</a>
-<a href="#04-cn-h372" class="toc-l2">五、完整命令清单</a>
-<a href="#04-cn-h375" class="toc-l2">六、Prompt 命令的精妙设计</a>
-<a href="#04-cn-h379" class="toc-l2">Git Safety Protocol</a>
-<a href="#04-cn-h380" class="toc-l2">Your task</a>
-<a href="#04-cn-h385" class="toc-l2">七、远程/桥接模式安全白名单</a>
-<a href="#04-cn-h389" class="toc-l2">八、local-jsx 在桥接中被禁止的原因</a>
-<a href="#04-cn-h390" class="toc-l2">九、Skill 与 Command 的边界</a>
-<a href="#04-cn-h393" class="toc-l2">十、formatDescriptionWithSource — 来源标注</a>
-<a href="#04-cn-h394" class="toc-l2">总结</a></nav><h3 id="04-cn-h357">概述</h3>
+    <div class="cn"><nav class="ch-toc"><a href="#04-cn-h357" class="toc-l1">概述</a>
+<a href="#04-cn-h358" class="toc-l1">一、命令类型系统（Command Type System）</a>
+<a href="#04-cn-h362" class="toc-l1">二、命令注册机制 — 6 个来源的合并策略</a>
+<a href="#04-cn-h366" class="toc-l1">三、两层过滤机制</a>
+<a href="#04-cn-h369" class="toc-l1">四、内部命令完整分析</a>
+<a href="#04-cn-h372" class="toc-l1">五、完整命令清单</a>
+<a href="#04-cn-h375" class="toc-l1">六、Prompt 命令的精妙设计</a>
+<a href="#04-cn-h379" class="toc-l1">Git Safety Protocol</a>
+<a href="#04-cn-h380" class="toc-l1">Your task</a>
+<a href="#04-cn-h385" class="toc-l1">七、远程/桥接模式安全白名单</a>
+<a href="#04-cn-h389" class="toc-l1">八、local-jsx 在桥接中被禁止的原因</a>
+<a href="#04-cn-h390" class="toc-l1">九、Skill 与 Command 的边界</a>
+<a href="#04-cn-h393" class="toc-l1">十、formatDescriptionWithSource — 来源标注</a>
+<a href="#04-cn-h394" class="toc-l1">总结</a></nav><h3 id="04-cn-h357">概述</h3>
 <p>Claude Code 的命令系统（斜杠命令）是一个模块化、懒加载、多来源的命令框架。核心注册文件为 <code>commands.ts</code>（754 行），它汇集了来自 <strong>6 个来源</strong> 的命令，并通过两层过滤（可用性检查 + 启用状态检查）来决定用户可见的命令集合。</p>
 <p><strong>核心数据</strong>：</p>
 <ul>
@@ -6096,16 +6096,16 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
 <li><strong>Prompt 即代码</strong>：<code>!</code>command`` 语法让 prompt 模板能在发送前动态收集上下文，是命令系统中最创新的设计</li>
 <li><strong>渐进式迁移</strong>：<code>createMovedToPluginCommand()</code> 支持命令从内置平滑迁移到插件生态</li>
 </ol></div>
-    <div class="en"><nav class="ch-toc"><a href="#04-en-h395" class="toc-l2">Overview</a>
-<a href="#04-en-h396" class="toc-l2">1. Command Type System</a>
-<a href="#04-en-h400" class="toc-l2">2. Command Registration Mechanism — Merging Strategy for 6 Sources</a>
-<a href="#04-en-h404" class="toc-l2">3. Two-Layer Filtering Mechanism</a>
-<a href="#04-en-h407" class="toc-l2">4. Complete Analysis of Internal Commands</a>
-<a href="#04-en-h410" class="toc-l2">5. Complete Command List</a>
-<a href="#04-en-h413" class="toc-l2">6. Elegant Design of Prompt Commands</a>
-<a href="#04-en-h417" class="toc-l2">Git Safety Protocol</a>
-<a href="#04-en-h418" class="toc-l2">Your task</a>
-<a href="#04-en-h423" class="toc-l2">7. Remote/Bridge Mode Security Allowlist</a></nav><h3 id="04-en-h395">Overview</h3>
+    <div class="en"><nav class="ch-toc"><a href="#04-en-h395" class="toc-l1">Overview</a>
+<a href="#04-en-h396" class="toc-l1">1. Command Type System</a>
+<a href="#04-en-h400" class="toc-l1">2. Command Registration Mechanism — Merging Strategy for 6 Sources</a>
+<a href="#04-en-h404" class="toc-l1">3. Two-Layer Filtering Mechanism</a>
+<a href="#04-en-h407" class="toc-l1">4. Complete Analysis of Internal Commands</a>
+<a href="#04-en-h410" class="toc-l1">5. Complete Command List</a>
+<a href="#04-en-h413" class="toc-l1">6. Elegant Design of Prompt Commands</a>
+<a href="#04-en-h417" class="toc-l1">Git Safety Protocol</a>
+<a href="#04-en-h418" class="toc-l1">Your task</a>
+<a href="#04-en-h423" class="toc-l1">7. Remote/Bridge Mode Security Allowlist</a></nav><h3 id="04-en-h395">Overview</h3>
 <p>Claude Code's command system (slash commands) is a modular, lazily-loaded, multi-source command framework. The core registration file is <code>commands.ts</code> (754 lines), which aggregates commands from <strong>6 sources</strong> and determines the user-visible command set through two layers of filtering (availability check + enabled state check).</p>
 <p><strong>Key Facts</strong>:</p>
 <ul>
@@ -6543,15 +6543,15 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
     <line x1="565" y1="37" x2="588" y2="37" class="arr"/>
     <rect x="590" y="15" width="165" height="45" rx="8" fill="rgba(248,81,73,.06)" stroke="var(--red)" stroke-width="1.5"/><text x="610" y="42" fill="var(--red)" class="st" style="font-size:12px;font-weight:600">Circuit Breaker (3x)</text>
   </svg></div>
-    <div class="cn"><nav class="ch-toc"><a href="#05-cn-h427" class="toc-l2">一、系统架构总览</a>
-<a href="#05-cn-h428" class="toc-l2">二、Token 计数的精确实现</a>
-<a href="#05-cn-h432" class="toc-l2">三、三层压缩的完整实现</a>
-<a href="#05-cn-h439" class="toc-l2">四、自动压缩触发机制</a>
-<a href="#05-cn-h443" class="toc-l2">五、成本追踪</a>
-<a href="#05-cn-h447" class="toc-l2">六、上下文窗口扩展 -- 1M Token 支持</a>
-<a href="#05-cn-h450" class="toc-l2">七、消息分组与部分压缩</a>
-<a href="#05-cn-h453" class="toc-l2">八、压缩后清理 (postCompactCleanup)</a>
-<a href="#05-cn-h454" class="toc-l2">九、设计权衡总结</a></nav><h3 id="05-cn-h427">一、系统架构总览</h3>
+    <div class="cn"><nav class="ch-toc"><a href="#05-cn-h427" class="toc-l1">一、系统架构总览</a>
+<a href="#05-cn-h428" class="toc-l1">二、Token 计数的精确实现</a>
+<a href="#05-cn-h432" class="toc-l1">三、三层压缩的完整实现</a>
+<a href="#05-cn-h439" class="toc-l1">四、自动压缩触发机制</a>
+<a href="#05-cn-h443" class="toc-l1">五、成本追踪</a>
+<a href="#05-cn-h447" class="toc-l1">六、上下文窗口扩展 -- 1M Token 支持</a>
+<a href="#05-cn-h450" class="toc-l1">七、消息分组与部分压缩</a>
+<a href="#05-cn-h453" class="toc-l1">八、压缩后清理 (postCompactCleanup)</a>
+<a href="#05-cn-h454" class="toc-l1">九、设计权衡总结</a></nav><h3 id="05-cn-h427">一、系统架构总览</h3>
 <p>Claude Code 的上下文管理是一个精密的多层系统，核心矛盾在于：长编程会话的信息量远超模型上下文窗口（默认 200K tokens，最高 1M tokens），必须在"信息完整性"和"窗口有限性"之间动态平衡。系统采用三层压缩架构——微压缩(Microcompact) -> 会话记忆压缩(Session Memory Compact) -> 全量压缩(Full Compact)——每层都有独立的触发条件、实现策略和信息保留策略。</p>
 <hr/>
 <h3 id="05-cn-h428">二、Token 计数的精确实现</h3>
@@ -6928,15 +6928,15 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
 <ol>
 <li><strong>Latch 的 session 粒度</strong>：beta header latch 保证了 session 内的 cache 稳定性，但也意味着 session 内无法动态切换某些功能。这是一个明确的"cache 效率优先于功能灵活性"的设计选择</li>
 </ol></div>
-    <div class="en"><nav class="ch-toc"><a href="#05-en-h455" class="toc-l2">1. System Architecture Overview</a>
-<a href="#05-en-h456" class="toc-l2">2. Precise Token Counting Implementation</a>
-<a href="#05-en-h460" class="toc-l2">3. Complete Implementation of the Three-Tier Compression</a>
-<a href="#05-en-h467" class="toc-l2">4. Auto-Compaction Trigger Mechanism</a>
-<a href="#05-en-h471" class="toc-l2">5. Cost Tracking</a>
-<a href="#05-en-h475" class="toc-l2">6. Context Window Extension -- 1M Token Support</a>
-<a href="#05-en-h478" class="toc-l2">7. Message Grouping and Partial Compaction</a>
-<a href="#05-en-h481" class="toc-l2">8. Post-Compaction Cleanup (postCompactCleanup)</a>
-<a href="#05-en-h482" class="toc-l2">9. Design Trade-offs Summary</a></nav><h3 id="05-en-h455">1. System Architecture Overview</h3>
+    <div class="en"><nav class="ch-toc"><a href="#05-en-h455" class="toc-l1">1. System Architecture Overview</a>
+<a href="#05-en-h456" class="toc-l1">2. Precise Token Counting Implementation</a>
+<a href="#05-en-h460" class="toc-l1">3. Complete Implementation of the Three-Tier Compression</a>
+<a href="#05-en-h467" class="toc-l1">4. Auto-Compaction Trigger Mechanism</a>
+<a href="#05-en-h471" class="toc-l1">5. Cost Tracking</a>
+<a href="#05-en-h475" class="toc-l1">6. Context Window Extension -- 1M Token Support</a>
+<a href="#05-en-h478" class="toc-l1">7. Message Grouping and Partial Compaction</a>
+<a href="#05-en-h481" class="toc-l1">8. Post-Compaction Cleanup (postCompactCleanup)</a>
+<a href="#05-en-h482" class="toc-l1">9. Design Trade-offs Summary</a></nav><h3 id="05-en-h455">1. System Architecture Overview</h3>
 <p>Claude Code's context management is a sophisticated multi-layered system. The core challenge lies in the fact that the information volume of long coding sessions far exceeds the model's context window (200K tokens by default, up to 1M tokens), requiring a dynamic balance between "information completeness" and "window limitations." The system employs a three-tier compression architecture -- Microcompact -> Session Memory Compact -> Full Compact -- each tier with its own independent trigger conditions, implementation strategies, and information retention policies.</p>
 <hr/>
 <h3 id="05-en-h456">2. Precise Token Counting Implementation</h3>
@@ -7329,12 +7329,7 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
     <line x1="585" y1="30" x2="630" y2="30" stroke="var(--green)" stroke-width="1.5" marker-end="url(#ah-g)"/><text x="635" y="34" fill="var(--green)" class="st" style="font-size:11px">Execute</text>
     <line x1="535" y1="60" x2="535" y2="78" stroke="var(--red)" stroke-width="1.5" marker-end="url(#ah-r)"/><text x="515" y="88" fill="var(--red)" class="st" style="font-size:11px">Ask User</text>
   </svg></div>
-    <div class="cn"><nav class="ch-toc"><a href="#06-cn-h483" class="toc-l2">概述</a>
-<a href="#06-cn-h484" class="toc-l2">一、权限模式</a>
-<a href="#06-cn-h488" class="toc-l2">二、23 个安全验证器完整清单</a>
-<a href="#06-cn-h494" class="toc-l2">三、双引擎解析深度</a>
-<a href="#06-cn-h498" class="toc-l2">四、真实攻击向量分析</a>
-<a href="#06-cn-h502" class="toc-l1">防护: ZSH_DANGEROUS_COMMANDS 集合 (20+ 命令)</a>
+    <div class="cn"><nav class="ch-toc"><a href="#06-cn-h502" class="toc-l1">防护: ZSH_DANGEROUS_COMMANDS 集合 (20+ 命令)</a>
 <a href="#06-cn-h504" class="toc-l1">防护: /\$IFS|\$\{[^}]*IFS/</code></pre></a>
 <a href="#06-cn-h506" class="toc-l1">shell-quote: 'TZ=UTC' 和 'echo' (两个 token)</a>
 <a href="#06-cn-h507" class="toc-l1">bash: 'TZ=UTC\recho' (一个 word)，curl 变成真正的命令</a>
@@ -7350,14 +7345,7 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
 <a href="#06-cn-h520" class="toc-l1">stripCommentLines: 第2行以 # 开头 → 删除</a>
 <a href="#06-cn-h521" class="toc-l1">结果: 只看到 "mv ./decoy '" → 通过路径检查 → 零点击执行</a>
 <a href="#06-cn-h522" class="toc-l1">防护: validateQuotedNewline 检测引号内 \n 后跟 # 行</code></pre></a>
-<a href="#06-cn-h524" class="toc-l1">防护: /(?:^|[\s;&amp;|])=[a-zA-Z_]/ 模式检测</code></pre></a>
-<a href="#06-cn-h525" class="toc-l2">五、沙箱实现</a>
-<a href="#06-cn-h530" class="toc-l2">六、Hooks 系统深度</a>
-<a href="#06-cn-h536" class="toc-l2">七、Bash 权限决策流程</a>
-<a href="#06-cn-h540" class="toc-l2">八、只读命令验证</a>
-<a href="#06-cn-h541" class="toc-l2">九、Unicode/注入防护</a>
-<a href="#06-cn-h545" class="toc-l2">十、权限类型系统</a>
-<a href="#06-cn-h548" class="toc-l2">十一、安全架构总结</a></nav><h3 id="06-cn-h483">概述</h3>
+<a href="#06-cn-h524" class="toc-l1">防护: /(?:^|[\s;&amp;|])=[a-zA-Z_]/ 模式检测</code></pre></a></nav><h3 id="06-cn-h483">概述</h3>
 <p>Claude Code 拥有一套工业级多层安全架构，覆盖权限模式控制、Bash 命令静态分析（双引擎）、OS 级沙箱隔离、只读模式验证、Hooks 系统集成和注入防护等维度。核心安全代码分布在约 17,885 行的关键文件中，其中 Bash 安全检查相关代码占主要比例（bashSecurity.ts ~2592 行、bashPermissions.ts ~2621 行、ast.ts ~2679 行、readOnlyValidation.ts ~1990 行）。</p>
 <p>设计哲学是 <strong>Fail-Closed</strong>（失败即关闭）：任何无法静态证明安全的命令都需要用户确认。</p>
 <hr/>
@@ -7853,12 +7841,7 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
 <li><strong>控制字符预阻断</strong>：空字节等字符在所有处理之前被拦截</li>
 <li><strong>HackerOne 驱动修复</strong>：每个修复都有对应的攻击向量和回归测试</li>
 </ol></div>
-    <div class="en"><nav class="ch-toc"><a href="#06-en-h551" class="toc-l2">Overview</a>
-<a href="#06-en-h552" class="toc-l2">1. Permission Modes</a>
-<a href="#06-en-h556" class="toc-l2">2. Complete List of 23 Security Validators</a>
-<a href="#06-en-h562" class="toc-l2">3. Dual-Engine Parsing In-Depth</a>
-<a href="#06-en-h566" class="toc-l2">4. Real-World Attack Vector Analysis</a>
-<a href="#06-en-h570" class="toc-l1">Defense: ZSH_DANGEROUS_COMMANDS set (20+ commands)</a>
+    <div class="en"><nav class="ch-toc"><a href="#06-en-h570" class="toc-l1">Defense: ZSH_DANGEROUS_COMMANDS set (20+ commands)</a>
 <a href="#06-en-h572" class="toc-l1">Defense: /\$IFS|\$\{[^}]*IFS/</code></pre></a>
 <a href="#06-en-h574" class="toc-l1">shell-quote: 'TZ=UTC' and 'echo' (two tokens)</a>
 <a href="#06-en-h575" class="toc-l1">bash: 'TZ=UTC\recho' (one word), curl becomes the actual command</a>
@@ -7874,14 +7857,7 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
 <a href="#06-en-h588" class="toc-l1">stripCommentLines: line 2 starts with # → removed</a>
 <a href="#06-en-h589" class="toc-l1">Result: only sees "mv ./decoy '" → passes path check → zero-click execution</a>
 <a href="#06-en-h590" class="toc-l1">Defense: validateQuotedNewline detects \n inside quotes followed by a # line</code></pre></a>
-<a href="#06-en-h592" class="toc-l1">Defense: /(?:^|[\s;&amp;|])=[a-zA-Z_]/ pattern detection</code></pre></a>
-<a href="#06-en-h593" class="toc-l2">5. Sandbox Implementation</a>
-<a href="#06-en-h598" class="toc-l2">6. Hooks System In-Depth</a>
-<a href="#06-en-h604" class="toc-l2">7. Bash Permission Decision Flow</a>
-<a href="#06-en-h608" class="toc-l2">8. Read-Only Command Validation</a>
-<a href="#06-en-h609" class="toc-l2">9. Unicode/Injection Protection</a>
-<a href="#06-en-h613" class="toc-l2">10. Permission Type System</a>
-<a href="#06-en-h616" class="toc-l2">11. Security Architecture Summary</a></nav><h3 id="06-en-h551">Overview</h3>
+<a href="#06-en-h592" class="toc-l1">Defense: /(?:^|[\s;&amp;|])=[a-zA-Z_]/ pattern detection</code></pre></a></nav><h3 id="06-en-h551">Overview</h3>
 <p>Claude Code features an industrial-grade, multi-layered security architecture covering permission mode control, Bash command static analysis (dual-engine), OS-level sandbox isolation, read-only mode validation, Hooks system integration, and injection protection. Core security code is distributed across approximately 17,885 lines of critical files, with Bash security checking code accounting for the majority (bashSecurity.ts ~2592 lines, bashPermissions.ts ~2621 lines, ast.ts ~2679 lines, readOnlyValidation.ts ~1990 lines).</p>
 <p>The design philosophy is <strong>Fail-Closed</strong>: any command that cannot be statically proven safe requires user confirmation.</p>
 <hr/>
@@ -8392,23 +8368,23 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
     <line x1="540" y1="110" x2="558" y2="110" class="arr"/>
     <rect x="560" y="90" width="250" height="40" class="svg-box-r"/><text x="580" y="115" class="st st-s">Remote CCR (full isolation)</text>
   </svg></div>
-    <div class="cn"><nav class="ch-toc"><a href="#07-cn-h619" class="toc-l2">目录</a>
-<a href="#07-cn-h620" class="toc-l2">1. 架构总览</a>
-<a href="#07-cn-h621" class="toc-l2">2. AgentTool 的 6 种运行模式</a>
-<a href="#07-cn-h624" class="toc-l2">3. Fork Agent 的缓存创新</a>
-<a href="#07-cn-h630" class="toc-l2">4. Coordinator 模式详解</a>
-<a href="#07-cn-h633" class="toc-l2">2. Your Tools</a>
-<a href="#07-cn-h634" class="toc-l2">3. Workers</a>
-<a href="#07-cn-h635" class="toc-l2">4. Task Workflow (四阶段)</a>
-<a href="#07-cn-h636" class="toc-l2">5. Writing Worker Prompts -- "永远不要委托理解"</a>
-<a href="#07-cn-h637" class="toc-l2">6. Example Session</code></pre></a>
-<a href="#07-cn-h641" class="toc-l2">5. Team 通信机制</a>
-<a href="#07-cn-h647" class="toc-l2">6. Worktree 隔离</a>
-<a href="#07-cn-h651" class="toc-l2">7. Bridge 模块的真正用途</a>
-<a href="#07-cn-h656" class="toc-l2">8. shouldRunAsync 决策树</a>
-<a href="#07-cn-h658" class="toc-l2">9. Agent 内存系统</a>
-<a href="#07-cn-h659" class="toc-l2">10. 内置 Agent 注册表</a>
-<a href="#07-cn-h660" class="toc-l2">总结</a></nav><h3 id="07-cn-h619">目录</h3>
+    <div class="cn"><nav class="ch-toc"><a href="#07-cn-h619" class="toc-l1">目录</a>
+<a href="#07-cn-h620" class="toc-l1">1. 架构总览</a>
+<a href="#07-cn-h621" class="toc-l1">2. AgentTool 的 6 种运行模式</a>
+<a href="#07-cn-h624" class="toc-l1">3. Fork Agent 的缓存创新</a>
+<a href="#07-cn-h630" class="toc-l1">4. Coordinator 模式详解</a>
+<a href="#07-cn-h633" class="toc-l1">2. Your Tools</a>
+<a href="#07-cn-h634" class="toc-l1">3. Workers</a>
+<a href="#07-cn-h635" class="toc-l1">4. Task Workflow (四阶段)</a>
+<a href="#07-cn-h636" class="toc-l1">5. Writing Worker Prompts -- "永远不要委托理解"</a>
+<a href="#07-cn-h637" class="toc-l1">6. Example Session</code></pre></a>
+<a href="#07-cn-h641" class="toc-l1">5. Team 通信机制</a>
+<a href="#07-cn-h647" class="toc-l1">6. Worktree 隔离</a>
+<a href="#07-cn-h651" class="toc-l1">7. Bridge 模块的真正用途</a>
+<a href="#07-cn-h656" class="toc-l1">8. shouldRunAsync 决策树</a>
+<a href="#07-cn-h658" class="toc-l1">9. Agent 内存系统</a>
+<a href="#07-cn-h659" class="toc-l1">10. 内置 Agent 注册表</a>
+<a href="#07-cn-h660" class="toc-l1">总结</a></nav><h3 id="07-cn-h619">目录</h3>
 <ol>
 <li><a href="#1-架构总览">架构总览</a></li>
 <li><a href="#2-agenttool-的-6-种运行模式">AgentTool 的 6 种运行模式</a></li>
@@ -8839,23 +8815,23 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
 <li><strong>Team 通信通过 mailbox + SendMessage 实现</strong>，支持本地、UDS、跨机器三种传输</li>
 <li><strong>Bridge 模块是 Remote Control 基础设施</strong>，让 claude.ai 网页端能远程控制本地 Claude Code -- 它不是 Agent 间通信机制</li>
 </ol></div>
-    <div class="en"><nav class="ch-toc"><a href="#07-en-h661" class="toc-l2">Table of Contents</a>
-<a href="#07-en-h662" class="toc-l2">1. Architecture Overview</a>
-<a href="#07-en-h663" class="toc-l2">2. AgentTool's 6 Operating Modes</a>
-<a href="#07-en-h666" class="toc-l2">3. Fork Agent's Cache Innovation</a>
-<a href="#07-en-h672" class="toc-l2">4. Coordinator Mode In-Depth</a>
-<a href="#07-en-h675" class="toc-l2">2. Your Tools</a>
-<a href="#07-en-h676" class="toc-l2">3. Workers</a>
-<a href="#07-en-h677" class="toc-l2">4. Task Workflow (Four Phases)</a>
-<a href="#07-en-h678" class="toc-l2">5. Writing Worker Prompts — "Never delegate understanding"</a>
-<a href="#07-en-h679" class="toc-l2">6. Example Session</code></pre></a>
-<a href="#07-en-h683" class="toc-l2">5. Team Communication Mechanism</a>
-<a href="#07-en-h689" class="toc-l2">6. Worktree Isolation</a>
-<a href="#07-en-h693" class="toc-l2">7. The True Purpose of the Bridge Module</a>
-<a href="#07-en-h698" class="toc-l2">8. shouldRunAsync Decision Tree</a>
-<a href="#07-en-h700" class="toc-l2">9. Agent Memory System</a>
-<a href="#07-en-h701" class="toc-l2">10. Built-in Agent Registry</a>
-<a href="#07-en-h702" class="toc-l2">Summary</a></nav><h3 id="07-en-h661">Table of Contents</h3>
+    <div class="en"><nav class="ch-toc"><a href="#07-en-h661" class="toc-l1">Table of Contents</a>
+<a href="#07-en-h662" class="toc-l1">1. Architecture Overview</a>
+<a href="#07-en-h663" class="toc-l1">2. AgentTool's 6 Operating Modes</a>
+<a href="#07-en-h666" class="toc-l1">3. Fork Agent's Cache Innovation</a>
+<a href="#07-en-h672" class="toc-l1">4. Coordinator Mode In-Depth</a>
+<a href="#07-en-h675" class="toc-l1">2. Your Tools</a>
+<a href="#07-en-h676" class="toc-l1">3. Workers</a>
+<a href="#07-en-h677" class="toc-l1">4. Task Workflow (Four Phases)</a>
+<a href="#07-en-h678" class="toc-l1">5. Writing Worker Prompts — "Never delegate understanding"</a>
+<a href="#07-en-h679" class="toc-l1">6. Example Session</code></pre></a>
+<a href="#07-en-h683" class="toc-l1">5. Team Communication Mechanism</a>
+<a href="#07-en-h689" class="toc-l1">6. Worktree Isolation</a>
+<a href="#07-en-h693" class="toc-l1">7. The True Purpose of the Bridge Module</a>
+<a href="#07-en-h698" class="toc-l1">8. shouldRunAsync Decision Tree</a>
+<a href="#07-en-h700" class="toc-l1">9. Agent Memory System</a>
+<a href="#07-en-h701" class="toc-l1">10. Built-in Agent Registry</a>
+<a href="#07-en-h702" class="toc-l1">Summary</a></nav><h3 id="07-en-h661">Table of Contents</h3>
 <ol>
 <li><a href="#1-architecture-overview">Architecture Overview</a></li>
 <li><a href="#2-agenttools-6-operating-modes">AgentTool's 6 Operating Modes</a></li>
@@ -9301,19 +9277,7 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
     <rect x="522" y="28" width="100" height="40" class="svg-box-o"/><text x="542" y="52" class="st st-s">Execute</text>
     <text x="20" y="92" class="st st-s">4 API Backends: Anthropic Direct | AWS Bedrock | Google Vertex | Palantir Foundry &mdash; unified via getAnthropicClient</text>
   </svg></div>
-    <div class="cn"><nav class="ch-toc"><a href="#08-cn-h703" class="toc-l2">概述</a>
-<a href="#08-cn-h704" class="toc-l2">一、MCP 协议实现：8 种传输层</a>
-<a href="#08-cn-h711" class="toc-l2">二、API 客户端深度</a>
-<a href="#08-cn-h716" class="toc-l2">三、OAuth PKCE 完整流程</a>
-<a href="#08-cn-h720" class="toc-l2">四、MCP OAuth XAA（跨应用访问）</a>
-<a href="#08-cn-h724" class="toc-l2">五、MCP 配置系统（config.ts）</a>
-<a href="#08-cn-h728" class="toc-l2">六、插件架构</a>
-<a href="#08-cn-h732" class="toc-l2">七、Skills 系统</a>
-<a href="#08-cn-h737" class="toc-l1">技能 Prompt 内容</a>
-<a href="#08-cn-h738" class="toc-l2">八、MCPTool 工具集成</a>
-<a href="#08-cn-h741" class="toc-l2">九、Channel Notifications（MCP 推送消息）</a>
-<a href="#08-cn-h742" class="toc-l2">十、其他关键辅助模块</a>
-<a href="#08-cn-h748" class="toc-l2">小结</a></nav><h3 id="08-cn-h703">概述</h3>
+    <div class="cn"><h3 id="08-cn-h703">概述</h3>
 <p>Claude Code 的服务层（<code>src/services/</code>）包含约 130 个文件，涵盖 MCP 协议集成、Anthropic API 客户端、OAuth 认证、插件系统、技能系统等核心功能。本文档基于源码最大深度分析，覆盖 <code>services/mcp/</code>（23 文件）、<code>services/api/</code>（20 文件）、<code>services/oauth/</code>、<code>services/plugins/</code>、<code>skills/</code>、<code>tools/MCPTool/</code> 等全部相关模块。</p>
 <hr/>
 <h3 id="08-cn-h704">一、MCP 协议实现：8 种传输层</h3>
@@ -9833,19 +9797,7 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
 <hr/>
 <h3 id="08-cn-h748">小结</h3>
 <p>Claude Code 的 MCP 集成是一个完整的协议客户端实现，包含 8 种传输、完整的 OAuth/XAA 认证链、企业级策略控制和弹性重试机制。API 客户端统一了 4 种云后端的访问方式，prompt 缓存策略在 token 级别精细控制。Skills 系统通过 bundled + disk + MCP 三源汇聚，write-once registry 模式优雅地解决了循环依赖问题。插件系统以 marketplace 为分发单元，后台安装不阻塞启动。</p></div>
-    <div class="en"><nav class="ch-toc"><a href="#08-en-h749" class="toc-l2">Overview</a>
-<a href="#08-en-h750" class="toc-l2">1. MCP Protocol Implementation: 8 Transport Types</a>
-<a href="#08-en-h757" class="toc-l2">2. API Client Deep Dive</a>
-<a href="#08-en-h762" class="toc-l2">3. OAuth PKCE Complete Flow</a>
-<a href="#08-en-h766" class="toc-l2">4. MCP OAuth XAA (Cross-App Access)</a>
-<a href="#08-en-h770" class="toc-l2">5. MCP Configuration System (config.ts)</a>
-<a href="#08-en-h774" class="toc-l2">6. Plugin Architecture</a>
-<a href="#08-en-h778" class="toc-l2">7. Skills System</a>
-<a href="#08-en-h783" class="toc-l1">Skill Prompt Content</a>
-<a href="#08-en-h784" class="toc-l2">8. MCPTool Integration</a>
-<a href="#08-en-h787" class="toc-l2">9. Channel Notifications (MCP Push Messages)</a>
-<a href="#08-en-h788" class="toc-l2">10. Other Key Utility Modules</a>
-<a href="#08-en-h794" class="toc-l2">Summary</a></nav><h3 id="08-en-h749">Overview</h3>
+    <div class="en"><h3 id="08-en-h749">Overview</h3>
 <p>Claude Code's service layer (<code>src/services/</code>) contains approximately 130 files, covering MCP protocol integration, Anthropic API client, OAuth authentication, plugin system, skills system, and other core functionalities. This document is based on a maximum-depth source code analysis, covering all related modules including <code>services/mcp/</code> (23 files), <code>services/api/</code> (20 files), <code>services/oauth/</code>, <code>services/plugins/</code>, <code>skills/</code>, <code>tools/MCPTool/</code>, and more.</p>
 <hr/>
 <h3 id="08-en-h750">1. MCP Protocol Implementation: 8 Transport Types</h3>
@@ -10376,14 +10328,14 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
     <rect x="420" y="65" width="270" height="30" class="svg-box-g"/><text x="460" y="85" class="st st-s">Custom Ink Fork (dual buffer)</text>
     <rect x="150" y="100" width="540" height="20" rx="4" class="svg-box-p"/><text x="350" y="115" class="st st-s">Yoga Layout &rarr; Terminal (TTY)</text>
   </svg></div>
-    <div class="cn"><nav class="ch-toc"><a href="#09-cn-h795" class="toc-l2">概述</a>
-<a href="#09-cn-h796" class="toc-l2">一、REPL.tsx "上帝组件"深度分析</a>
-<a href="#09-cn-h801" class="toc-l2">二、自定义 Ink 渲染引擎</a>
-<a href="#09-cn-h807" class="toc-l2">三、组件分类体系</a>
-<a href="#09-cn-h809" class="toc-l2">四、性能优化手段</a>
-<a href="#09-cn-h817" class="toc-l2">五、设计系统</a>
-<a href="#09-cn-h821" class="toc-l2">六、与 Web React 的差异——终端 React 开发的独特挑战</a>
-<a href="#09-cn-h828" class="toc-l2">总结</a></nav><h3 id="09-cn-h795">概述</h3>
+    <div class="cn"><nav class="ch-toc"><a href="#09-cn-h795" class="toc-l1">概述</a>
+<a href="#09-cn-h796" class="toc-l1">一、REPL.tsx "上帝组件"深度分析</a>
+<a href="#09-cn-h801" class="toc-l1">二、自定义 Ink 渲染引擎</a>
+<a href="#09-cn-h807" class="toc-l1">三、组件分类体系</a>
+<a href="#09-cn-h809" class="toc-l1">四、性能优化手段</a>
+<a href="#09-cn-h817" class="toc-l1">五、设计系统</a>
+<a href="#09-cn-h821" class="toc-l1">六、与 Web React 的差异——终端 React 开发的独特挑战</a>
+<a href="#09-cn-h828" class="toc-l1">总结</a></nav><h3 id="09-cn-h795">概述</h3>
 <p>Claude Code 的 UI 层是一个令人惊叹的工程作品：在终端字符网格上构建了一套<strong>接近桌面应用级别</strong>的全功能 React 应用。整个 UI 系统由以下部分构成：</p>
 <table><thead><tr><th>模块</th><th>文件数</th><th>代码行</th><th>核心职责</th></tr></thead><tbody><tr><td><code>components/</code></td><td>~144 顶层 + 子目录</td><td>~76k</td><td>业务 UI 组件</td></tr>
 <p><tr><td><code>ink/</code></td><td>~50 核心文件</td><td>~8,300 (核心9文件)</td><td>自定义渲染引擎</td></tr></p>
@@ -10800,14 +10752,14 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
 <p>Claude Code 的 UI 系统本质上是<strong>在终端中重建了一个迷你浏览器</strong>：自定义 DOM、Yoga 布局、双缓冲渲染、事件冒泡、文本选择、硬件滚动优化——所有这些在 Web 中理所当然的基础设施，在终端中都需要从零构建。</p>
 <p>REPL.tsx 的 5,000 行代码不是"上帝组件"的反模式，而是终端 UI 的<strong>编排枢纽</strong>——在没有路由的终端中，它是唯一的"路由器"。React Compiler 的自动 memoization 确保了这个巨型组件不会成为性能瓶颈。</p>
 <p>整个渲染引擎的设计哲学是<strong>避免全屏重画</strong>：通过 blit 复用不变区域、通过 OffscreenFreeze 冻结离屏组件、通过 DECSTBM 利用硬件滚动、通过对象池消除 GC 压力——每一项优化都直接对应终端渲染的一个痛点。</p></div>
-    <div class="en"><nav class="ch-toc"><a href="#09-en-h829" class="toc-l2">Overview</a>
-<a href="#09-en-h830" class="toc-l2">1. REPL.tsx "God Component" Deep Dive</a>
-<a href="#09-en-h835" class="toc-l2">2. Custom Ink Rendering Engine</a>
-<a href="#09-en-h841" class="toc-l2">3. Component Classification System</a>
-<a href="#09-en-h843" class="toc-l2">4. Performance Optimization Techniques</a>
-<a href="#09-en-h851" class="toc-l2">5. Design System</a>
-<a href="#09-en-h855" class="toc-l2">6. Differences from Web React -- Unique Challenges of Terminal React Development</a>
-<a href="#09-en-h862" class="toc-l2">Summary</a></nav><h3 id="09-en-h829">Overview</h3>
+    <div class="en"><nav class="ch-toc"><a href="#09-en-h829" class="toc-l1">Overview</a>
+<a href="#09-en-h830" class="toc-l1">1. REPL.tsx "God Component" Deep Dive</a>
+<a href="#09-en-h835" class="toc-l1">2. Custom Ink Rendering Engine</a>
+<a href="#09-en-h841" class="toc-l1">3. Component Classification System</a>
+<a href="#09-en-h843" class="toc-l1">4. Performance Optimization Techniques</a>
+<a href="#09-en-h851" class="toc-l1">5. Design System</a>
+<a href="#09-en-h855" class="toc-l1">6. Differences from Web React -- Unique Challenges of Terminal React Development</a>
+<a href="#09-en-h862" class="toc-l1">Summary</a></nav><h3 id="09-en-h829">Overview</h3>
 <p>Claude Code's UI layer is a remarkable feat of engineering: a <strong>near-desktop-grade</strong> full-featured React application built on a terminal character grid. The entire UI system consists of the following parts:</p>
 <table><thead><tr><th>Module</th><th>File Count</th><th>Lines of Code</th><th>Core Responsibility</th></tr></thead><tbody><tr><td><code>components/</code></td><td>~144 top-level + subdirectories</td><td>~76k</td><td>Business UI components</td></tr>
 <p><tr><td><code>ink/</code></td><td>~50 core files</td><td>~8,300 (9 core files)</td><td>Custom rendering engine</td></tr></p>
@@ -11234,16 +11186,16 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
     <rect x="420" y="28" width="380" height="50" class="svg-box-g"/><text x="440" y="50" class="st st-t">Runtime (GrowthBook)</text><text x="440" y="66" class="st st-s">A/B testing + kill-switch + remote eval</text>
     <text x="20" y="100" class="st st-s">Key: KAIROS (assistant) | BUDDY (pet) | UNDERCOVER (stealth) | VOICE_MODE | COORDINATOR | Codename: "Tengu"</text>
   </svg></div>
-    <div class="cn"><nav class="ch-toc"><a href="#10-cn-h863" class="toc-l2">概述</a>
-<a href="#10-cn-h864" class="toc-l2">一、88 个构建时 Feature Flag 完整分类清单</a>
-<a href="#10-cn-h874" class="toc-l2">二、KAIROS 助理模式深度解析</a>
-<a href="#10-cn-h879" class="toc-l2">三、Buddy 电子宠物完整解剖</a>
-<a href="#10-cn-h887" class="toc-l2">四、Undercover 卧底模式</a>
-<a href="#10-cn-h893" class="toc-l2">五、GrowthBook 集成深度</a>
-<a href="#10-cn-h898" class="toc-l2">六、"Tengu" 项目代号全解</a>
-<a href="#10-cn-h902" class="toc-l2">七、其他隐藏功能</a>
-<a href="#10-cn-h907" class="toc-l2">八、constants/ 目录 21 文件摘要</a>
-<a href="#10-cn-h908" class="toc-l2">九、产品方向总结</a></nav><h3 id="10-cn-h863">概述</h3>
+    <div class="cn"><nav class="ch-toc"><a href="#10-cn-h863" class="toc-l1">概述</a>
+<a href="#10-cn-h864" class="toc-l1">一、88 个构建时 Feature Flag 完整分类清单</a>
+<a href="#10-cn-h874" class="toc-l1">二、KAIROS 助理模式深度解析</a>
+<a href="#10-cn-h879" class="toc-l1">三、Buddy 电子宠物完整解剖</a>
+<a href="#10-cn-h887" class="toc-l1">四、Undercover 卧底模式</a>
+<a href="#10-cn-h893" class="toc-l1">五、GrowthBook 集成深度</a>
+<a href="#10-cn-h898" class="toc-l1">六、"Tengu" 项目代号全解</a>
+<a href="#10-cn-h902" class="toc-l1">七、其他隐藏功能</a>
+<a href="#10-cn-h907" class="toc-l1">八、constants/ 目录 21 文件摘要</a>
+<a href="#10-cn-h908" class="toc-l1">九、产品方向总结</a></nav><h3 id="10-cn-h863">概述</h3>
 <p>Claude Code 采用精密的<strong>三层 Feature Flag 架构</strong>：构建时 <code>feature('FLAG')</code> (Bun bundler dead-code elimination)、运行时 GrowthBook Remote Eval (tengu\_\* 命名空间)、环境变量 (<code>USER_TYPE</code>/<code>CLAUDE_CODE_*</code>)。逐文件精读 <code>constants/</code> 全部 21 个文件、<code>buddy/</code> 全部 6 个文件、<code>voice/</code>、<code>moreright/</code>、GrowthBook 集成及 undercover 系统后，以下为完整分析。</p>
 <hr/>
 <h3 id="10-cn-h864">一、88 个构建时 Feature Flag 完整分类清单</h3>
@@ -11716,16 +11668,16 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
 <li><strong>从信任到验证</strong> (Attestation/AntiDistillation/Verification)：客户端认证、反蒸馏、对抗性验证代理</li>
 </ol>
 <p>Claude Code 不再只是一个编码助手，它正在成为一个<strong>分布式、多代理、持久记忆、主动感知的 AI 开发伙伴平台</strong>。</p></div>
-    <div class="en"><nav class="ch-toc"><a href="#10-en-h909" class="toc-l2">Overview</a>
-<a href="#10-en-h910" class="toc-l2">I. Complete Categorized List of 88 Build-Time Feature Flags</a>
-<a href="#10-en-h920" class="toc-l2">II. KAIROS Assistant Mode Deep Dive</a>
-<a href="#10-en-h925" class="toc-l2">III. Complete Anatomy of the Buddy Digital Pet</a>
-<a href="#10-en-h933" class="toc-l2">IV. Undercover Mode</a>
-<a href="#10-en-h939" class="toc-l2">V. GrowthBook Integration Deep Dive</a>
-<a href="#10-en-h944" class="toc-l2">VI. Complete Decoding of the "Tengu" Project Codename</a>
-<a href="#10-en-h948" class="toc-l2">VII. Other Hidden Features</a>
-<a href="#10-en-h953" class="toc-l2">VIII. Summary of All 21 Files in constants/</a>
-<a href="#10-en-h954" class="toc-l2">IX. Product Direction Summary</a></nav><h3 id="10-en-h909">Overview</h3>
+    <div class="en"><nav class="ch-toc"><a href="#10-en-h909" class="toc-l1">Overview</a>
+<a href="#10-en-h910" class="toc-l1">I. Complete Categorized List of 88 Build-Time Feature Flags</a>
+<a href="#10-en-h920" class="toc-l1">II. KAIROS Assistant Mode Deep Dive</a>
+<a href="#10-en-h925" class="toc-l1">III. Complete Anatomy of the Buddy Digital Pet</a>
+<a href="#10-en-h933" class="toc-l1">IV. Undercover Mode</a>
+<a href="#10-en-h939" class="toc-l1">V. GrowthBook Integration Deep Dive</a>
+<a href="#10-en-h944" class="toc-l1">VI. Complete Decoding of the "Tengu" Project Codename</a>
+<a href="#10-en-h948" class="toc-l1">VII. Other Hidden Features</a>
+<a href="#10-en-h953" class="toc-l1">VIII. Summary of All 21 Files in constants/</a>
+<a href="#10-en-h954" class="toc-l1">IX. Product Direction Summary</a></nav><h3 id="10-en-h909">Overview</h3>
 <p>Claude Code employs a sophisticated <strong>three-layer Feature Flag architecture</strong>: build-time <code>feature('FLAG')</code> (Bun bundler dead-code elimination), runtime GrowthBook Remote Eval (tengu\_\* namespace), and environment variables (<code>USER_TYPE</code>/<code>CLAUDE_CODE_*</code>). After exhaustively reading all 21 files in <code>constants/</code>, all 6 files in <code>buddy/</code>, <code>voice/</code>, <code>moreright/</code>, the GrowthBook integration, and the undercover system, the following is a complete analysis.</p>
 <hr/>
 <h3 id="10-en-h910">I. Complete Categorized List of 88 Build-Time Feature Flags</h3>
@@ -12212,19 +12164,19 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
     <rect x="610" y="30" width="100" height="40" class="svg-box"/><text x="622" y="55" class="st st-s">Keybindings</text>
     <rect x="720" y="30" width="95" height="40" class="svg-box"/><text x="732" y="55" class="st st-s">memdir</text>
   </svg></div>
-    <div class="cn"><nav class="ch-toc"><a href="#11-cn-h955" class="toc-l2">概述</a>
-<a href="#11-cn-h956" class="toc-l2">一、Task 系统深度剖析</a>
-<a href="#11-cn-h960" class="toc-l2">二、状态管理系统</a>
-<a href="#11-cn-h965" class="toc-l2">三、模型演进追踪</a>
-<a href="#11-cn-h969" class="toc-l2">四、Utils 目录分类</a>
-<a href="#11-cn-h972" class="toc-l2">五、Vim 模式状态机</a>
-<a href="#11-cn-h976" class="toc-l2">六、远程执行系统</a>
-<a href="#11-cn-h981" class="toc-l2">七、键绑定系统</a>
-<a href="#11-cn-h985" class="toc-l2">八、Upstream Proxy 系统</a>
-<a href="#11-cn-h989" class="toc-l2">九、CLI / IO 系统</a>
-<a href="#11-cn-h990" class="toc-l2">十、Memdir 记忆系统</a>
-<a href="#11-cn-h995" class="toc-l2">十一、模块间依赖拓扑</a>
-<a href="#11-cn-h996" class="toc-l2">总结</a></nav><h3 id="11-cn-h955">概述</h3>
+    <div class="cn"><nav class="ch-toc"><a href="#11-cn-h955" class="toc-l1">概述</a>
+<a href="#11-cn-h956" class="toc-l1">一、Task 系统深度剖析</a>
+<a href="#11-cn-h960" class="toc-l1">二、状态管理系统</a>
+<a href="#11-cn-h965" class="toc-l1">三、模型演进追踪</a>
+<a href="#11-cn-h969" class="toc-l1">四、Utils 目录分类</a>
+<a href="#11-cn-h972" class="toc-l1">五、Vim 模式状态机</a>
+<a href="#11-cn-h976" class="toc-l1">六、远程执行系统</a>
+<a href="#11-cn-h981" class="toc-l1">七、键绑定系统</a>
+<a href="#11-cn-h985" class="toc-l1">八、Upstream Proxy 系统</a>
+<a href="#11-cn-h989" class="toc-l1">九、CLI / IO 系统</a>
+<a href="#11-cn-h990" class="toc-l1">十、Memdir 记忆系统</a>
+<a href="#11-cn-h995" class="toc-l1">十一、模块间依赖拓扑</a>
+<a href="#11-cn-h996" class="toc-l1">总结</a></nav><h3 id="11-cn-h955">概述</h3>
 <p>Claude Code 的基础设施层由 tasks/、state/、remote/、migrations/、keybindings/、cli/、server/、vim/、upstreamproxy/、memdir/ 和 utils/ 等模块构成。这些模块横跨任务调度、状态管理、远程执行、模型演进、输入处理、代理服务、记忆系统等领域，是整个应用的底层骨架。以下按最大深度逐一解析。</p>
 <hr/>
 <h3 id="11-cn-h956">一、Task 系统深度剖析</h3>
@@ -12647,19 +12599,19 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
 <li><strong>运行时兼容</strong>：WebSocket 同时支持 Bun/Node；feature gate 按需加载任务类型</li>
 <li><strong>集中式副作用管理</strong>：<code>onChangeAppState</code> 作为唯一的状态变更副作用处理点，替代分散的 8+ 通知路径</li>
 </ol></div>
-    <div class="en"><nav class="ch-toc"><a href="#11-en-h997" class="toc-l2">Overview</a>
-<a href="#11-en-h998" class="toc-l2">I. Deep Dive into the Task System</a>
-<a href="#11-en-h1002" class="toc-l2">II. State Management System</a>
-<a href="#11-en-h1007" class="toc-l2">III. Model Evolution Tracking</a>
-<a href="#11-en-h1011" class="toc-l2">IV. Utils Directory Classification</a>
-<a href="#11-en-h1014" class="toc-l2">V. Vim Mode State Machine</a>
-<a href="#11-en-h1018" class="toc-l2">VI. Remote Execution System</a>
-<a href="#11-en-h1023" class="toc-l2">VII. Keybinding System</a>
-<a href="#11-en-h1027" class="toc-l2">VIII. Upstream Proxy System</a>
-<a href="#11-en-h1031" class="toc-l2">IX. CLI / IO System</a>
-<a href="#11-en-h1032" class="toc-l2">X. Memdir Memory System</a>
-<a href="#11-en-h1037" class="toc-l2">XI. Inter-Module Dependency Topology</a>
-<a href="#11-en-h1038" class="toc-l2">Summary</a></nav><h3 id="11-en-h997">Overview</h3>
+    <div class="en"><nav class="ch-toc"><a href="#11-en-h997" class="toc-l1">Overview</a>
+<a href="#11-en-h998" class="toc-l1">I. Deep Dive into the Task System</a>
+<a href="#11-en-h1002" class="toc-l1">II. State Management System</a>
+<a href="#11-en-h1007" class="toc-l1">III. Model Evolution Tracking</a>
+<a href="#11-en-h1011" class="toc-l1">IV. Utils Directory Classification</a>
+<a href="#11-en-h1014" class="toc-l1">V. Vim Mode State Machine</a>
+<a href="#11-en-h1018" class="toc-l1">VI. Remote Execution System</a>
+<a href="#11-en-h1023" class="toc-l1">VII. Keybinding System</a>
+<a href="#11-en-h1027" class="toc-l1">VIII. Upstream Proxy System</a>
+<a href="#11-en-h1031" class="toc-l1">IX. CLI / IO System</a>
+<a href="#11-en-h1032" class="toc-l1">X. Memdir Memory System</a>
+<a href="#11-en-h1037" class="toc-l1">XI. Inter-Module Dependency Topology</a>
+<a href="#11-en-h1038" class="toc-l1">Summary</a></nav><h3 id="11-en-h997">Overview</h3>
 <p>Claude Code's infrastructure layer is composed of modules including tasks/, state/, remote/, migrations/, keybindings/, cli/, server/, vim/, upstreamproxy/, memdir/, and utils/. These modules span task scheduling, state management, remote execution, model evolution, input handling, proxy services, memory systems, and more, forming the foundational skeleton of the entire application. The following provides an in-depth analysis of each.</p>
 <hr/>
 <h3 id="11-en-h998">I. Deep Dive into the Task System</h3>
