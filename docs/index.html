@@ -93,16 +93,14 @@ th{background:var(--bg3);color:var(--fg);font-weight:600}td{color:var(--fg2)}
 .arr{stroke:var(--fg3);stroke-width:1.5;fill:none;marker-end:url(#ah)}
 .arr-a{stroke:var(--accent);stroke-width:2;fill:none;marker-end:url(#ah-a)}
 
-/* ASCII Art Diagrams */
-.ascii-diagram{margin:20px 0;overflow-x:auto;display:flex;justify-content:center}
+/* ASCII Art Diagrams — left-aligned, same as code blocks */
+.ascii-diagram{margin:14px 0;overflow-x:auto}
 .ascii-diagram pre{
-  background:var(--bg2)!important;border:1px solid var(--border);border-radius:12px;
-  padding:24px 32px;font-family:'SF Mono','Fira Code','Cascadia Code',Consolas,monospace;
+  background:var(--code-bg)!important;border:1px solid var(--border);border-radius:8px;
+  padding:14px 18px;font-family:'SF Mono','Fira Code','Cascadia Code',Consolas,monospace;
   font-size:calc(var(--fs) * .8);line-height:1.5;color:var(--fg);
-  white-space:pre;display:inline-block;text-align:left;
-  box-shadow:0 2px 12px rgba(0,0,0,.06);
+  white-space:pre;
 }
-[data-theme="dark"] .ascii-diagram pre{box-shadow:0 2px 12px rgba(0,0,0,.3)}
 
 /* Chapter TOC */
 .ch-toc{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:24px;columns:2;column-gap:24px}
