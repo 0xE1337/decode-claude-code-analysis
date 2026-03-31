@@ -551,7 +551,7 @@ hooks:
       command: echo "pre-hook"
 ---
 
-# Skill Prompt Content
+### Skill Prompt Content
 
 Actual system prompt text...
 ```
