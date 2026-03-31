@@ -27,7 +27,7 @@ This project is a structured, chapter-by-chapter architecture analysis of **how 
 
 ### Read Online
 
-**[View the full analysis on GitHub Pages](https://0xE1337.github.io/decode-claude-code-analysis/)**
+**[View the full analysis on GitHub Pages (English)](https://0xE1337.github.io/decode-claude-code-analysis/?lang=en)**
 
 Features: syntax highlighting, light/dark theme toggle, adjustable font size.
 
@@ -89,7 +89,7 @@ This project is for **educational and research purposes only**. All intellectual
 
 ### 在线阅读
 
-**[在 GitHub Pages 上阅读完整分析](https://0xE1337.github.io/decode-claude-code-analysis/)**
+**[在 GitHub Pages 上阅读完整分析（中文）](https://0xE1337.github.io/decode-claude-code-analysis/?lang=cn)**
 
 支持：代码语法高亮、明暗主题切换、字体大小调节。
 

@@ -341,12 +341,20 @@ ${chapters.map(c => {
 // Syntax highlighting
 hljs.highlightAll();
 
-// Language toggle
+// Language: read from URL param on load, then toggle
+(function(){
+  const p=new URLSearchParams(location.search).get('lang');
+  if(p==='en'||p==='cn'){
+    document.documentElement.dataset.lang=p;
+    document.getElementById('langBtn').textContent=p==='cn'?'EN':'CN';
+  }
+})();
 function toggleLang(){
   const h=document.documentElement;
   const n=h.dataset.lang==='cn'?'en':'cn';
   h.dataset.lang=n;
   document.getElementById('langBtn').textContent=n==='cn'?'EN':'CN';
+  history.replaceState(null,'',location.pathname+'?lang='+n);
 }
 
 // Font size
