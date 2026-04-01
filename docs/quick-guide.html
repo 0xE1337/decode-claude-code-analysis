@@ -22,25 +22,25 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 .btn:hover{border-color:var(--accent);color:var(--accent)}
 
 /* Container */
-.container{max-width:900px;margin:0 auto;padding:40px 24px 80px}
+.container{max-width:920px;margin:0 auto;padding:40px 24px 80px}
 
 /* Hero */
 .hero{text-align:center;padding:50px 0 40px}
 .hero h1{font-size:32px;margin-bottom:8px}.hero h1 span{color:var(--accent)}
-.hero p{font-size:17px;color:var(--fg2);max-width:600px;margin:0 auto}
+.hero p{font-size:17px;color:var(--fg2);max-width:620px;margin:0 auto}
 
 /* Step */
-.step{margin:50px 0;position:relative;padding-left:60px}
-.step::before{content:attr(data-step);position:absolute;left:0;top:0;width:42px;height:42px;border-radius:50%;background:var(--accent);color:#fff;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1}
-.step h2{font-size:22px;margin-bottom:6px;color:var(--fg)}
-.step .sub{font-size:14px;color:var(--fg2);margin-bottom:16px}
-.step p{font-size:15px;margin-bottom:12px;color:var(--fg)}
+.step{margin:48px 0;position:relative;padding-left:60px}
+.step::before{content:attr(data-step);position:absolute;left:0;top:0;width:42px;height:42px;border-radius:50%;background:var(--accent);color:#fff;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1}
+.step h2{font-size:21px;margin-bottom:4px;color:var(--fg)}
+.step .sub{font-size:14px;color:var(--fg2);margin-bottom:14px}
+.step p{font-size:15px;margin-bottom:10px;color:var(--fg)}
 
 /* Flow diagram */
-.flow{display:flex;align-items:center;gap:0;margin:20px 0;flex-wrap:wrap}
-.flow-box{background:var(--card);border:2px solid var(--border);border-radius:10px;padding:12px 18px;text-align:center;min-width:100px;transition:border-color .2s}
+.flow{display:flex;align-items:center;gap:0;margin:16px 0;flex-wrap:wrap}
+.flow-box{background:var(--card);border:2px solid var(--border);border-radius:10px;padding:10px 16px;text-align:center;min-width:90px;transition:border-color .2s}
 .flow-box:hover{border-color:var(--accent)}
-.flow-box .fl-title{font-weight:700;font-size:14px;color:var(--fg)}
+.flow-box .fl-title{font-weight:700;font-size:13px;color:var(--fg)}
 .flow-box .fl-desc{font-size:11px;color:var(--fg2);margin-top:2px}
 .flow-arr{color:var(--accent);font-size:22px;padding:0 6px;flex-shrink:0}
 .flow-box.accent{border-color:var(--accent);background:rgba(9,105,218,.06)}
@@ -51,12 +51,12 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 .flow-box.red{border-color:var(--red)}
 
 /* Grid cards */
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:16px 0}
-.gcard{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;transition:border-color .2s}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:14px 0}
+.gcard{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;transition:border-color .2s}
 .gcard:hover{border-color:var(--accent)}
-.gcard h4{font-size:14px;margin-bottom:4px;color:var(--fg)}
+.gcard h4{font-size:13px;margin-bottom:4px;color:var(--fg)}
 .gcard p{font-size:12px;color:var(--fg2);margin:0;line-height:1.5}
-.gcard .icon{font-size:24px;margin-bottom:6px}
+.gcard .icon{font-size:22px;margin-bottom:4px}
 
 /* Stat bar */
 .stat-bar{display:flex;flex-wrap:wrap;gap:16px;margin:20px 0;justify-content:center}
@@ -65,11 +65,11 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 .sbox .sl{font-size:11px;color:var(--fg3);text-transform:uppercase;letter-spacing:.5px}
 
 /* Layers */
-.layers{margin:20px 0}
-.layer{border:2px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:-1px;display:flex;align-items:center;gap:14px;transition:border-color .2s}
+.layers{margin:16px 0}
+.layer{border:2px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:-1px;display:flex;align-items:center;gap:14px;transition:border-color .2s}
 .layer:hover{border-color:var(--accent);z-index:1;position:relative}
-.layer .l-label{font-weight:700;font-size:13px;min-width:140px;color:var(--fg)}
-.layer .l-desc{font-size:13px;color:var(--fg2)}
+.layer .l-label{font-weight:700;font-size:13px;min-width:130px;color:var(--fg)}
+.layer .l-desc{font-size:12px;color:var(--fg2)}
 .layer.l-a{border-color:var(--accent);background:rgba(9,105,218,.03)}
 .layer.l-g{border-color:var(--green);background:rgba(26,127,55,.03)}
 .layer.l-p{border-color:var(--purple);background:rgba(130,80,223,.03)}
@@ -82,27 +82,42 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 [data-theme="dark"] .layer.l-r{background:rgba(248,81,73,.05)}
 
 /* Loop animation */
-.loop-wrap{margin:20px 0;padding:24px;background:var(--card);border:1px solid var(--border);border-radius:12px}
-.loop-steps{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin-bottom:12px}
-.ls{background:var(--bg);border:2px solid var(--border);border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;color:var(--fg);text-align:center;min-width:80px}
+.loop-wrap{margin:16px 0;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:12px}
+.loop-steps{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin-bottom:10px}
+.ls{background:var(--bg);border:2px solid var(--border);border-radius:8px;padding:7px 12px;font-size:12px;font-weight:600;color:var(--fg);text-align:center;min-width:72px}
 .ls.active{border-color:var(--accent);color:var(--accent)}
 .ls-arr{color:var(--fg3);padding:0 4px;font-size:16px}
-.loop-back{text-align:center;color:var(--accent);font-size:13px;font-weight:600;margin-top:8px}
+.loop-back{text-align:center;color:var(--accent);font-size:12px;font-weight:600;margin-top:6px}
 
 /* Callout */
-.callout{border-left:3px solid var(--accent);background:rgba(9,105,218,.04);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:14px}
+.callout{border-left:3px solid var(--accent);background:rgba(9,105,218,.04);padding:11px 15px;border-radius:0 8px 8px 0;margin:14px 0;font-size:13px}
 [data-theme="dark"] .callout{background:rgba(88,166,255,.06)}
 .callout strong{color:var(--fg)}
 .callout.warn{border-left-color:var(--red);background:rgba(207,34,46,.04)}
 [data-theme="dark"] .callout.warn{background:rgba(248,81,73,.06)}
+.callout.tip{border-left-color:var(--green);background:rgba(26,127,55,.04)}
+[data-theme="dark"] .callout.tip{background:rgba(63,185,80,.06)}
+
+/* Inline key numbers */
+.kn{display:inline-flex;flex-wrap:wrap;gap:10px;margin:10px 0}
+.kn span{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:12px}
+.kn span strong{color:var(--accent)}
 
 /* Link to full */
-.read-more{display:inline-block;font-size:13px;color:var(--accent);margin-top:8px}
+.read-more{display:inline-block;font-size:13px;color:var(--accent);margin-top:6px}
 
 /* Footer */
 .footer{text-align:center;padding:40px 0;color:var(--fg3);font-size:12px;border-top:1px solid var(--border);margin-top:40px}
 
-@media(max-width:600px){.container{padding:20px 16px}.step{padding-left:50px}.flow{flex-direction:column;align-items:flex-start}.flow-arr{transform:rotate(90deg)}}
+/* TOC */
+.toc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin:30px 0}
+.toc h3{font-size:15px;margin-bottom:10px;color:var(--fg)}
+.toc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px}
+.toc-grid a{font-size:13px;padding:4px 0;display:block;color:var(--fg2);transition:color .15s}
+.toc-grid a:hover{color:var(--accent);text-decoration:none}
+.toc-grid a strong{color:var(--fg3);font-weight:600}
+
+@media(max-width:600px){.container{padding:20px 16px}.step{padding-left:50px}.flow{flex-direction:column;align-items:flex-start}.flow-arr{transform:rotate(90deg)}.toc-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -112,9 +127,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
   <div class="ctrls">
     <button class="btn" onclick="toggleLang()" id="langBtn">EN</button>
     <button class="btn" onclick="toggleTheme()" id="themeBtn">Dark</button>
-    <a class="btn" href="index.html" style="text-decoration:none">
-      <span class="cn">Full Detail</span><span class="en">Full Detail</span>
-    </a>
+    <a class="btn" href="index.html" style="text-decoration:none">Full Detail</a>
   </div>
 </div>
 
@@ -124,47 +137,73 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 <div class="hero">
   <h1 class="cn"><span>Claude Code</span> 架构速览</h1>
   <h1 class="en"><span>Claude Code</span> Architecture at a Glance</h1>
-  <p class="cn">5 分钟理解 515,029 行代码背后的设计。不需要技术背景，只需要好奇心。</p>
-  <p class="en">Understand the design behind 515,029 lines of code in 5 minutes. No technical background required, just curiosity.</p>
+  <p class="cn">12 章分析的核心要点，可视化呈现。515,029 行代码背后每一层设计决策。</p>
+  <p class="en">Core insights from 12 chapters, visually presented. Every design decision behind 515,029 lines of code.</p>
 </div>
 
 <!-- Stats -->
 <div class="stat-bar">
-  <div class="sbox"><div class="sv">1,906</div><div class="sl cn">Source Files</div><div class="sl en">Source Files</div></div>
-  <div class="sbox"><div class="sv">515K</div><div class="sl">Lines</div></div>
-  <div class="sbox"><div class="sv">40+</div><div class="sl cn">Tools</div><div class="sl en">Tools</div></div>
-  <div class="sbox"><div class="sv">80+</div><div class="sl">Commands</div></div>
-  <div class="sbox"><div class="sv">92%</div><div class="sl">Cache Hit</div></div>
+  <div class="sbox"><div class="sv">1,906</div><div class="sl cn">源文件</div><div class="sl en">Source Files</div></div>
+  <div class="sbox"><div class="sv">515K</div><div class="sl cn">行代码</div><div class="sl en">Lines</div></div>
+  <div class="sbox"><div class="sv">40+</div><div class="sl cn">工具</div><div class="sl en">Tools</div></div>
+  <div class="sbox"><div class="sv">80+</div><div class="sl cn">命令</div><div class="sl en">Commands</div></div>
+  <div class="sbox"><div class="sv">92%</div><div class="sl cn">缓存命中</div><div class="sl en">Cache Hit</div></div>
+  <div class="sbox"><div class="sv">17,885</div><div class="sl cn">安全代码行</div><div class="sl en">Security Lines</div></div>
 </div>
 
-<!-- Step 1: Big Picture -->
-<div class="step" data-step="1">
-  <h2 class="cn">Claude Code 是什么？</h2>
-  <h2 class="en">What is Claude Code?</h2>
-  <p class="sub cn">一句话：一个终端里的 AI 编程助手。</p>
-  <p class="sub en">In one sentence: an AI coding assistant that lives in your terminal.</p>
-
-  <p class="cn">你在终端输入一句话（比如"帮我修这个 bug"），Claude Code 会自己读代码、写代码、运行命令、搜索文件——直到任务完成。它不是一个简单的聊天机器人，而是一个能<strong>自主行动</strong>的 Agent。</p>
-  <p class="en">You type a request in your terminal (like "fix this bug"), and Claude Code autonomously reads code, writes code, runs commands, searches files — until the task is done. It's not a simple chatbot, but an <strong>autonomous agent</strong>.</p>
-
-  <div class="layers">
-    <div class="layer l-a"><span class="l-label cn">你的终端</span><span class="l-label en">Your Terminal</span><span class="l-desc cn">React + Ink 渲染的全屏 UI（389 个组件）</span><span class="l-desc en">Full-screen UI rendered with React + Ink (389 components)</span></div>
-    <div class="layer l-g"><span class="l-label cn">Agent 引擎</span><span class="l-label en">Agent Engine</span><span class="l-desc cn">核心循环 + 40 个工具 + 80 个命令</span><span class="l-desc en">Core loop + 40 tools + 80 commands</span></div>
-    <div class="layer l-p"><span class="l-label cn">安全层</span><span class="l-label en">Security Layer</span><span class="l-desc cn">17,885 行安全代码，每条命令都要过安检</span><span class="l-desc en">17,885 lines of security code, every command goes through checks</span></div>
-    <div class="layer l-o"><span class="l-label cn">Anthropic API</span><span class="l-label en">Anthropic API</span><span class="l-desc cn">Claude 大模型做所有"思考"，本地只做"执行"</span><span class="l-desc en">Claude model does all "thinking", local code just "executes"</span></div>
+<!-- TOC -->
+<div class="toc">
+  <h3 class="cn">章节导航</h3><h3 class="en">Chapter Navigation</h3>
+  <div class="toc-grid">
+    <a href="#ch00"><strong>00</strong> <span class="cn">入口与启动优化</span><span class="en">Entry & Startup</span></a>
+    <a href="#ch01"><strong>01</strong> <span class="cn">Agent Loop 核心循环</span><span class="en">Agent Loop</span></a>
+    <a href="#ch02"><strong>02</strong> <span class="cn">System Prompt 设计</span><span class="en">System Prompt</span></a>
+    <a href="#ch03"><strong>03</strong> <span class="cn">工具系统</span><span class="en">Tool System</span></a>
+    <a href="#ch04"><strong>04</strong> <span class="cn">命令系统</span><span class="en">Command System</span></a>
+    <a href="#ch05"><strong>05</strong> <span class="cn">上下文管理</span><span class="en">Context Management</span></a>
+    <a href="#ch06"><strong>06</strong> <span class="cn">权限与安全</span><span class="en">Permission & Security</span></a>
+    <a href="#ch07"><strong>07</strong> <span class="cn">多 Agent 协作</span><span class="en">Multi-Agent</span></a>
+    <a href="#ch08"><strong>08</strong> <span class="cn">MCP 与服务层</span><span class="en">MCP & Services</span></a>
+    <a href="#ch09"><strong>09</strong> <span class="cn">UI 组件系统</span><span class="en">UI Components</span></a>
+    <a href="#ch10"><strong>10</strong> <span class="cn">Feature Flags</span><span class="en">Feature Flags</span></a>
+    <a href="#ch11"><strong>11</strong> <span class="cn">基础设施</span><span class="en">Infrastructure</span></a>
   </div>
-  <a class="read-more" href="index.html#ch00"><span class="cn">Full Detail: Ch00 Entry &rarr;</span><span class="en">Full Detail: Ch00 Entry &rarr;</span></a>
 </div>
 
-<!-- Step 2: The Loop -->
-<div class="step" data-step="2">
-  <h2 class="cn">核心秘密：一个 While 循环</h2>
-  <h2 class="en">The Core Secret: A While Loop</h2>
-  <p class="sub cn">没有复杂的 DAG，没有规划器，就是一个循环。</p>
-  <p class="sub en">No complex DAGs, no planners — just one loop.</p>
+<!-- ==================== Ch00: Entry & Startup ==================== -->
+<div class="step" data-step="00" id="ch00">
+  <h2 class="cn">启动优化：&lt;200ms 冷启动</h2>
+  <h2 class="en">Boot Optimization: &lt;200ms Cold Start</h2>
+  <p class="sub cn">4 阶段启动流水线，import 阶段就开始并行 I/O。</p>
+  <p class="sub en">4-stage boot pipeline. Parallel I/O starts during import evaluation.</p>
 
-  <p class="cn">整个系统的心脏只有一行伪代码：<code>while (模型还想调用工具) { 执行工具 → 把结果喂回模型 }</code>。模型自己决定下一步做什么，系统只负责执行。这个设计看起来简单，但背后有 7 种不同的"继续循环"原因和 5 层消息压缩机制。</p>
-  <p class="en">The entire system's heart is one line of pseudocode: <code>while (model wants to call tools) { execute tool → feed result back }</code>. The model decides what to do next; the system just executes. This looks simple, but behind it are 7 different "continue" reasons and 5 layers of message compression.</p>
+  <div class="flow">
+    <div class="flow-box accent"><div class="fl-title cn">预启动</div><div class="fl-title en">Pre-boot</div><div class="fl-desc cn">import 期间偷跑 3 路预取</div><div class="fl-desc en">3 prefetches during imports</div></div>
+    <div class="flow-arr">&rarr;</div>
+    <div class="flow-box green"><div class="fl-title cn">快速路由</div><div class="fl-title en">Fast Dispatch</div><div class="fl-desc cn">11 条快速路径分发</div><div class="fl-desc en">11 fast-path routes</div></div>
+    <div class="flow-arr">&rarr;</div>
+    <div class="flow-box purple"><div class="fl-title cn">配置加载</div><div class="fl-title en">Config Load</div><div class="fl-desc cn">设置 + 密钥链 + Feature Flag</div><div class="fl-desc en">Settings + Keychain + Flags</div></div>
+    <div class="flow-arr">&rarr;</div>
+    <div class="flow-box orange"><div class="fl-title cn">进入主循环</div><div class="fl-title en">Enter Main Loop</div><div class="fl-desc cn">TUI 渲染 + Agent 就绪</div><div class="fl-desc en">TUI render + Agent ready</div></div>
+  </div>
+
+  <p class="cn">核心技巧：在 ~135ms 的 <code>import</code> 求值窗口内，同步启动 MDM 注册表读取、密钥链 OAuth 查询、API Key 查询这三路 I/O。等 import 完成时，数据已经在内存中了。<code>--version</code> 在 &lt;1ms 内返回——零 import 的编译时常量。</p>
+  <p class="en">Core trick: during the ~135ms <code>import</code> evaluation window, three I/O streams launch in parallel — MDM registry read, Keychain OAuth lookup, API key lookup. By the time imports finish, data is already in memory. <code>--version</code> returns in &lt;1ms — zero-import build-time constant.</p>
+
+  <div class="callout">
+    <strong class="cn">反调试保护：</strong><strong class="en">Anti-debugging: </strong>
+    <span class="cn">外部构建版本检测 debugger（execArgv + NODE_OPTIONS + inspector），发现即无声退出。Bun 和 Node.js 有不同的 argv 泄露行为，分别处理。</span>
+    <span class="en">External builds detect debuggers (execArgv + NODE_OPTIONS + inspector) and silently exit. Bun and Node.js have different argv leaking behaviors — handled separately.</span>
+  </div>
+  <a class="read-more" href="index.html#ch00"><span class="cn">Full Detail: Ch00 入口与启动 &rarr;</span><span class="en">Full Detail: Ch00 Entry & Startup &rarr;</span></a>
+</div>
+
+<!-- ==================== Ch01: Agent Loop ==================== -->
+<div class="step" data-step="01" id="ch01">
+  <h2 class="cn">核心秘密：一个 While 循环驱动一切</h2>
+  <h2 class="en">The Core Secret: One While Loop Drives Everything</h2>
+  <p class="sub cn">没有 DAG，没有规划器。模型自己决定下一步。</p>
+  <p class="sub en">No DAGs, no planners. The model decides the next step.</p>
 
   <div class="loop-wrap">
     <div class="loop-steps">
@@ -172,172 +211,354 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
       <div class="ls-arr">&rarr;</div>
       <div class="ls"><span class="cn">调 API</span><span class="en">Call API</span></div>
       <div class="ls-arr">&rarr;</div>
-      <div class="ls"><span class="cn">模型回复</span><span class="en">Model Reply</span></div>
+      <div class="ls"><span class="cn">流式回复</span><span class="en">Stream Reply</span></div>
       <div class="ls-arr">&rarr;</div>
       <div class="ls" style="border-color:var(--orange)"><span class="cn">执行工具</span><span class="en">Run Tools</span></div>
       <div class="ls-arr">&rarr;</div>
-      <div class="ls" style="border-color:var(--green)"><span class="cn">还要继续？</span><span class="en">Continue?</span></div>
+      <div class="ls" style="border-color:var(--green)"><span class="cn">继续？</span><span class="en">Continue?</span></div>
     </div>
-    <div class="loop-back"><span class="cn">&uarr; 是 &rarr; 回到"调 API"（循环） &nbsp;|&nbsp; 否 &rarr; 返回结果给用户 &darr;</span><span class="en">&uarr; Yes &rarr; back to "Call API" (loop) &nbsp;|&nbsp; No &rarr; return result to user &darr;</span></div>
+    <div class="loop-back"><span class="cn">&uarr; 是 &rarr; 回到"调 API" &nbsp;|&nbsp; 否 &rarr; 返回结果 &darr;</span><span class="en">&uarr; Yes &rarr; back to "Call API" &nbsp;|&nbsp; No &rarr; return result &darr;</span></div>
+  </div>
+
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
+    <div class="gcard"><h4 class="cn">7 种继续原因</h4><h4 class="en">7 Continue Reasons</h4><p class="cn">PTL 恢复、MOT 升级、Stop Hook、Token 预算、工具执行……每种有独立状态机</p><p class="en">PTL recovery, MOT escalation, stop hooks, token budget, tool execution... each with its own state machine</p></div>
+    <div class="gcard"><h4 class="cn">流式工具执行</h4><h4 class="en">Streaming Execution</h4><p class="cn">API 还在流式输出时，工具已经开始执行。只读工具并行，写入工具串行</p><p class="en">Tools start executing while API is still streaming. Read-only tools run in parallel, write tools run serially</p></div>
+    <div class="gcard"><h4 class="cn">三层 AbortController</h4><h4 class="en">3-Layer AbortController</h4><p class="cn">queryLoop → siblingAbort → toolAbort 层级取消，兄弟错误不影响父级</p><p class="en">queryLoop → siblingAbort → toolAbort hierarchy. Sibling errors don't affect parent</p></div>
   </div>
 
   <div class="callout">
-    <strong class="cn">为什么不用 DAG/规划器？</strong><strong class="en">Why not DAGs/planners?</strong>
-    <span class="cn">因为让模型自己决定比预设流程更灵活。模型走错了可以自我纠正，而 DAG 一旦定义就固定了。代价是可能多花几次 API 调用，但换来了极高的灵活性。</span>
-    <span class="en">Because letting the model decide is more flexible than preset workflows. The model can self-correct mistakes, while DAGs are fixed once defined. The trade-off is potentially more API calls, but extreme flexibility.</span>
+    <strong class="cn">错误先藏后决：</strong><strong class="en">Withhold-then-Decide: </strong>
+    <span class="cn">可恢复错误（PTL/MOT）不立即暴露给消费者。先尝试恢复（最多 3 层递进），恢复失败才暴露。防止 SDK 消费者在恢复过程中提前终止会话。</span>
+    <span class="en">Recoverable errors (PTL/MOT) are withheld from consumers. Recovery is attempted first (up to 3 levels), only exposed on failure. Prevents SDK consumers from terminating sessions during recovery.</span>
   </div>
   <a class="read-more" href="index.html#ch01"><span class="cn">Full Detail: Ch01 Agent Loop &rarr;</span><span class="en">Full Detail: Ch01 Agent Loop &rarr;</span></a>
 </div>
 
-<!-- Step 3: Tools -->
-<div class="step" data-step="3">
-  <h2 class="cn">40+ 工具 = AI 的手和脚</h2>
-  <h2 class="en">40+ Tools = AI's Hands and Feet</h2>
-  <p class="sub cn">模型能"想"，工具让它能"做"。</p>
-  <p class="sub en">The model can "think"; tools let it "do".</p>
-
-  <div class="grid">
-    <div class="gcard"><div class="icon">📄</div><h4>Read / Write / Edit</h4><p class="cn">读写文件，就像人打开编辑器</p><p class="en">Read and write files, like opening an editor</p></div>
-    <div class="gcard"><div class="icon">⚡</div><h4>Bash</h4><p class="cn">运行任何终端命令（有安全检查）</p><p class="en">Run any terminal command (with safety checks)</p></div>
-    <div class="gcard"><div class="icon">🔍</div><h4>Grep / Glob</h4><p class="cn">搜索代码，找文件</p><p class="en">Search code, find files</p></div>
-    <div class="gcard"><div class="icon">🤖</div><h4>Agent</h4><p class="cn">生成子 Agent 并行干活</p><p class="en">Spawn sub-agents to work in parallel</p></div>
-    <div class="gcard"><div class="icon">🌐</div><h4>WebSearch</h4><p class="cn">搜索互联网获取信息</p><p class="en">Search the internet for information</p></div>
-    <div class="gcard"><div class="icon">🔌</div><h4>MCP Tools</h4><p class="cn">通过协议接入无限外部工具</p><p class="en">Connect unlimited external tools via protocol</p></div>
-  </div>
-
-  <div class="callout">
-    <strong class="cn">安全优先设计：</strong><strong class="en">Security-first design: </strong>
-    <span class="cn">每个工具默认假设"不安全"（fail-closed）。忘记声明权限？那就需要用户确认。BashTool 最复杂——18 个文件、23 种安全检查，防 Shell 注入、路径遍历等攻击。</span>
-    <span class="en">Every tool defaults to "unsafe" (fail-closed). Forgot to declare permissions? User confirmation required. BashTool is the most complex — 18 files, 23 security checks against shell injection, path traversal, etc.</span>
-  </div>
-  <a class="read-more" href="index.html#ch03"><span class="cn">Full Detail: Ch03 Tools &rarr;</span><span class="en">Full Detail: Ch03 Tools &rarr;</span></a>
-</div>
-
-<!-- Step 4: Prompt Cache -->
-<div class="step" data-step="4">
-  <h2 class="cn">省钱秘诀：92% 缓存命中率</h2>
-  <h2 class="en">Cost Saving: 92% Cache Hit Rate</h2>
-  <p class="sub cn">每次 API 调用都要发送完整的 System Prompt，但只需付 10% 的钱。</p>
-  <p class="sub en">Every API call sends the full System Prompt, but you only pay 10% of the cost.</p>
-
-  <p class="cn">System Prompt 被分成两个区域：<strong>静态区</strong>（身份、规则、工具说明）从不变化，跨所有用户共享缓存；<strong>动态区</strong>（环境信息、记忆、MCP 配置）每次会话不同。一条分界线 <code>__DYNAMIC_BOUNDARY__</code> 把它们隔开。</p>
-  <p class="en">The System Prompt is split into two zones: the <strong>static zone</strong> (identity, rules, tool descriptions) never changes and is cached globally across all users; the <strong>dynamic zone</strong> (environment, memory, MCP config) varies per session. A boundary marker <code>__DYNAMIC_BOUNDARY__</code> separates them.</p>
+<!-- ==================== Ch02: System Prompt ==================== -->
+<div class="step" data-step="02" id="ch02">
+  <h2 class="cn">Prompt 经济学：92% 缓存命中率</h2>
+  <h2 class="en">Prompt Economics: 92% Cache Hit Rate</h2>
+  <p class="sub cn">把 System Prompt 当缓存系统来设计，每次 API 调用省 90% 的钱。</p>
+  <p class="sub en">Design System Prompt as a caching system — save 90% on every API call.</p>
 
   <div class="flow">
-    <div class="flow-box green" style="flex:2">
-      <div class="fl-title cn">静态区 (Cached)</div><div class="fl-title en">Static Zone (Cached)</div>
-      <div class="fl-desc cn">身份 | 规则 | 工具 | 风格</div><div class="fl-desc en">Identity | Rules | Tools | Style</div>
-    </div>
+    <div class="flow-box" style="flex:0.5"><div class="fl-title cn">计费头</div><div class="fl-title en">Billing</div><div class="fl-desc">~30 tok</div></div>
     <div class="flow-arr">|</div>
-    <div class="flow-box red" style="flex:1">
-      <div class="fl-title cn">动态区</div><div class="fl-title en">Dynamic Zone</div>
-      <div class="fl-desc cn">环境 | 记忆 | MCP</div><div class="fl-desc en">Env | Memory | MCP</div>
-    </div>
+    <div class="flow-box" style="flex:0.5"><div class="fl-title cn">CLI 前缀</div><div class="fl-title en">CLI Prefix</div><div class="fl-desc">~25 tok</div></div>
+    <div class="flow-arr">|</div>
+    <div class="flow-box green" style="flex:2.5"><div class="fl-title cn">静态区 (Cached)</div><div class="fl-title en">Static Zone (Cached)</div><div class="fl-desc cn">身份 | 规则 | 工具 | 风格 — 全局缓存</div><div class="fl-desc en">Identity | Rules | Tools | Style — globally cached</div></div>
+    <div class="flow-arr">|</div>
+    <div class="flow-box red" style="flex:1"><div class="fl-title cn">动态区</div><div class="fl-title en">Dynamic Zone</div><div class="fl-desc cn">环境 | 记忆 | MCP</div><div class="fl-desc en">Env | Memory | MCP</div></div>
   </div>
 
   <div class="callout warn">
-    <strong class="cn">10.2% 灾难：</strong><strong class="en">The 10.2% disaster: </strong>
-    <span class="cn">Agent 列表曾嵌在工具描述中（属于静态区）。MCP 连接一变，列表就变，整个缓存失效。这一个问题消耗了平台 10.2% 的缓存创建 token。修复：移到消息附件中。</span>
-    <span class="en">The Agent list was embedded in tool descriptions (static zone). When MCP connections changed, the list changed, busting the entire cache. This single issue consumed 10.2% of fleet cache creation tokens. Fix: moved to message attachments.</span>
+    <strong class="cn">2^4 位爆炸：</strong><strong class="en">2^4 Bit Explosion: </strong>
+    <span class="cn">4 个条件 bit（AskUserQuestion/Agent/Explore/Skill 可用性）若放进静态区 = 16 种前缀 hash = 16 份缓存 = 命中率崩溃。解法：<code>__DYNAMIC_BOUNDARY__</code> 分界线把它们推到动态区。</span>
+    <span class="en">4 conditional bits (AskUserQuestion/Agent/Explore/Skill availability) in static zone = 16 prefix hashes = 16 cache entries = hit rate collapse. Fix: <code>__DYNAMIC_BOUNDARY__</code> pushes them into the dynamic zone.</span>
+  </div>
+
+  <div class="callout tip">
+    <strong>MCP Delta: </strong>
+    <span class="cn">MCP 服务器指令不可预测，每次变更会使整个缓存失效。解法：只附加<strong>变化部分</strong>到最新消息块（而非系统 prompt 中），缓存前缀不受影响。</span>
+    <span class="en">MCP server instructions are unpredictable — each change would bust the entire cache. Fix: attach only <strong>deltas</strong> to the latest message block (not the system prompt), keeping the cached prefix intact.</span>
   </div>
   <a class="read-more" href="index.html#ch02"><span class="cn">Full Detail: Ch02 System Prompt &rarr;</span><span class="en">Full Detail: Ch02 System Prompt &rarr;</span></a>
 </div>
 
-<!-- Step 5: Context -->
-<div class="step" data-step="5">
-  <h2 class="cn">记忆管理：200K Token 不够用怎么办？</h2>
-  <h2 class="en">Memory Management: What When 200K Tokens Run Out?</h2>
-  <p class="sub cn">三层压缩，从免费到昂贵，自动处理。</p>
-  <p class="sub en">3-tier compression, from free to expensive, fully automatic.</p>
+<!-- ==================== Ch03: Tool System ==================== -->
+<div class="step" data-step="03" id="ch03">
+  <h2 class="cn">40+ 工具：AI 的手和脚</h2>
+  <h2 class="en">40+ Tools: AI's Hands and Feet</h2>
+  <p class="sub cn">模型能"想"，工具让它能"做"。每个工具默认不安全（fail-closed）。</p>
+  <p class="sub en">The model can "think"; tools let it "do". Every tool defaults to unsafe (fail-closed).</p>
 
-  <div class="flow">
-    <div class="flow-box green"><div class="fl-title cn">微压缩</div><div class="fl-title en">Micro</div><div class="fl-desc cn">免费 | 清理旧结果</div><div class="fl-desc en">Free | clean old results</div></div>
-    <div class="flow-arr">&rarr;</div>
-    <div class="flow-box orange"><div class="fl-title cn">会话记忆</div><div class="fl-title en">Session Memory</div><div class="fl-desc cn">1 次 API | 提取摘要</div><div class="fl-desc en">1 API call | extract summary</div></div>
-    <div class="flow-arr">&rarr;</div>
-    <div class="flow-box red"><div class="fl-title cn">全量压缩</div><div class="fl-title en">Full Compact</div><div class="fl-desc cn">1 次 API | 9 段摘要</div><div class="fl-desc en">1 API call | 9-section summary</div></div>
-    <div class="flow-arr">&rarr;</div>
-    <div class="flow-box" style="border-color:var(--red)"><div class="fl-title cn">熔断器</div><div class="fl-title en">Circuit Breaker</div><div class="fl-desc cn">3 次失败停止</div><div class="fl-desc en">3 failures = stop</div></div>
-  </div>
-  <a class="read-more" href="index.html#ch05"><span class="cn">Full Detail: Ch05 Context &rarr;</span><span class="en">Full Detail: Ch05 Context &rarr;</span></a>
-</div>
-
-<!-- Step 6: Security -->
-<div class="step" data-step="6">
-  <h2 class="cn">安全：17,885 行代码在保护你</h2>
-  <h2 class="en">Security: 17,885 Lines of Code Protecting You</h2>
-  <p class="sub cn">每条 Bash 命令都经过 23 道安全检查。</p>
-  <p class="sub en">Every Bash command goes through 23 security checks.</p>
-
-  <div class="flow">
-    <div class="flow-box"><div class="fl-title cn">你的命令</div><div class="fl-title en">Your Command</div></div>
-    <div class="flow-arr">&rarr;</div>
-    <div class="flow-box purple"><div class="fl-title">AST</div><div class="fl-desc cn">语法树解析</div><div class="fl-desc en">Syntax tree parse</div></div>
-    <div class="flow-arr">&rarr;</div>
-    <div class="flow-box orange"><div class="fl-title cn">23 项检查</div><div class="fl-title en">23 Checks</div><div class="fl-desc cn">注入 | 遍历 | 编码</div><div class="fl-desc en">Injection | Traversal | Encoding</div></div>
-    <div class="flow-arr">&rarr;</div>
-    <div class="flow-box green"><div class="fl-title cn">安全？执行</div><div class="fl-title en">Safe? Execute</div></div>
+  <div class="grid">
+    <div class="gcard"><div class="icon">📄</div><h4>Read / Write / Edit</h4><p class="cn">读写文件</p><p class="en">Read and write files</p></div>
+    <div class="gcard"><div class="icon">⚡</div><h4>Bash</h4><p class="cn">18 文件 23 项安全检查</p><p class="en">18 files, 23 security checks</p></div>
+    <div class="gcard"><div class="icon">🔍</div><h4>Grep / Glob</h4><p class="cn">搜索代码和文件</p><p class="en">Search code and files</p></div>
+    <div class="gcard"><div class="icon">🤖</div><h4>Agent</h4><p class="cn">生成子 Agent 并行工作</p><p class="en">Spawn sub-agents in parallel</p></div>
+    <div class="gcard"><div class="icon">🌐</div><h4>WebSearch / Fetch</h4><p class="cn">互联网搜索和抓取</p><p class="en">Internet search and fetch</p></div>
+    <div class="gcard"><div class="icon">🔌</div><h4>MCP Tools</h4><p class="cn">无限外部工具接入</p><p class="en">Unlimited external tools</p></div>
   </div>
 
-  <p class="cn">设计哲学是 <strong>Fail-Closed</strong>：任何无法证明安全的命令都需要你确认。系统用 tree-sitter 做 AST 解析（白名单制），shell-quote 做备用。代码注释里引用了 5 个 HackerOne 安全报告——都是真实的渗透测试发现。</p>
-  <p class="en">Design philosophy: <strong>Fail-Closed</strong>. Any command that can't be proven safe requires your confirmation. Uses tree-sitter for AST parsing (whitelist-based), shell-quote as fallback. Code comments reference 5 HackerOne reports — real penetration test findings.</p>
-  <a class="read-more" href="index.html#ch06"><span class="cn">Full Detail: Ch06 Security &rarr;</span><span class="en">Full Detail: Ch06 Security &rarr;</span></a>
+  <div class="layers">
+    <div class="layer l-a"><span class="l-label cn">输入验证</span><span class="l-label en">Input Validation</span><span class="l-desc cn">阻止 sleep 模式、解析命令结构</span><span class="l-desc en">Block sleep patterns, parse command structure</span></div>
+    <div class="layer l-p"><span class="l-label">AST</span><span class="l-desc cn">tree-sitter 解析 + 4 种白名单结构 + 16 种危险类型</span><span class="l-desc en">tree-sitter parse + 4 allowlisted types + 16 dangerous types</span></div>
+    <div class="layer l-o"><span class="l-label cn">权限链</span><span class="l-label en">Permission Chain</span><span class="l-desc cn">子命令拆分 → allow/deny 规则 → 路径边界校验</span><span class="l-desc en">Subcommand split → allow/deny rules → path boundary check</span></div>
+    <div class="layer l-g"><span class="l-label cn">沙箱隔离</span><span class="l-label en">Sandbox</span><span class="l-desc cn">120-600s 超时 + 大输出持久化（>30K → 磁盘）</span><span class="l-desc en">120-600s timeout + large output persistence (>30K → disk)</span></div>
+  </div>
+
+  <div class="callout">
+    <strong class="cn">延迟加载：</strong><strong class="en">Deferred loading: </strong>
+    <span class="cn">MCP 工具和非常用内置工具（NotebookEdit、WebFetch 等）延迟到 ToolSearch 请求时才加载 schema。核心工具（Bash/Read/Edit/Write/Grep/Glob/Agent）始终加载。ToolSearch 使用加权评分：完全匹配 +12，部分匹配 +6。</span>
+    <span class="en">MCP tools and uncommon built-ins (NotebookEdit, WebFetch, etc.) defer schema loading until ToolSearch requests them. Core tools (Bash/Read/Edit/Write/Grep/Glob/Agent) always loaded. ToolSearch uses weighted scoring: exact match +12, partial +6.</span>
+  </div>
+  <a class="read-more" href="index.html#ch03"><span class="cn">Full Detail: Ch03 工具系统 &rarr;</span><span class="en">Full Detail: Ch03 Tool System &rarr;</span></a>
 </div>
 
-<!-- Step 7: Multi-Agent -->
-<div class="step" data-step="7">
-  <h2 class="cn">团队协作：AI 也能开会分工</h2>
-  <h2 class="en">Teamwork: AI Can Delegate Too</h2>
-  <p class="sub cn">一个 Agent 不够用？生成一群。</p>
-  <p class="sub en">One agent not enough? Spawn a team.</p>
+<!-- ==================== Ch04: Commands ==================== -->
+<div class="step" data-step="04" id="ch04">
+  <h2 class="cn">90+ 斜杠命令：6 路合并管线</h2>
+  <h2 class="en">90+ Slash Commands: 6-Source Merge Pipeline</h2>
+  <p class="sub cn">每条命令 metadata 启动时加载，实现懒加载到使用时。</p>
+  <p class="sub en">Command metadata loads at startup, but implementations lazy-load on use.</p>
 
-  <div class="grid" style="grid-template-columns:repeat(3,1fr)">
-    <div class="gcard" style="border-left:3px solid var(--accent)"><h4 class="cn">子 Agent</h4><h4 class="en">Sub-Agent</h4><p class="cn">主 Agent 派出子任务，完成后汇报</p><p class="en">Main agent dispatches sub-tasks, reports back</p></div>
-    <div class="gcard" style="border-left:3px solid var(--green)"><h4>Coordinator</h4><p class="cn">"永远不要委托理解"——只做调度，不写代码</p><p class="en">"Never delegate understanding" — only dispatch, never code</p></div>
-    <div class="gcard" style="border-left:3px solid var(--purple)"><h4>Team/Swarm</h4><p class="cn">多个 Agent 并行工作，互相发消息</p><p class="en">Multiple agents work in parallel, message each other</p></div>
+  <div class="flow">
+    <div class="flow-box" style="min-width:70px"><div class="fl-title cn">内置技能</div><div class="fl-title en">Built-in Skills</div></div>
+    <div class="flow-arr">&rarr;</div>
+    <div class="flow-box" style="min-width:70px"><div class="fl-title cn">技能目录</div><div class="fl-title en">Skill Dir</div></div>
+    <div class="flow-arr">&rarr;</div>
+    <div class="flow-box" style="min-width:70px"><div class="fl-title cn">工作流</div><div class="fl-title en">Workflows</div></div>
+    <div class="flow-arr">&rarr;</div>
+    <div class="flow-box" style="min-width:70px"><div class="fl-title cn">插件</div><div class="fl-title en">Plugins</div></div>
+    <div class="flow-arr">&rarr;</div>
+    <div class="flow-box accent" style="min-width:70px"><div class="fl-title cn">合并</div><div class="fl-title en">Merge</div><div class="fl-desc">Array.find()</div></div>
+  </div>
+
+  <p class="cn">6 个来源按优先级合并——用户/插件命令覆盖内置命令。可用性检查<strong>不缓存</strong>（因为认证状态会在 <code>/login</code> 后变化）。最大的模块 <code>/insights</code> 有 113KB / 3,200 行，使用双层懒加载 shim。</p>
+  <p class="en">6 sources merge by priority — user/plugin commands override built-ins. Availability checks are <strong>not memoized</strong> (auth state changes after <code>/login</code>). The largest module <code>/insights</code> (113KB / 3,200 lines) uses a double-layer lazy shim.</p>
+
+  <div class="callout">
+    <strong class="cn">Prompt 命令注入：</strong><strong class="en">Prompt command injection: </strong>
+    <span class="cn">Prompt 模板中的 <code>```!```</code> 和 <code>!`cmd`</code> 语法在发送给模型前执行 shell 命令并替换为输出。安全层检查权限后才执行，且用函数替换（非字符串替换）防止 <code>$$</code> / <code>$&</code> 腐蚀 shell 输出。</span>
+    <span class="en">Prompt templates use <code>```!```</code> and <code>!`cmd`</code> syntax — shell commands execute and get replaced with output before sending to the model. Security layer checks permissions first, and uses function replacers (not string replacement) to prevent <code>$$</code> / <code>$&</code> from corrupting shell output.</span>
+  </div>
+  <a class="read-more" href="index.html#ch04"><span class="cn">Full Detail: Ch04 命令系统 &rarr;</span><span class="en">Full Detail: Ch04 Command System &rarr;</span></a>
+</div>
+
+<!-- ==================== Ch05: Context Management ==================== -->
+<div class="step" data-step="05" id="ch05">
+  <h2 class="cn">Token 预算：三层递进压缩</h2>
+  <h2 class="en">Token Budget: 3-Tier Progressive Compression</h2>
+  <p class="sub cn">从免费到昂贵，自动管理 200K-1M Token 上下文窗口。</p>
+  <p class="sub en">From free to expensive, auto-managing the 200K-1M token context window.</p>
+
+  <div class="flow">
+    <div class="flow-box green"><div class="fl-title cn">微压缩</div><div class="fl-title en">Micro</div><div class="fl-desc cn">零 API 调用 | 清理旧结果</div><div class="fl-desc en">Zero API cost | clean old results</div></div>
+    <div class="flow-arr">&rarr;</div>
+    <div class="flow-box orange"><div class="fl-title cn">会话记忆</div><div class="fl-title en">Session Memory</div><div class="fl-desc cn">复用异步摘要 | ~10-40K tokens</div><div class="fl-desc en">Reuse async summaries | ~10-40K tok</div></div>
+    <div class="flow-arr">&rarr;</div>
+    <div class="flow-box red"><div class="fl-title cn">全量压缩</div><div class="fl-title en">Full Compact</div><div class="fl-desc cn">完整 API 调用 | 9 段结构化摘要</div><div class="fl-desc en">Full API call | 9-section summary</div></div>
+    <div class="flow-arr">&rarr;</div>
+    <div class="flow-box" style="border-color:var(--red)"><div class="fl-title cn">熔断器</div><div class="fl-title en">Breaker</div><div class="fl-desc cn">3 次连续失败 → 停止</div><div class="fl-desc en">3 consecutive fails → stop</div></div>
+  </div>
+
+  <div class="grid" style="grid-template-columns:1fr 1fr">
+    <div class="gcard"><h4 class="cn">200K 窗口</h4><h4 class="en">200K Window</h4><p class="cn">83.5% (167K) 触发自动压缩。有效窗口 = 总窗口 - min(maxOutput, 20K)</p><p class="en">83.5% (167K) triggers auto-compaction. Effective = total - min(maxOutput, 20K)</p></div>
+    <div class="gcard"><h4 class="cn">1M 窗口</h4><h4 class="en">1M Window</h4><p class="cn">96.7% (967K) 才触发。更大的窗口意味着更晚的压缩、更低的信息损失</p><p class="en">96.7% (967K) to trigger. Larger window = later compression = less info loss</p></div>
+  </div>
+
+  <div class="callout">
+    <strong class="cn">精确 + 估算混合计数：</strong><strong class="en">Precise + Estimation hybrid: </strong>
+    <span class="cn">找到最近的 API 响应用量数据（精确），然后对更新的消息用 length/4 估算。并行工具调用需要回溯查找共享 <code>message.id</code> 以包含交错的 tool_results。</span>
+    <span class="en">Find the latest API usage data (precise), then estimate newer messages at length/4. Parallel tool calls require backtracking to find shared <code>message.id</code> to include interleaved tool_results.</span>
+  </div>
+  <a class="read-more" href="index.html#ch05"><span class="cn">Full Detail: Ch05 上下文管理 &rarr;</span><span class="en">Full Detail: Ch05 Context Management &rarr;</span></a>
+</div>
+
+<!-- ==================== Ch06: Permission & Security ==================== -->
+<div class="step" data-step="06" id="ch06">
+  <h2 class="cn">安全：17,885 行代码 + 23 道检查</h2>
+  <h2 class="en">Security: 17,885 Lines + 23 Validators</h2>
+  <p class="sub cn">Fail-Closed 哲学：无法证明安全的一律拦截。</p>
+  <p class="sub en">Fail-Closed philosophy: anything not provably safe gets blocked.</p>
+
+  <div class="flow">
+    <div class="flow-box"><div class="fl-title cn">命令输入</div><div class="fl-title en">Command</div></div>
+    <div class="flow-arr">&rarr;</div>
+    <div class="flow-box purple"><div class="fl-title">tree-sitter</div><div class="fl-desc cn">AST 白名单解析</div><div class="fl-desc en">AST allowlist parse</div></div>
+    <div class="flow-arr">&rarr;</div>
+    <div class="flow-box orange"><div class="fl-title cn">23 验证器</div><div class="fl-title en">23 Validators</div><div class="fl-desc cn">注入 | IFS | 编码 | 括号</div><div class="fl-desc en">Injection | IFS | Encoding | Braces</div></div>
+    <div class="flow-arr">&rarr;</div>
+    <div class="flow-box accent"><div class="fl-title cn">权限规则</div><div class="fl-title en">Permission Rules</div></div>
+    <div class="flow-arr">&rarr;</div>
+    <div class="flow-box green"><div class="fl-title cn">沙箱执行</div><div class="fl-title en">Sandbox Run</div></div>
+  </div>
+
+  <div class="grid">
+    <div class="gcard" style="border-left:3px solid var(--red)"><h4 class="cn">双引擎解析</h4><h4 class="en">Dual-Engine Parse</h4><p class="cn">tree-sitter（主引擎，AST 白名单 4 种结构 + 16 种危险类型）+ shell-quote（备用引擎）。"太复杂"时降级到 shell-quote</p><p class="en">tree-sitter (primary, 4 structural + 16 dangerous types) + shell-quote (fallback). "Too complex" downgrades to shell-quote</p></div>
+    <div class="gcard" style="border-left:3px solid var(--orange)"><h4>HackerOne</h4><p class="cn">5 个真实渗透测试发现被修补：IFS 注入、CR 注入、反斜杠双重解析、括号展开混淆、换行符隐藏攻击</p><p class="en">5 real pentest findings patched: IFS injection, CR injection, backslash double-parse, brace expansion, quoted newline attacks</p></div>
+    <div class="gcard" style="border-left:3px solid var(--purple)"><h4 class="cn">沙箱白名单</h4><h4 class="en">Sandbox Allowlist</h4><p class="cn">可写：cwd + Claude 临时目录 + --add-dir 路径。永远禁止：settings.json（防止沙箱逃逸）</p><p class="en">Write: cwd + Claude temp + --add-dir paths. Always denied: settings.json (prevents sandbox escape)</p></div>
+  </div>
+
+  <div class="callout">
+    <strong class="cn">27 种 Hook 事件：</strong><strong class="en">27 Hook Event Types: </strong>
+    <span class="cn">PermissionRequest Hook 可输出 <code>allow/deny</code> 覆盖权限检查。工具 Hook 10 分钟超时，会话结束 Hook 仅 1.5 秒。策略可强制"仅托管 Hook"或禁用所有。</span>
+    <span class="en">PermissionRequest hooks can output <code>allow/deny</code> to override permission checks. Tool hooks get 10-minute timeout, session end hooks only 1.5s. Policy can enforce "managed hooks only" or disable all.</span>
+  </div>
+  <a class="read-more" href="index.html#ch06"><span class="cn">Full Detail: Ch06 权限与安全 &rarr;</span><span class="en">Full Detail: Ch06 Permission & Security &rarr;</span></a>
+</div>
+
+<!-- ==================== Ch07: Multi-Agent ==================== -->
+<div class="step" data-step="07" id="ch07">
+  <h2 class="cn">多 Agent 协作：6 种模式</h2>
+  <h2 class="en">Multi-Agent: 6 Operating Modes</h2>
+  <p class="sub cn">从简单的子 Agent 到完整的团队协作，按需选择隔离级别。</p>
+  <p class="sub en">From simple sub-agents to full team collaboration — choose isolation level as needed.</p>
+
+  <div class="layers">
+    <div class="layer l-a"><span class="l-label">Teammate</span><span class="l-desc cn">最高优先级 — tmux/iTerm2/进程内多 Agent 并行</span><span class="l-desc en">Highest priority — tmux/iTerm2/in-process parallel agents</span></div>
+    <div class="layer l-g"><span class="l-label">Fork</span><span class="l-desc cn">继承父对话上下文 + 字节级 prompt 缓存共享</span><span class="l-desc en">Inherits parent context + byte-level prompt cache sharing</span></div>
+    <div class="layer l-p"><span class="l-label">Worktree</span><span class="l-desc cn">独立 Git 分支 — 5 点冲突预防（分支/目录/标志/展平/根查找）</span><span class="l-desc en">Isolated Git branch — 5-point conflict prevention (branch/dir/flag/flatten/root)</span></div>
+    <div class="layer l-o"><span class="l-label">Coordinator</span><span class="l-desc cn">"永远不要委托理解" — ~370 行系统 prompt 强制综合而非转发</span><span class="l-desc en">"Never delegate understanding" — ~370-line prompt enforces synthesis over forwarding</span></div>
+    <div class="layer l-r"><span class="l-label">Async / Sync</span><span class="l-desc cn">后台异步或阻塞同步 — 默认同步，<code>run_in_background=true</code> 切异步</span><span class="l-desc en">Background async or blocking sync — default sync, <code>run_in_background=true</code> for async</span></div>
   </div>
 
   <div class="callout">
     <strong>Fork Agent: </strong>
-    <span class="cn">最精妙的设计——子 Agent 继承父 Agent 的完整对话上下文，实现字节级 prompt 缓存共享。父子只在最后一条指令处"分叉"，共享前缀部分的所有缓存费用。</span>
-    <span class="en">The most elegant design — child inherits parent's full conversation context, achieving byte-level prompt cache sharing. Parent and child diverge only at the final directive, sharing all cache costs for the prefix.</span>
+    <span class="cn">最精妙的设计——复用父 Agent 渲染后的系统 prompt 字节（而非重新编译），使用 <code>useExactTools: true</code> 确保工具池完全一致。父子仅在最后一条 <code>&lt;fork-directive&gt;</code> 处分叉，前缀缓存完全共享。通过 <code>isInForkChild()</code> 禁止嵌套 Fork。</span>
+    <span class="en">Most elegant design — reuses parent's rendered system prompt bytes (not recompiled), with <code>useExactTools: true</code> for identical tool pools. Parent and child diverge only at the final <code>&lt;fork-directive&gt;</code>, sharing all prefix cache. <code>isInForkChild()</code> prevents nested forks.</span>
   </div>
-  <a class="read-more" href="index.html#ch07"><span class="cn">Full Detail: Ch07 Multi-Agent &rarr;</span><span class="en">Full Detail: Ch07 Multi-Agent &rarr;</span></a>
+
+  <div class="callout tip">
+    <strong class="cn">团队通信：</strong><strong class="en">Team Communication: </strong>
+    <span class="cn">基于文件系统的邮箱 <code>.claude/teams/{team}/mailbox/{name}/</code>。4 种寻址：名字、* 广播、UDS 跨会话、Bridge 跨机器。不主动检查收件箱——消息自动投递。</span>
+    <span class="en">Filesystem-based mailbox at <code>.claude/teams/{team}/mailbox/{name}/</code>. 4 addressing modes: name, * broadcast, UDS cross-session, Bridge cross-machine. No active polling — messages delivered automatically.</span>
+  </div>
+  <a class="read-more" href="index.html#ch07"><span class="cn">Full Detail: Ch07 多 Agent 协作 &rarr;</span><span class="en">Full Detail: Ch07 Multi-Agent &rarr;</span></a>
 </div>
 
-<!-- Step 8: Hidden -->
-<div class="step" data-step="8">
-  <h2 class="cn">隐藏功能：你不知道的 Claude Code</h2>
-  <h2 class="en">Hidden Features: Claude Code's Secrets</h2>
-  <p class="sub cn">88 个 Feature Flag 背后藏着未发布的未来。</p>
-  <p class="sub en">88 feature flags hide unreleased futures.</p>
+<!-- ==================== Ch08: MCP & Services ==================== -->
+<div class="step" data-step="08" id="ch08">
+  <h2 class="cn">MCP 协议：8 种传输 + 4 个 API 后端</h2>
+  <h2 class="en">MCP Protocol: 8 Transports + 4 API Backends</h2>
+  <p class="sub cn">统一协议层让 Claude Code 接入任意外部工具和云服务。</p>
+  <p class="sub en">A unified protocol layer connects Claude Code to any external tool or cloud service.</p>
+
+  <div class="grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="gcard"><h4>stdio</h4><p class="cn">本地进程</p><p class="en">Local process</p></div>
+    <div class="gcard"><h4>SSE</h4><p class="cn">服务器推送</p><p class="en">Server events</p></div>
+    <div class="gcard"><h4>HTTP</h4><p class="cn">请求响应</p><p class="en">Request-response</p></div>
+    <div class="gcard"><h4>WebSocket</h4><p class="cn">双向通道</p><p class="en">Bidirectional</p></div>
+  </div>
+
+  <div class="flow">
+    <div class="flow-box"><div class="fl-title">Pending</div></div>
+    <div class="flow-arr">&rarr;</div>
+    <div class="flow-box green"><div class="fl-title">Connected</div></div>
+    <div class="flow-arr">/</div>
+    <div class="flow-box red"><div class="fl-title">Failed</div></div>
+    <div class="flow-arr">/</div>
+    <div class="flow-box orange"><div class="fl-title">Needs Auth</div></div>
+    <div class="flow-arr">/</div>
+    <div class="flow-box"><div class="fl-title">Disabled</div></div>
+  </div>
+
+  <p class="cn">连接批处理：本地服务器 3 路并发，远程服务器 20 路并发（6.7x 差异，优化网络 vs 子进程开销）。指数退避 1s → 30s。401 自动刷新 Token，403 + WWW-Authenticate 触发 Step-up 认证。</p>
+  <p class="en">Connection batching: local servers 3-way concurrency, remote 20-way (6.7x difference, optimizing network vs. subprocess overhead). Exponential backoff 1s → 30s. 401 auto-refreshes tokens, 403 + WWW-Authenticate triggers step-up auth.</p>
+
+  <div class="grid" style="grid-template-columns:repeat(2,1fr)">
+    <div class="gcard" style="border-left:3px solid var(--accent)"><h4 class="cn">4 个 API 后端</h4><h4 class="en">4 API Backends</h4><p class="cn"><code>getAnthropicClient()</code> 根据环境变量透明切换：Anthropic 直连、AWS Bedrock、Azure Foundry、Google Vertex AI</p><p class="en"><code>getAnthropicClient()</code> transparently switches by env vars: Anthropic direct, AWS Bedrock, Azure Foundry, Google Vertex AI</p></div>
+    <div class="gcard" style="border-left:3px solid var(--purple)"><h4>XAA OAuth</h4><p class="cn">跨应用访问：一次登录 IdP → RFC 8693 Token 交换 → 自动认证 N 个 MCP 服务器，无需重复弹窗</p><p class="en">Cross-App Access: one IdP login → RFC 8693 Token Exchange → auto-auth N MCP servers, no repeated popups</p></div>
+  </div>
+  <a class="read-more" href="index.html#ch08"><span class="cn">Full Detail: Ch08 MCP 与服务层 &rarr;</span><span class="en">Full Detail: Ch08 MCP & Services &rarr;</span></a>
+</div>
+
+<!-- ==================== Ch09: UI Components ==================== -->
+<div class="step" data-step="09" id="ch09">
+  <h2 class="cn">终端里的 React 应用：389 个组件</h2>
+  <h2 class="en">React App in the Terminal: 389 Components</h2>
+  <p class="sub cn">不是 curses，是一个真正的 React 渲染引擎 + 双缓冲 + 对象池。</p>
+  <p class="sub en">Not curses — a real React rendering engine + double buffering + object pools.</p>
+
+  <div class="layers">
+    <div class="layer l-a"><span class="l-label">React + Ink</span><span class="l-desc cn">389 组件 + React Compiler 自动 memoization</span><span class="l-desc en">389 components + React Compiler auto-memoization</span></div>
+    <div class="layer l-g"><span class="l-label">Reconciler</span><span class="l-desc cn">自定义协调器 → DOM 树 → Yoga 布局（Flexbox）</span><span class="l-desc en">Custom reconciler → DOM tree → Yoga layout (Flexbox)</span></div>
+    <div class="layer l-p"><span class="l-label cn">双缓冲</span><span class="l-label en">Double Buffer</span><span class="l-desc cn">前帧/后帧逐 cell diff，Packed Int 优化（charId + styleId 合并）</span><span class="l-desc en">Front/back frame cell-by-cell diff, packed int (charId + styleId merged)</span></div>
+    <div class="layer l-o"><span class="l-label cn">对象池</span><span class="l-label en">Object Pools</span><span class="l-desc cn">CharPool（ASCII O(1)）+ StylePool（Bit 0 跳过空格）+ HyperlinkPool</span><span class="l-desc en">CharPool (ASCII O(1)) + StylePool (Bit 0 space skip) + HyperlinkPool</span></div>
+    <div class="layer l-r"><span class="l-label">ANSI → stdout</span><span class="l-desc cn">DECSTBM 硬件滚动 + OSC 52 剪贴板协议</span><span class="l-desc en">DECSTBM hardware scrolling + OSC 52 clipboard protocol</span></div>
+  </div>
+
+  <div class="callout">
+    <strong>REPL.tsx — </strong>
+    <span class="cn">"上帝组件"，5,005 行、280+ 导入。终端没有路由，REPL 就是唯一的"页面"。这是<strong>有意为之</strong>——React Compiler 用 <code>_c()</code> 缓存数组对整个函数体做细粒度自动 memoization，即使规模巨大也不会性能崩溃。</span>
+    <span class="en">"God Component" — 5,005 lines, 280+ imports. Terminals have no routing, so REPL is the sole "page." This is <strong>intentional</strong> — React Compiler transforms the entire function body with <code>_c()</code> cache arrays for fine-grained auto-memoization, preventing performance collapse despite massive scale.</span>
+  </div>
+  <a class="read-more" href="index.html#ch09"><span class="cn">Full Detail: Ch09 UI 组件系统 &rarr;</span><span class="en">Full Detail: Ch09 UI Components &rarr;</span></a>
+</div>
+
+<!-- ==================== Ch10: Feature Flags ==================== -->
+<div class="step" data-step="10" id="ch10">
+  <h2 class="cn">88 个 Feature Flag：隐藏的未来</h2>
+  <h2 class="en">88 Feature Flags: The Hidden Future</h2>
+  <p class="sub cn">三层 Flag 架构控制从实验功能到产品形态的一切。</p>
+  <p class="sub en">3-tier flag architecture controls everything from experiments to product evolution.</p>
+
+  <div class="flow">
+    <div class="flow-box accent"><div class="fl-title cn">构建时</div><div class="fl-title en">Build-time</div><div class="fl-desc">feature('FLAG')<br>Bun DCE</div></div>
+    <div class="flow-arr">&rarr;</div>
+    <div class="flow-box green"><div class="fl-title cn">运行时</div><div class="fl-title en">Runtime</div><div class="fl-desc">GrowthBook<br>tengu_* namespace</div></div>
+    <div class="flow-arr">&rarr;</div>
+    <div class="flow-box purple"><div class="fl-title cn">环境变量</div><div class="fl-title en">Env Vars</div><div class="fl-desc">USER_TYPE<br>CLAUDE_CODE_*</div></div>
+  </div>
 
   <div class="grid">
     <div class="gcard" style="border-left:3px solid var(--purple)">
       <h4>KAIROS</h4>
-      <p class="cn">助理模式：定时唤醒、手机推送、PR 订阅、每日简报、甚至"做梦"（自动整理记忆）</p>
-      <p class="en">Assistant mode: scheduled wake, push notifications, PR subscriptions, daily briefs, even "dreaming" (auto memory consolidation)</p>
+      <p class="cn">助理模式：7 个子 Flag 联动。SleepTool 无限等待不阻塞、Dreaming 4 阶段记忆整理（定向→收集→合并→修剪）、三重门控防并发</p>
+      <p class="en">Assistant mode: 7 interlocking sub-flags. SleepTool waits indefinitely without blocking, Dreaming 4-phase memory consolidation (Orient→Gather→Consolidate→Prune), triple-gated concurrency prevention</p>
     </div>
     <div class="gcard" style="border-left:3px solid var(--orange)">
       <h4>Buddy</h4>
-      <p class="cn">电子宠物！18 个物种、5 级稀有度、ASCII 动画、属性系统。计划 4 月 1 日发布</p>
-      <p class="en">Virtual pet! 18 species, 5 rarity tiers, ASCII animations, stats system. Planned for April 1st</p>
+      <p class="cn">电子宠物！18 种物种、5 级稀有度（60% 普通 → 1% 传说）、确定性 Hash 生成。一个物种名用 <code>String.fromCharCode()</code> 编码以规避 canary 检测</p>
+      <p class="en">Virtual pet! 18 species, 5 rarity tiers (60% common → 1% legendary), deterministic hash generation. One species name encoded with <code>String.fromCharCode()</code> to evade canary detection</p>
     </div>
     <div class="gcard" style="border-left:3px solid var(--red)">
       <h4>Undercover</h4>
-      <p class="cn">卧底模式：Anthropic 员工在公开仓库自动隐身，隐藏所有 AI 痕迹，无法关闭</p>
-      <p class="en">Stealth mode: auto-activates for Anthropic staff on public repos, hides all AI traces, cannot be disabled</p>
+      <p class="cn">卧底模式：提交到非内部仓库时自动激活，隐藏模型代号/项目名/AI 身份。无法关闭——安全优先于透明</p>
+      <p class="en">Stealth mode: auto-activates on non-internal repos, hides model codenames/project names/AI identity. Cannot be disabled — security over transparency</p>
     </div>
     <div class="gcard" style="border-left:3px solid var(--accent)">
       <h4 class="cn">内部 vs 外部</h4><h4 class="en">Internal vs External</h4>
-      <p class="cn">Anthropic 员工用的 Claude 更啰嗦、更有主见、会挑战你的假设。外部版简洁顺从</p>
-      <p class="en">Anthropic staff get a more verbose, opinionated Claude that challenges assumptions. External version is concise and compliant</p>
+      <p class="cn">内部版更啰嗦、有主见、挑战假设。<code>tengu_</code> 前缀证实 "Tengu" 是 Claude Code 内部代号。3 级 GrowthBook SDK Key</p>
+      <p class="en">Internal version: verbose, opinionated, challenges assumptions. <code>tengu_</code> prefix confirms "Tengu" is Claude Code's internal codename. 3-tier GrowthBook SDK keys</p>
     </div>
   </div>
   <a class="read-more" href="index.html#ch10"><span class="cn">Full Detail: Ch10 Feature Flags &rarr;</span><span class="en">Full Detail: Ch10 Feature Flags &rarr;</span></a>
 </div>
 
-<!-- Summary -->
+<!-- ==================== Ch11: Infrastructure ==================== -->
+<div class="step" data-step="11" id="ch11">
+  <h2 class="cn">基础设施：35 行 Store + 7 种 Task</h2>
+  <h2 class="en">Infrastructure: 35-Line Store + 7 Task Types</h2>
+  <p class="sub cn">最小化核心 + 集中式副作用 = 可测试的基础层。</p>
+  <p class="sub en">Minimal core + centralized side effects = testable foundation layer.</p>
+
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr))">
+    <div class="gcard"><h4>local_bash</h4><p class="cn">前缀 b</p><p class="en">Prefix b</p></div>
+    <div class="gcard"><h4>local_agent</h4><p class="cn">前缀 a</p><p class="en">Prefix a</p></div>
+    <div class="gcard"><h4>remote_agent</h4><p class="cn">前缀 r</p><p class="en">Prefix r</p></div>
+    <div class="gcard"><h4>teammate</h4><p class="cn">前缀 t</p><p class="en">Prefix t</p></div>
+    <div class="gcard"><h4>workflow</h4><p class="cn">前缀 w</p><p class="en">Prefix w</p></div>
+    <div class="gcard"><h4>monitor_mcp</h4><p class="cn">前缀 m</p><p class="en">Prefix m</p></div>
+    <div class="gcard"><h4>dream</h4><p class="cn">前缀 d</p><p class="en">Prefix d</p></div>
+  </div>
+
+  <p class="cn">Task ID = 前缀 + 8 位 base36 随机字符（2.8 万亿种组合，防 symlink 碰撞攻击）。</p>
+  <p class="en">Task ID = prefix + 8 base36 random chars (2.8 trillion combinations, preventing symlink collision attacks).</p>
+
+  <div class="grid" style="grid-template-columns:1fr 1fr">
+    <div class="gcard" style="border-left:3px solid var(--accent)">
+      <h4 class="cn">35 行 Store</h4><h4 class="en">35-Line Store</h4>
+      <p class="cn">比 Redux 更极简：<code>setState(updater)</code> + <code>Object.is</code> 引用比较 + TypeScript <code>DeepImmutable&lt;T&gt;</code> 编译时不可变约束。570 行 AppState 含 100+ 字段跨 13 个功能域</p>
+      <p class="en">More minimal than Redux: <code>setState(updater)</code> + <code>Object.is</code> reference comparison + TypeScript <code>DeepImmutable&lt;T&gt;</code> compile-time immutability. 570-line AppState with 100+ fields across 13 domains</p>
+    </div>
+    <div class="gcard" style="border-left:3px solid var(--green)">
+      <h4 class="cn">集中副作用</h4><h4 class="en">Centralized Side Effects</h4>
+      <p class="cn"><code>onChangeAppState</code>：一个函数处理 7 种副作用（权限同步、模型持久化、详细模式、认证缓存清理……），替代 8+ 个分散的通知路径</p>
+      <p class="en"><code>onChangeAppState</code>: one function handles 7 side effects (permission sync, model persistence, verbose toggle, auth cache cleanup...) replacing 8+ scattered paths</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Vim Mode: </strong>
+    <span class="cn">完整的两层状态机（INSERT/NORMAL）+ 11 种 CommandState 子状态。纯函数架构——motions.ts（输入: 键+光标+计数, 输出: Cursor）、operators.ts、textObjects.ts、transitions.ts。每层可独立测试。Dot-repeat 支持 10 种操作类型。</span>
+    <span class="en">Full two-level state machine (INSERT/NORMAL) + 11 CommandState substates. Pure function architecture — motions.ts (input: key+cursor+count, output: Cursor), operators.ts, textObjects.ts, transitions.ts. Every layer testable in isolation. Dot-repeat supports 10 operation types.</span>
+  </div>
+  <a class="read-more" href="index.html#ch11"><span class="cn">Full Detail: Ch11 基础设施 &rarr;</span><span class="en">Full Detail: Ch11 Infrastructure &rarr;</span></a>
+</div>
+
+<!-- ==================== Summary ==================== -->
 <div class="step" data-step="✓">
   <h2 class="cn">总结：Claude Code 的设计哲学</h2>
   <h2 class="en">Summary: Claude Code's Design Philosophy</h2>
@@ -345,8 +566,10 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
   <div class="grid" style="grid-template-columns:1fr 1fr">
     <div class="gcard"><h4 class="cn">简单核心 + 复杂工程</h4><h4 class="en">Simple Core + Complex Engineering</h4><p class="cn">核心是一个 while 循环，但围绕它有 515K 行优化代码</p><p class="en">The core is a while loop, but 515K lines of optimization surround it</p></div>
     <div class="gcard"><h4 class="cn">模型决策，系统执行</h4><h4 class="en">Model Decides, System Executes</h4><p class="cn">不预设流程，让 AI 自己判断下一步</p><p class="en">No preset workflows — let AI decide the next step</p></div>
-    <div class="gcard"><h4 class="cn">安全优先</h4><h4 class="en">Security First</h4><p class="cn">Fail-closed 设计，不确定就问用户</p><p class="en">Fail-closed design — when in doubt, ask the user</p></div>
-    <div class="gcard"><h4 class="cn">成本敏感</h4><h4 class="en">Cost Sensitive</h4><p class="cn">92% 缓存命中、三层压缩、8K 默认输出预留</p><p class="en">92% cache hit, 3-tier compression, 8K default output reserve</p></div>
+    <div class="gcard"><h4 class="cn">安全优先 (Fail-Closed)</h4><h4 class="en">Security First (Fail-Closed)</h4><p class="cn">17,885 行安全代码，不确定就拦截</p><p class="en">17,885 lines of security code — when in doubt, block it</p></div>
+    <div class="gcard"><h4 class="cn">成本敏感</h4><h4 class="en">Cost Sensitive</h4><p class="cn">92% 缓存命中、三层压缩、动态区隔离防缓存击穿</p><p class="en">92% cache hit, 3-tier compression, dynamic zone isolation prevents cache busting</p></div>
+    <div class="gcard"><h4 class="cn">并行化一切</h4><h4 class="en">Parallelize Everything</h4><p class="cn">Import 期间预取、流式工具执行、Fork Agent 缓存共享</p><p class="en">Prefetch during imports, streaming tool execution, Fork Agent cache sharing</p></div>
+    <div class="gcard"><h4 class="cn">分层预算控制</h4><h4 class="en">Tiered Budget Control</h4><p class="cn">每工具限额 + 系统级上限 + 聚合预算，层层兜底</p><p class="en">Per-tool limit + system cap + aggregate budget — defense in depth</p></div>
   </div>
 
   <div style="text-align:center;margin-top:30px">
@@ -358,7 +581,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 </div>
 
 <div class="footer">
-  <p>Claude Code v2.1.88 Quick Guide</p>
+  <p>Claude Code v2.1.88 &mdash; Quick Guide</p>
   <p class="cn">基于 <a href="index.html">12 章深度分析</a> 精简而成</p>
   <p class="en">Distilled from the <a href="index.html">12-chapter deep analysis</a></p>
 </div>
